@@ -1,0 +1,132 @@
+.mainDiv {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.canvasDiv {
+    padding-left: 10px;
+    box-sizing: border-box;
+    float: left;
+    width: 50%;
+    height: 100%;
+}
+
+.testDataButton {
+    text-align: left;
+    margin-top: 2px;
+    font-size: 10px;
+    background-color: whitesmoke;
+    border: 0.5px solid black;
+}
+
+.textDiv {
+    margin-top: 10px;
+    box-sizing: border-box;
+    float: left;
+    width: 37%;
+    height: 100%;
+}
+
+.rightMenuDiv {
+    font-size: 10px;
+    margin-top: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    float: left;
+    width: 13%;
+    height: 100%;
+}
+
+.rightMenuDiv table {
+    text-align: left;
+}
+
+#questionDiv {
+    padding: 10px;
+}
+
+#canvas {
+    border: 1px solid grey;
+}
+
+#resetButton {
+    height: 30px;
+    width: 43%;
+    background-color: rgb(245, 245, 227);
+}
+
+#solveButton {
+    height: 30px;
+    width: 49%;
+    background-color: rgb(188, 207, 188);
+}
+
+#answerDiv {
+    height: 300px;
+    margin-top: 30px;
+}
+
+.valueInput {
+    width: 30px;
+    display: none;
+    border: 2px solid red;
+    border-radius: 4px;
+}
+
+.equationExplanation {
+    color: grey;
+    font-style: italic;
+    font-size: 10px;
+}
+
+.testsTable,
+th,
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+thead {
+    text-align: center;
+    background-color: aliceblue;
+}
+
+#testsDiv {
+    margin-top: 20px;
+    height: 80px;
+    overflow: auto;
+}
+
+.testDataButton {
+    width: 110px;
+    margin-top: 0px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+span.frac {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+}
+
+span.frac>sup,
+span.frac>sub {
+    display: block;
+    font: inherit;
+    padding: 0 0.3em;
+}
+
+span.frac>sup {
+    border-bottom: 0.08em solid;
+}
+
+span.frac>span {
+    display: none;
+}

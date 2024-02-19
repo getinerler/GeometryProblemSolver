@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="keywords" content="geometry, problem, solver">
+
+  <link rel="shortcut icon" href="#">
+
+  <link rel="stylesheet" href="./style.css">
+
+  <script type="module" src="./models/equations/equation.js"></script>
+  <script type="module" src="./models/equations/term.js"></script>
+  <script type="module" src="./models/equations/termSum.js"></script>
+  <script type="module" src="./models/equations/value.js"></script>
+  <script type="module" src="./models/equations/variable.js"></script>
+  <script type="module" src="./models/equations/variableValue.js"></script>
+  <script type="module" src="./models/graphic/angle.js"></script>
+  <script type="module" src="./models/graphic/canvasElements.js"></script>
+  <script type="module" src="./models/graphic/dot.js"></script>
+  <script type="module" src="./models/graphic/line.js"></script>
+  <script type="module" src="./models/graphic/point.js"></script>
+  <script type="module" src="./models/graphic/parallel.js"></script>
+  <script type="module" src="./models/solve/triangle.js"></script>
+  <script type="module" src="./models/solve/rectangle.js"></script>
+  <script type="module" src="./modules/equations/calculator.js"></script>
+  <script type="module" src="./modules/equations/gcd.js"></script>
+
+  <script type="module" src="./modules/graphic/canvas.js"></script>
+  <script type="module" src="./modules/graphic/drawing.js"></script>
+  <script type="module" src="./modules/graphic/geoHelper.js"></script>
+  <script type="module" src="./modules/graphic/names.js"></script>
+  <script type="module" src="./modules/graphic/texts.js"></script>
+  <script type="module" src="./modules/solve/solveCommon.js"></script>
+  <script type="module" src="./modules/solve/similarityFinder.js"></script>
+  <script type="module" src="./modules/solve/polygonFinder.js"></script>
+  <script type="module" src="./modules/solve/solve.js"></script>
+
+  <script type="module" src="./tests/test.js"></script>
+  <script type="module" src="./tests/testData.js"></script>
+  <script type="module" src="./tests/equations/gcd-test.js"></script>
+  <script type="module" src="./tests/equations/value-test.js"></script>
+  <script type="module" src="./tests/equations/term-test.js"></script>
+  <script type="module" src="./tests/equations/equations-test.js"></script>
+  <script type="module" src="./tests/equations/calculator-test.js"></script>
+  <script type="module" src="./tests/solve/solve.js"></script>
+
+  <script type="module" src="app.js"></script>
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <div class="mainDiv">
+    <div class="canvasDiv">
+      <p>Draw a question.</p>
+      <canvas id="canvas" width="450" height="450"></canvas>
+      <button id="resetButton">Reset</button>
+      <button id="solveButton">Solve</button>
+      <input id="valueInput" class="valueInput" autocomplete="off">
+      <div id="testsDiv"></div>
+    </div>
+    <div class="textDiv">
+      <div id="questionDiv"></div>
+      <div id="answerDiv"></div>
+      <div id="coordinates"></div>
+    </div>
+    <div id="rightMenuDiv" class="rightMenuDiv">
+      <table class="testsTable">
+        <thead>
+          <tr>
+            <th><b>Test Data</b></th>
+          </tr>
+        </thead>
+        <tbody id="testBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- <script src="./dist/main.bundle.js"></script> -->
+</body>
+
+</html>
