@@ -30,16 +30,16 @@ function Solve(question) {
 Solve.prototype = {
 
     solve() {
-        try {
-            window.equationCounter = 1;
-            return this.solveProblem();
-        } catch (e) {
-            return {
-                'solved': false,
-                'equations': this.equations,
-                'message': e
-            };
-        }
+        // try {
+        window.equationCounter = 1;
+        return this.solveProblem();
+        // } catch (e) {
+        //     return {
+        //         'solved': false,
+        //         'equations': this.equations,
+        //         'message': e
+        //     };
+        // }
     },
 
     solveProblem() {
@@ -302,25 +302,27 @@ Solve.prototype = {
         }
     },
 
-    checkTriangle180(triangle) {
-        if (triangle.getAngles().filter((x) => !x.isKnown()).length === 0) {
+    checkTriangle180(tri) {
+        if (tri.getAngles().filter((x) => !x.isKnown()).length === 0) {
             return;
         }
         let eq = new Equation();
         eq.setCreation('Triangle angles equal to 180.');
         eq.addRightTerm(new Term(180));
-        for (let ang of triangle.getAngles()) {
-            eq.addLeftTerm(this.getTermFromValue(ang));
+        for (let angSum of tri.getAngles()) {
+            for (let ang of angSum.getAngles()) {
+                eq.addLeftTerm(this.getTermFromValue(ang));
+            }
         }
         this.equations.push(eq);
     },
 
-    checkIsoscelesTriangle(triangle) {
-        let len = triangle.getAngles().length;
+    checkIsoscelesTriangle(tri) {
+        let len = tri.getAngles().length;
         for (let i = 0; i < len; i++) {
             for (let j = i + 1; j < len + i; j++) {
-                let ang1 = triangle.getAngles()[i];
-                let ang2 = triangle.getAngles()[j % len];
+                let ang1 = tri.getAngles()[i];
+                let ang2 = tri.getAngles()[j % len];
                 if (ang1.getValue() === null) {
                     continue;
                 }
@@ -346,11 +348,11 @@ Solve.prototype = {
             }
         }
 
-        let len2 = triangle.getLines().length;
+        let len2 = tri.getLines().length;
         for (let i = 0; i < len2; i++) {
             for (let j = i + 1; j < len2 + i; j++) {
-                let line1 = triangle.getLines()[i];
-                let line2 = triangle.getLines()[j % len2];
+                let line1 = tri.getLines()[i];
+                let line2 = tri.getLines()[j % len2];
                 if (line1.getValue() === null) {
                     continue;
                 }
@@ -359,33 +361,37 @@ Solve.prototype = {
                 }
 
                 let commonAng;
-                for (let ang of triangle.getAngles()) {
+                for (let ang of tri.getAngles()) {
                     if (ang.getLine1() === line1 && ang.getLine2() === line2 ||
                         ang.getLine2() === line1 && ang.getLine1() === line2) {
                         commonAng = ang;
                     }
                 }
 
-                let otherAngs = triangle.getAngles().filter((x) => x !== commonAng);
+                let otherAngs = tri.getAngles().filter((x) => x !== commonAng);
                 let ang1 = otherAngs[0];
                 let ang2 = otherAngs[1];
 
                 let eq = new Equation();
                 eq.setCreation('Isosceles triangle angles.');
-                eq.addLeftTerm(this.getTermFromValue(ang1));
-                eq.addRightTerm(this.getTermFromValue(ang2));
+                for (let ang of ang1.getAngles()) {
+                    eq.addLeftTerm(this.getTermFromValue(ang));
+                }
+                for (let ang of ang2.getAngles()) {
+                    eq.addRightTerm(this.getTermFromValue(ang));
+                }
                 this.equations.push(eq);
             }
         }
     },
 
-    checkPythagoreanTheorem(triangle) {
-        let angle90 = triangle.getAngles().find((x) => x.getValue() === 90);
+    checkPythagoreanTheorem(tri) {
+        let angle90 = tri.getAngles().find((x) => x.valueEqual(90));
         if (!angle90) {
             return;
         }
         let sideLines = [angle90.getLine1(), angle90.getLine2()];
-        let hypothenus = triangle.getLines().find((x) => sideLines.indexOf(x) === -1);
+        let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
         if (!hypothenus) {
             return;
         }
@@ -401,18 +407,34 @@ Solve.prototype = {
     checkTriangleSimilarities() {
         for (let sim of this.similarTriangles) {
             for (let i = 0; i < 3; i++) {
-                let ang1 = sim.angles1[i];
-                let ang2 = sim.angles2[i];
-                if (ang1.isKnown() && ang2.isKnown()) {
+                let angSum1 = sim.angles1[i];
+                let angSum2 = sim.angles2[i];
+                if (angSum1.isKnown() && angSum2.isKnown()) {
                     continue;
                 }
                 let eq = new Equation();
                 eq.setCreation('Similar triangle angles.');
-                eq.addLeftTerm(this.getTermFromValue(ang1));
-                eq.addRightTerm(this.getTermFromValue(ang2));
+                for (let ang of angSum1.getAngles()) {
+                    eq.addLeftTerm(this.getTermFromValue(ang));
+                }
+                for (let ang of angSum2.getAngles()) {
+                    eq.addRightTerm(this.getTermFromValue(ang));
+                }
                 this.equations.push(eq);
             }
         }
+    },
+
+    checkRectangle360(rect) {
+        let eq = new Equation();
+        eq.setCreation('Rectangle angles equal to 360.');
+        eq.addRightTerm(new Term(360));
+        for (let angSum of rect.getAngles()) {
+            for (let ang of angSum.getAngles()) {
+                eq.addLeftTerm(this.getTermFromValue(ang));
+            }
+        }
+        this.equations.push(eq);
     },
 
     getTriangleLine(tri, line) {
@@ -441,16 +463,6 @@ Solve.prototype = {
             }
         }
         return null;
-    },
-
-    checkRectangle360(rect) {
-        let eq = new Equation();
-        eq.setCreation('Rectangle angles equal to 360.');
-        eq.addRightTerm(new Term(360));
-        for (let ang of rect.getAngles()) {
-            eq.addLeftTerm(this.getTermFromValue(ang));
-        }
-        this.equations.push(eq);
     },
 
     getTermFromValue(val, pow) {

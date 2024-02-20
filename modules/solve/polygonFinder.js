@@ -3,6 +3,7 @@
 import { getAllLines, linesMatchAngle } from '../../modules/solve/solveCommon.js';
 import Triangle from '../../models/solve/triangle.js';
 import Rectangle from '../../models/solve/rectangle.js';
+import AngleSum from '../../models/solve/angleSum.js';
 
 function PolygonFinder(question) {
     this.dots = question.dots;
@@ -89,7 +90,7 @@ PolygonFinder.prototype = {
 
         let dots = [dot1, dot2, dot3];
         let lines = [line1, line2, line3];
-        let angles = [ang1, ang2, ang3];
+        let angles = [new AngleSum(ang1), new AngleSum(ang2), new AngleSum(ang3)];
         let tri = new Triangle(dots, lines, angles);
 
         let old = this.triangles.find(function (x) {
@@ -120,7 +121,12 @@ PolygonFinder.prototype = {
 
         let dots = [dot1, dot2, dot3, dot4];
         let lines = [line1, line2, line3, line4];
-        let angles = [ang1, ang2, ang3, ang4];
+        let angles = [
+            new AngleSum(ang1),
+            new AngleSum(ang2),
+            new AngleSum(ang3),
+            new AngleSum(ang4)
+        ];
         let rect = new Rectangle(dots, lines, angles);
 
         let old = this.rectangles.find(function (x) {
