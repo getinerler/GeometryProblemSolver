@@ -31,14 +31,14 @@ export function getQuestionText(elements, parallels, question) {
                 continue;
             }
             found = true;
-            anglesText += `angle =${angle.getValueString()}</br>`;
+            anglesText += `${angle.getValueName()} = ${angle.getValueString()}</br>`;
         }
         if (found) {
             text += anglesText;
         }
     }
     if (parallels.length > 0) {
-        text += `Parallels: ${parallels.join(', ')} '</br>`;
+        text += `Parallels: ${parallels.join(', ')}</br>`;
     }
     if (question) {
         text += `<b> ${question.getValueName()} = ?</b>`;
