@@ -255,37 +255,37 @@ Equation.prototype = {
     },
 
     toString() {
-        let str = "</br>";
+        let str = '</br>';
 
-        str += "<b>" + this._count + "</b>. ";
+        str += '<b>' + this._count + '</b>. ';
 
         if (this._left.length === 0) {
-            str += "0";
+            str += '0';
         }
         if (this._left.length === 1 && this._left[0].is0()) {
-            str += "0";
+            str += '0';
         }
         for (let i = 0; i < this._left.length; i++) {
             str += this._left[i].toString();
             if (i != this._left.length - 1 && this._left[i + 1].isPositive()) {
-                str += " + ";
+                str += ' + ';
             } else {
-                str += " ";
+                str += ' ';
             }
         }
-        str += " = ";
+        str += ' = ';
         if (this._right.length === 0) {
-            str += "0";
+            str += '0';
         }
         if (this._right.length === 1 && this._right[0].is0()) {
-            str += "0";
+            str += '0';
         }
         for (let i = 0; i < this._right.length; i++) {
             str += this._right[i].toString();
             if (i != this._right.length - 1 && this._right[i + 1].isPositive()) {
-                str += " + ";
+                str += ' + ';
             } else {
-                str += " ";
+                str += ' ';
             }
         }
 
