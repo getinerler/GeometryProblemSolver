@@ -534,8 +534,8 @@ Drawing.prototype = {
         let input = document.getElementById('valueInput');
         input.style.display = 'block';
         input.style.position = 'absolute';
-        input.style.left = `${x}px`;
-        input.style.top = `${y}px`;
+        input.style.left = `${this._canvas.left + x}px`;
+        input.style.top = `${this._canvas.top + y}px`;
         input.value = this._elements.hoveredObject.obj.value || '';
     },
 
