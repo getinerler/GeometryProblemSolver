@@ -19,6 +19,8 @@ function Angle(dot, line1, line2) {
     this._hovered = false;
     this._selected = false;
     this._canvasAngle = 0;
+    this._line1Angle = 0;
+    this._line2Angle = 0;
 }
 
 Angle.prototype = {
@@ -86,6 +88,24 @@ Angle.prototype = {
 
     setCanvasAngle(ang) {
         this._canvasAngle = ang;
+        return this;
+    },
+
+    getLine1Angle() {
+        return this._line1Angle;
+    },
+
+    setLine1Angle(ang) {
+        this._line1Angle = ang;
+        return this;
+    },
+
+    getLine2Angle() {
+        return this._line2Angle;
+    },
+
+    setLine2Angle(ang) {
+        this._line2Angle = ang;
         return this;
     },
 

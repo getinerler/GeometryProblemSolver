@@ -5,6 +5,7 @@ import Line from '../models/graphic/line.js';
 import Angle from '../models/graphic/angle.js';
 import Parallel from '../models/graphic/parallel.js';
 import Value from '../models/equations/value.js';
+import { getQuestionText } from '../modules/graphic/texts.js';
 
 const TestData = {
 
@@ -243,7 +244,7 @@ const TestData = {
             }
         }
     },
-    
+
     getTriangleAngleQuestion: {
         'name': 'Triangle angle',
         'explanation': 'Question: Find triangle missing angle (70 + 80 + x = 180).',
@@ -409,6 +410,56 @@ const TestData = {
                 angles,
                 parallels: [],
                 question: angles[2]
+            }
+        }
+    },
+
+    getTriangleAngleQuestion4: {
+        'name': 'Triangle angle 4',
+        'explanation': 'Question: Find segment triangle\'s missing angle (70 + 80 + x = 180).',
+        'result': [new Value(50)],
+        getQuestion() {
+            let dots = [
+                new Dot(253, 48, 'A'),
+                new Dot(69, 238, 'B'),
+                new Dot(363, 259, 'C'),
+                new Dot(167.01466694753722, 136.78920260852135, 'F'),
+            ];
+
+            let seg1 = new Line(dots[0], dots[3]); // AF
+            let seg2 = new Line(dots[3], dots[1]); // FB
+
+            let lines = [
+                new Line(dots[0], dots[1]) // AB
+                    .addSegment(seg1)
+                    .addSegment(seg2),
+                new Line(dots[2], dots[0]), // CA
+                new Line(dots[2], dots[1]), // CB
+                new Line(dots[2], dots[3]) // CF
+            ];
+
+            seg1.setBase(lines[0]);
+            seg2.setBase(lines[0]);
+            dots[3].setBaseLine(lines[1]).setLineRatio(0.46731159267642813);
+
+            let angles = [
+                new Angle(dots[0], seg1, lines[1]),
+                new Angle(dots[0], lines[1], seg1).setValue(50),
+                new Angle(dots[1], seg2, lines[2]).setValue(60),
+                new Angle(dots[1], lines[2], seg2),
+                new Angle(dots[3], lines[3], seg2),
+                new Angle(dots[3], seg1, lines[3]),
+                new Angle(dots[2], lines[1], lines[2]),
+                new Angle(dots[2], lines[2], lines[3]).setValue("?"),
+                new Angle(dots[2], lines[3], lines[1]).setValue(20),
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                question: angles[7]
             }
         }
     },

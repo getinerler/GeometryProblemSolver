@@ -151,7 +151,7 @@ Drawing.prototype = {
         dot.setY(newDotXY.getY());
 
         let dotLines = this._elements.lines.filter((x) => x.isLineEnd(dot));
-        for (line of dotLines) {
+        for (let line of dotLines) {
             dot.addIntersectionLine(line);
         }
 
@@ -466,6 +466,9 @@ Drawing.prototype = {
                 let line1 = lines[i];
                 let line2 = lines[(i + 1) % lines.length];
                 let newAngle = new Angle(dot).setLine1(line1).setLine2(line2);
+                if (line1.getBaseOrSelf() === line2.getBaseOrSelf()) {
+                    newAngle.setValue(180);
+                }
                 this._elements.angles.push(newAngle);
             }
         } else {

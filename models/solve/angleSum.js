@@ -1,7 +1,14 @@
 'use strict';
 
 function AngleSum(angle) {
-    this._angles = angle ? [angle] : [];
+    this._angles = [];
+    if (Array.isArray(angle)) {
+        for (let ang of angle) {
+            this.addAngle(ang);
+        }
+    } else if (angle) {
+        this._angles = [angle];
+    }
 }
 
 AngleSum.prototype = {
@@ -11,11 +18,11 @@ AngleSum.prototype = {
     },
 
     addAngle(ang) {
-        this._angles
-            .push(ang)
+        this._angles.push(ang);
+        this._angles = this._angles
             .sort(function (ang1, ang2) {
                 let line1 = ang1.getLine1();
-                let line2 = ang2.getLine1();
+                let line2 = ang2.getLine2();
                 if (line1.getAngle() > line2.getAngle()) {
                     return 1;
                 } else if (line1.getAngle() < line2.getAngle()) {

@@ -52,6 +52,7 @@ Solve.prototype = {
         }
 
         this.calculateAngleDegrees();
+
         let polygonFinder = new PolygonFinder(this.question);
         let polygons = polygonFinder.findPolygons();
 
@@ -522,6 +523,8 @@ Solve.prototype = {
     calculateAngleDegrees() {
         for (let ang of this.question.angles) {
             ang.setCanvasAngle(getAngleDegree(ang));
+            ang.setLine1Angle(getLineAngle(ang.getLine1(), ang.getDot()));
+            ang.setLine2Angle(getLineAngle(ang.getLine2(), ang.getDot()));
         }
     }
 }

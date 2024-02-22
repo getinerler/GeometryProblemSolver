@@ -139,13 +139,13 @@ Canvas.prototype = {
                 this.ctx.beginPath();
                 this.ctx.arc(middleX, middleY, this.dotSize / 2, 0, 2 * Math.PI);
                 this.ctx.fill();
-            } else {
+            } else if (ang.getValue() !== 180) {
                 let textWidth = this.ctx.measureText(ang.getValue()).width;
                 let point = getAngleTextPoint(ang, textWidth);
                 this.ctx.fillText(ang.getValue(), point.getX(), point.getY());
             }
         }
-        
+
         if (ang.isHovered()) {
             this.ctx.fillStyle = this.hoveredColor;
             let ang1 = getLineAngleRadian(ang.getLine1(), ang.getDot());

@@ -165,6 +165,23 @@ Line.prototype = {
             this._dot2 === line.getDot2();
     },
 
+    getConnectionDot(line) {
+        if (this._dot1 === line.getDot1()) {
+            return this._dot1;
+        }
+        if (this._dot1 === line.getDot2()) {
+            return this._dot1;
+        }
+        if (this._dot2 === line.getDot1()) {
+            return this._dot2;
+        }
+        if (this._dot2 === line.getDot2()) {
+            return this._dot2;
+        }
+
+        return null;
+    },
+
     equals(line) {
         if (this._value === '?') {
             return false;
