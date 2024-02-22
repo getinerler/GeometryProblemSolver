@@ -96,7 +96,7 @@ Drawing.prototype = {
         if (['angle', 'line'].indexOf(this._elements.hoveredObject.type) === -1) {
             return;
         }
-        this.activateInput(x, y);
+        this.activateInput(x, y, this._elements.hoveredObject.obj.getValue());
         this._valueObject = {
             'type': this._elements.hoveredObject.type,
             'obj': this._elements.dragDot
@@ -530,13 +530,13 @@ Drawing.prototype = {
         this.updateQuestionText();
     },
 
-    activateInput(x, y) {
+    activateInput(x, y, value) {
         let input = document.getElementById('valueInput');
         input.style.display = 'block';
         input.style.position = 'absolute';
         input.style.left = `${this._canvas.left + x}px`;
         input.style.top = `${this._canvas.top + y}px`;
-        input.value = this._elements.hoveredObject.obj.value || '';
+        input.value = value || '';
     },
 
     updateQuestionText() {
