@@ -79,7 +79,7 @@ function codeText(elements, parallels, question) {
         }
     }
 
-    segText = '';
+    let segText = '';
 
     text += 'let lines = [</br>';
     for (let line of elements.lines) {
@@ -121,9 +121,9 @@ function codeText(elements, parallels, question) {
         text += `new Angle(dots[${d.id - 1}],`;
         if (!l1) {
             l1 = lineSegmentMap.find((x) => x.name === angle.getLine1().getName());
-            text += `seg${l1}, `;
+            text += `seg${l1.id}, `;
         } else {
-            text += `lines[${li}], `;
+            text += `lines[${l1.id - 1}], `;
         }
         if (!l2) {
             l2 = lineSegmentMap.find((x) => x.name === angle.getLine2().getName());
