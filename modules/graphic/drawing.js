@@ -105,11 +105,14 @@ Drawing.prototype = {
 
     createNewLine(x, y) {
         let dot1 = this._elements.dragStartPoint.createDot();
-        this._elements.addDot(dot1);
         let dot2;
         let line;
         if (!this._elements.hoveredObject) {
             dot2 = new Dot(x, y);
+            if (getDistance(dot1, dot2) < 20) {
+                return;
+            }
+            this._elements.addDot(dot1);
             this._elements.addDot(dot2);
             line = new Line(dot1, dot2);
             this._elements.addLine(line);
@@ -117,12 +120,20 @@ Drawing.prototype = {
             let hovered = this._elements.hoveredObject;
             if (hovered.type === 'dot') {
                 dot2 = hovered.obj;
+                if (getDistance(dot1, dot2) < 20) {
+                    return;
+                }
+                this._elements.addDot(dot1);
                 line = new Line(dot1, dot2);
                 this._elements.addLine(line);
             } else if (hovered.type === 'line') {
                 dot2 = new Dot(x, y);
+                if (getDistance(dot1, dot2) < 20) {
+                    return;
+                }
                 line = new Line(dot1, dot2);
                 this._elements.addLine(line);
+                this._elements.addDot(dot1);
                 this._elements.addDot(dot2);
                 this.handleDotOnLine(hovered.obj, dot2);
             }
