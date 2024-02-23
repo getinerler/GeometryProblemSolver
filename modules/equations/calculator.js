@@ -319,13 +319,22 @@ Calculator.prototype = {
         if (newEqLeft.length === 0) {
             return;
         }
+
+        let names = parsed.knownLeftVariables
+            .reduce((acc, x) => acc.concat(x.getVariables()), [])
+            .map((x) => x.getName());
+        let founds = this.founds.filter((x) => names.indexOf(x.name) > -1);
+        let foundEquations = founds.map((x) => x.equation);
+
         let newEq = new Equation();
-        newEq.setCreation('Known values simplified');
-        newEq.setAncestors([eq]);
-        newEq.setAncestorIds([parsed.count]);
+        newEq.setCreation('Known values simplified.');
+        newEq.setAncestors(foundEquations.concat([eq]));
+        newEq.setAncestorIds(foundEquations.map((x) => x.getCount()).concat([parsed.count]));
+
         for (let el of newEqLeft) {
             newEq.addLeftTerm(el);
         }
+
         newEq.addRightTerm((new Term(knownValue.getValues())));
         this.equations.push(newEq);
         this.changed = true;
@@ -339,7 +348,8 @@ Calculator.prototype = {
         unknown.setValue(newValue.getValues());
         this.founds.push({
             'name': unknown.getName(),
-            'value': newValue.getValues()
+            'value': newValue.getValues(),
+            'equation': eq
         });
         for (let angName of this.angleNames) {
             if (angName.indexOf(unknown.getName()) > -1) {

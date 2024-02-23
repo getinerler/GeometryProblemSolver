@@ -84,9 +84,10 @@ Solve.prototype = {
         if (solved.solved) {
             let treeCreator = new EquationTreeCreator(this.equations);
             let tree = treeCreator.createTree();
-            console.log(JSON.stringify(tree));
+         
             return {
                 'solved': true,
+                'tree': tree,
                 'equations': solved.equations,
                 'unknown': solved.name,
                 'value': solved.value

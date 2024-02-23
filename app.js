@@ -44,7 +44,7 @@ App.prototype = {
                 let question = self._drawing.getAll();
                 let solve = new Solve(question).solve();
                 if (solve.solved) {
-                    showAsAnswer(getEquationsText(solve.equations));
+                    showAsAnswer(getEquationsText(solve));
                 } else {
                     showAsAnswer(solve.message);
                     showAsAnswer(solve.equations.map(function (x) {

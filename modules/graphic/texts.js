@@ -150,7 +150,25 @@ function codeText(elements, parallels, question) {
     return text.replace('?', '"?"');
 }
 
-export function getEquationsText(equations) {
+export function getEquationsText(solve) {
+    if (solve.solved) {
+        let tree = solve.tree;
+        let ids = tree.getKeyList();
+        let eqs = solve.equations.filter((x) => ids.indexOf(x.getCount()) > -1);
+        return eqs.map(function (x) {
+            let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
+            let ancestorIds = x.getAncestorIds();
+            if (ancestorIds.length > 0) {
+                for (let ancestorId of ancestorIds) {
+                    let ancestorEq = eqs.find((y) => y.getCount() === ancestorId);
+                    str +=
+                        `<span class="equationExplanation">${ancestorEq.toString()}</span>`;
+                }
+            }
+            str += x.toString();
+            return str;
+        }).join('</br>');
+    }
     return equations.map(function (x) {
         let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
         let ancestorIds = x.getAncestorIds();

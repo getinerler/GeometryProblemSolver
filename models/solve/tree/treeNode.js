@@ -33,6 +33,10 @@ TreeNode.prototype = {
         return !this.isLeaf;
     },
 
+    getParent() {
+        return this._parent;
+    },
+
     setParent(parent) {
         this._parent = parent;
     }

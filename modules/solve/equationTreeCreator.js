@@ -18,7 +18,7 @@ EquationTreeCreator.prototype = {
             if (eq.isAnswer()) {
                 nodes.push(new TreeNode(eq.getCount(), eq));
             } else {
-                let node = new TreeNode(eq.getCount());
+                let node = new TreeNode(eq.getCount(), eq);
                 let parentNode = nodes.find((x) => x.getKey() === eq.getCount());
                 if (parentNode) {
                     node.setParent(parentNode);
@@ -28,9 +28,9 @@ EquationTreeCreator.prototype = {
             }
         }
 
-        let tree = new Tree(nodes.find((x) => x.isRoot()));
-        for (let node of nodes.filter((x) => !x.isRoot())) {
-            tree.insert(node);
+        let tree = new Tree();
+        for (let node of nodes) {
+            tree.insertNode(node);
         }
         return tree;
     },
