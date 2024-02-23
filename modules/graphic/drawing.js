@@ -65,8 +65,8 @@ Drawing.prototype = {
             this._elements.dragDot.update(x, y);
             this.updateDotsOnLine();
         }
-        this.updateIntersectionDots();
-        if (this._elements.dragDot) {
+        if (this._elements.dragStartPoint) {
+            this.updateIntersectionDots();
             this.updateParallelsTemp();
         }
         this._canvas.update();
@@ -115,6 +115,7 @@ Drawing.prototype = {
             this._elements.addDot(dot1);
             this._elements.addDot(dot2);
             line = new Line(dot1, dot2);
+            this.saveTempParallels(line);
             this._elements.addLine(line);
         } else {
             let hovered = this._elements.hoveredObject;
@@ -125,6 +126,7 @@ Drawing.prototype = {
                 }
                 this._elements.addDot(dot1);
                 line = new Line(dot1, dot2);
+                this.saveTempParallels(line);
                 this._elements.addLine(line);
             } else if (hovered.type === 'line') {
                 dot2 = new Dot(x, y);
@@ -132,6 +134,7 @@ Drawing.prototype = {
                     return;
                 }
                 line = new Line(dot1, dot2);
+                this.saveTempParallels(line);
                 this._elements.addLine(line);
                 this._elements.addDot(dot1);
                 this._elements.addDot(dot2);
@@ -384,7 +387,14 @@ Drawing.prototype = {
         }
     },
 
-    saveTempParallels() {
+    saveTempParallels(newLine) {
+        if (newLine) {
+            if(this._elements.parallelsTemp.length === 0) {
+                this._elements.parallelsTemp.push([newLine]);
+            } else {
+                this._elements.parallelsTemp[0].push(newLine);
+            }
+        }
         for (let parallelTemp of this._elements.parallelsTemp) {
             let found = false;
             for (let parallel of this._parallels) {
@@ -415,6 +425,32 @@ Drawing.prototype = {
 
     updateParallelsTemp() {
         this._elements.parallelsTemp = [];
+
+        //New line is being created
+        if (!this._elements.dragDot) {
+            let dot1 = this._elements.dragStartPoint.copy();
+            let dot2 = this._elements.currentDot.copy();
+            let imaginaryLine = new Line(dot1, dot2);
+
+            for (let line of this._elements.lines) {
+                if (linesParallel(line, imaginaryLine)) {
+                    let found;
+                    for (let parallel of this._elements.parallelsTemp) {
+                        found = parallel.find((x) => x === line);
+                        if (found) {
+                            if (parallel.indexOf(line) === -1) {
+                                parallel.push(line);
+                            }
+                        }
+                    }
+                    if (!found) {
+                        this._elements.parallelsTemp.push([line]);
+                    }
+                }
+            }
+            return;
+        }
+
         for (let i = 0; i < this._elements.lines.length; i++) {
             for (let j = i + 1; j < this._elements.lines.length; j++) {
                 let line1 = this._elements.lines[i];
