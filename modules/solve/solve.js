@@ -11,6 +11,7 @@ import PolygonFinder from '../../modules/solve/polygonFinder.js';
 import SimilarityFinder from '../../modules/solve/similarityFinder.js';
 import Calculator from '../../modules/equations/calculator.js';
 import { getLineAngle, getAngleDegree } from '../graphic/geoHelper.js';
+import EquationTreeCreator from './equationTreeCreator.js';
 
 function Solve(question) {
     this.question = question;
@@ -81,6 +82,9 @@ Solve.prototype = {
 
         let solved = calc.solve();
         if (solved.solved) {
+            let treeCreator = new EquationTreeCreator(this.equations);
+            let tree = treeCreator.createTree();
+            console.log(JSON.stringify(tree));
             return {
                 'solved': true,
                 'equations': solved.equations,

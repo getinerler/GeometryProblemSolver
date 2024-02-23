@@ -1,6 +1,6 @@
 'use strict';
 
-import TreeNode from './treeNode';
+import TreeNode from './treeNode.js';
 
 function Tree(key, value) {
     this._root = new TreeNode(key, value);

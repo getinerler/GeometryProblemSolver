@@ -12,21 +12,29 @@ TreeNode.prototype = {
     getKey() {
         return this._key;
     },
-    
+
     getValue() {
         return this._value;
     },
 
     isRoot() {
-        return this._parent.length === null;
+        return this._parent === null;
     },
 
     isLeaf() {
         return this.children.length === 0;
     },
 
+    addChild(node) {
+        this._children.push(node);
+    },
+
     hasChildren() {
         return !this.isLeaf;
+    },
+
+    setParent(parent) {
+        this._parent = parent;
     }
 }
 
