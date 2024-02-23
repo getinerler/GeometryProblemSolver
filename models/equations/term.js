@@ -440,45 +440,45 @@ Term.prototype = {
         return unknown === null || unknown === undefined;
     },
 
-    orderTermElements(a, b) {
-        if (a instanceof VariableValue && !b instanceof VariableValue) {
+    orderTermElements(el1, el2) {
+        if (el1 instanceof VariableValue && !el2 instanceof VariableValue) {
             return 1;
         }
-        if (!a instanceof VariableValue && b instanceof VariableValue) {
+        if (!el1 instanceof VariableValue && el2 instanceof VariableValue) {
             return -1;
         }
-        if (a instanceof VariableValue && b instanceof VariableValue) {
-            return a.getName() > b.getName();
+        if (el1 instanceof VariableValue && el2 instanceof VariableValue) {
+            return el1.getName() > el2.getName();
         }
 
-        if (a instanceof TermSum && !b instanceof TermSum) {
+        if (el1 instanceof TermSum && !el2 instanceof TermSum) {
             return 1;
         }
-        if (!a instanceof TermSum && b instanceof TermSum) {
+        if (!el1 instanceof TermSum && el2 instanceof TermSum) {
             return -1;
         }
-        if (a instanceof TermSum && b instanceof TermSum) {
-            return a.elements.length > b.elements.length;
+        if (el1 instanceof TermSum && el2 instanceof TermSum) {
+            return el1.elements.length > el2.elements.length;
         }
 
-        if (a.getExponent() > b.getExponent()) {
+        if (el1.getExponent() > el2.getExponent()) {
             return -1;
         }
-        if (a.getExponent() < b.getExponent()) {
+        if (el1.getExponent() < el2.getExponent()) {
             return 1;
         }
 
-        if (a.getRoot() > b.getRoot()) {
+        if (el1.getRoot() > el2.getRoot()) {
             return 1;
         }
-        if (a.getRoot() < b.getRoot()) {
+        if (el1.getRoot() < el2.getRoot()) {
             return -1;
         }
 
-        if (a.getNumber() > b.getNumber()) {
+        if (el1.getNumber() > el2.getNumber()) {
             return 1;
         }
-        if (a.getNumber() < b.getNumber()) {
+        if (el1.getNumber() < el2.getNumber()) {
             return -1;
         }
     },

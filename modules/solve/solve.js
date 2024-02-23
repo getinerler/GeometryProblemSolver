@@ -469,7 +469,7 @@ Solve.prototype = {
     getTermFromValue(val, pow) {
         pow = pow || 1;
         if (val.isKnown()) {
-            return new Term(new Value(Math.pow(val.getValue(), pow)));
+            return new Term(new Value(val.getValue(), pow));
         }
         let var1 = new Variable(val.getValueName());
         let term = new Term(null, new VariableValue(var1, pow));

@@ -3,6 +3,7 @@
 let trialLimit = 100;
 
 import Term from '../../models/equations/term.js';
+import Value from '../../models/equations/value.js';
 import Equation from '../../models/equations/equation.js';
 
 function Calculator(equations, searched, angleNames, variables) {
@@ -93,7 +94,9 @@ Calculator.prototype = {
         if (parsed.unknownVariableCount == 0) {
             return;
         }
-        if (parsed.rightVariablesCount > 0) {
+        if (parsed.leftValuesWithExpCount > 0 || parsed.rightValuesWithExpCount) {
+            this.simplifyValueExp(eq);
+        } else if (parsed.rightVariablesCount > 0) {
             this.passRightVariablesToLeft(eq);
         } else if (parsed.leftValueCount > 0) {
             this.simplifyLeft(eq, parsed);
@@ -169,6 +172,21 @@ Calculator.prototype = {
         newEq.setAncestorIds([eq1.getCount(), eq2.getCount()]);
         this.equations.push(newEq);
 
+        this.changed = true;
+    },
+
+    simplifyValueExp(eq) {
+        let newEq = new Equation();
+        newEq.setCreation('Value exponents simplified.');
+        newEq.setAncestors([eq]);
+        newEq.setAncestorIds([eq.getCount()]);
+        for (let term of eq.getLeft()) {
+            newEq.addLeftTerm(this.simplifyValueExponents(term));
+        }
+        for (let term of eq.getRight()) {
+            newEq.addRightTerm(this.simplifyValueExponents(term));
+        }
+        this.equations.push(newEq);
         this.changed = true;
     },
 
@@ -338,6 +356,21 @@ Calculator.prototype = {
         this.changed = true;
     },
 
+    simplifyValueExponents(term) {
+        let newTerm = new Term();
+        for (let var1 of term.getVariables()) {
+            newTerm.addVariable(var1.copy());
+        }
+        for (let val of term.getValues()) {
+            if (val.getRoot() === 1 && val.getExponent() > 1) {
+                newTerm.addValue(new Value(Math.pow(val.getNumber(), val.getExponent())));
+            } else {
+                newTerm.AddValue(val.copy());
+            }
+        }
+        return newTerm;
+    },
+
     parseEquation(eq) {
         let knownLeftVars = eq.getLeft().filter((x) => x.isVariable() && x.isKnown());
         let knownRightVars = eq.getRight().filter((x) => x.isVariable() && x.isKnown());
@@ -347,11 +380,30 @@ Calculator.prototype = {
         let leftValues = eq.getLeft().filter((x) => x.isValue());
         let rightValues = eq.getRight().filter((x) => x.isValue());
 
+        let leftValuesWithExp = leftValues.filter(function (x) {
+            for (let val of x.getValues()) {
+                if (val.getRoot() === 1 && val.getExponent() > 1) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        let rightValuesWithExp = rightValues.filter(function (x) {
+            for (let val of x.getValues()) {
+                if (val.getRoot() === 1 && val.getExponent() > 1) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
         let variableCount = knownLeftVars.length + unknownLeftVars.length;
         let unknownVariableCount = unknownLeftVars.length + unknownRightVars.length;
         let knownVariableCount = knownLeftVars.length;
         let leftValueCount = leftValues.length;
         let rightVariablesCount = unknownRightVars.length + knownRightVars.length;
+        let leftValuesWithExpCount = leftValuesWithExp.length;
+        let rightValuesWithExpCount = rightValuesWithExp.length;
 
         return {
             count: eq.getCount(),
@@ -360,8 +412,10 @@ Calculator.prototype = {
             knownVariableCount,
             leftValues,
             leftValueCount,
+            leftValuesWithExpCount,
             rightValues,
             rightVariablesCount,
+            rightValuesWithExpCount,
             variableCount,
             unknownLeftVariables: unknownLeftVars,
             unknownRightVariables: unknownRightVars,
