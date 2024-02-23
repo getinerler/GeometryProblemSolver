@@ -25,6 +25,10 @@ function Angle(dot, line1, line2) {
 
 Angle.prototype = {
 
+    getType() {
+        return 'Angle';
+    },
+
     getName() {
         return 'm(' +
             this._line1.getOtherDot(this._dot).getName() +

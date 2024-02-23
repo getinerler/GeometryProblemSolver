@@ -18,6 +18,7 @@ function Drawing() {
     this._valueObject = null;
     this._question = null;
     this._parallels = [];
+    this._equivalents = [];
     this._elements = new CanvasElements();
 }
 

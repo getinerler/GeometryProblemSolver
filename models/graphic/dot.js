@@ -14,6 +14,10 @@ function Dot(x, y, name) {
 }
 
 Dot.prototype = {
+    
+    getType() {
+        return 'Dot';
+    },
 
     getX() {
         return this._x;

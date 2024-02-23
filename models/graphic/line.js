@@ -13,6 +13,10 @@ function Line(dot1, dot2, value) {
 
 Line.prototype = {
 
+    getType() {
+        return 'Line';
+    },
+
     getDot1() {
         return this._dot1;
     },
