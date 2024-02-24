@@ -2,7 +2,7 @@
 
 let showCode = false;
 
-export function getQuestionText(elements, parallels, question) {
+export function getQuestionText(elements, equivalents, parallels, question) {
     let text = '';
     if (showCode) {
         text += codeText(elements, parallels, question);
@@ -37,8 +37,11 @@ export function getQuestionText(elements, parallels, question) {
             text += anglesText;
         }
     }
+    if (equivalents.length > 0) {
+        text += `${equivalents.join(' </br> ')}</br>`;
+    }
     if (parallels.length > 0) {
-        text += `Parallels: ${parallels.join(', ')}</br>`;
+        text += `${parallels.join(', ')}</br>`;
     }
     if (question) {
         text += `<b> ${question.getValueName()} = ?</b>`;

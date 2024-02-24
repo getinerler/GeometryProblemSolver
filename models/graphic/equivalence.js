@@ -4,12 +4,21 @@ function Equivalence(elements) {
     this._elements = [];
     this._type = null;
 
-    for (element of elements) {
+    for (element of this._elements) {
         this.add(element);
     }
 }
 
 Equivalence.prototype = {
+
+    getType() {
+        return this._type;
+    },
+
+    setType(type) {
+        this._type = type;
+        return this;
+    },
 
     get(i) {
         return this._elements[i];
@@ -33,6 +42,10 @@ Equivalence.prototype = {
         return this;
     },
 
+    remove(element) {
+        this._elements = this._elements.filter((x) => x !== element);
+    },
+
     contains(element) {
         for (let el of this._elements) {
             if (element === el) {
@@ -52,7 +65,7 @@ Equivalence.prototype = {
     },
 
     toString() {
-        return this._elements.map((x) => x.getName()).join(' == ');
+        return this._elements.map((x) => x.getValueName()).join(' = ');
     }
 }
 

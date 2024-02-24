@@ -5,9 +5,9 @@ import Dot from '../../../models/graphic/dot.js';
 import Line from '../../../models/graphic/line.js';
 import Angle from '../../../models/graphic/angle.js';
 import Parallel from '../../../models/graphic/parallel.js';
-import { getDistance, dotsCloser, anglesCloser } from './../geoHelper.js';
-import { dotOnLine, dotOnLineSegment, lineIntersect } from './../geoHelper.js';
-import { linesParallel, getLineAngle, dotBetweenAngle } from './../geoHelper.js';
+import { getDistance, dotsCloser } from './../geoHelper.js';
+import { lineIntersect } from './../geoHelper.js';
+import { linesParallel, getLineAngle } from './../geoHelper.js';
 import { getDotOnLineWithRatio, getDotsLineRatio } from './../geoHelper.js';
 
 function LineState(drawing, canvasElements, canvas) {
@@ -19,10 +19,8 @@ function LineState(drawing, canvasElements, canvas) {
 
 LineState.prototype = {
 
-    mouseDownEvent(x, y) {
-        this._elements.currentDot.update(x, y);
+    mouseDownEvent(x, y) { 
         this._elements.dragStartPoint = new Point(x, y);
-        this.updateHovered();
         this._elements.dragDot = null;
         if (this._elements.hoveredObject) {
             this._elements.dragDot = this._elements.hoveredObject.obj;
@@ -33,8 +31,6 @@ LineState.prototype = {
     },
 
     mouseMoveEvent(x, y) {
-        this._elements.currentDot.update(x, y);
-        this.updateHovered();
         if (this._elements.dragStartPoint !== null && this._elements.dragDot) {
             this._elements.dragDot.update(x, y);
             this.updateDotsOnLine();
@@ -43,12 +39,9 @@ LineState.prototype = {
             this.updateIntersectionDots();
             this.updateParallelsTemp();
         }
-        this._canvas.update();
     },
 
     mouseUpEvent(x, y) {
-        this._elements.currentDot.update(x, y);
-
         this.saveTempParallels();
         if (!this._elements.dragDot) {
             this.createNewLine(x, y);
@@ -64,7 +57,6 @@ LineState.prototype = {
         this.removeUnnecessaryParallels();
         this._elements.dragDot = null;
         this._elements.dragStartPoint = null;
-        this._drawing.updateQuestionText();
     },
 
     prepareInput(x, y) {
@@ -227,57 +219,6 @@ LineState.prototype = {
             dot.setX(newDot.getX());
             dot.setY(newDot.getY());
         }
-    },
-
-    updateHovered() {
-        let hoveredObject;
-        let found = false;
-        for (let dot of this._elements.dots) {
-            dot.setHovered(false);
-            if (!found && dotsCloser(dot, this._elements.currentDot) &&
-                this._elements.dragDot !== dot) {
-                dot.setHovered(true);
-                hoveredObject = { 'type': 'dot', 'obj': dot };
-                found = true;
-            }
-        }
-        for (let angle of this._elements.angles) {
-            angle.setHovered(false);
-            if (anglesCloser(this._elements.currentDot, angle.getDot())) {
-                if (!found && dotBetweenAngle(angle, this._elements.currentDot)) {
-                    hoveredObject = { 'type': 'angle', 'obj': angle };
-                    angle.setHovered(true);
-                    found = true;
-                }
-            }
-        }
-        for (let line of this._elements.lines) {
-            for (let seg of line.getSegments()) {
-                seg.setHovered(false);
-                if (seg.getDot1() === this._elements.getDragDotObject() ||
-                    seg.getDot2() === this._elements.getDragDotObject()) {
-                    continue;
-                }
-                if (!found && dotOnLineSegment(seg, this._elements.currentDot)) {
-                    seg.setHovered(true);
-                    hoveredObject = { 'type': 'line', 'obj': seg };
-                    found = true;
-                }
-            }
-        }
-        for (let line of this._elements.lines) {
-            line.setHovered(false);
-            if (line.getDot1() === this._elements.getDragDotObject() ||
-                line.getDot2() === this._elements.getDragDotObject()) {
-                continue;
-            }
-            if (!found && dotOnLine(line, this._elements.currentDot)) {
-                line.setHovered(true);
-                hoveredObject = { 'type': 'line', 'obj': line };
-                found = true;
-            }
-        }
-        this._elements.hoveredObject = hoveredObject;
     },
 
     handleIntersectionDots(movingLine) {

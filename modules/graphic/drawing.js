@@ -2,8 +2,12 @@
 
 import Canvas from '../graphic/canvas.js';
 import CanvasElements from '../../models/graphic/canvasElements.js';
+import { dotOnLine, dotsCloser, anglesCloser, dotBetweenAngle } from './geoHelper.js';
+import { dotOnLineSegment } from './geoHelper.js';
 import { getQuestionText } from './texts.js';
 import LineState from './buttonStates/lineState.js';
+import EquivalenceState from './buttonStates/equivalenceState.js';
+import { resetNames } from './names.js';
 
 function Drawing() {
     this._canvas = null;
@@ -20,24 +24,85 @@ Drawing.prototype = {
     bind(canvas) {
         let self = this;
         self._canvas = new Canvas(canvas, this._elements);
-        this._buttonState = new LineState(this, self._elements, self._canvas);
+        self.setLineState();
 
         canvas.addEventListener('mousemove', function (event) {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
+            self._elements.currentDot.update(x, y);
+            self.updateHovered();
             self._buttonState.mouseMoveEvent(x, y);
+            self._canvas.update();
         });
         canvas.addEventListener('mousedown', function (event) {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
+            self._elements.currentDot.update(x, y);
+            self.updateHovered();
             self._buttonState.mouseDownEvent(x, y);
+            self._canvas.update();
         });
         canvas.addEventListener('mouseup', function (event) {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
+            self._elements.currentDot.update(x, y);
+            self.updateHovered();
             self._buttonState.mouseUpEvent(x, y);
+            self._canvas.update();
+            self.updateQuestionText();
         });
         return this;
+    },
+
+    updateHovered() {
+        let hoveredObject;
+        let found = false;
+        for (let dot of this._elements.dots) {
+            dot.setHovered(false);
+            if (!found && dotsCloser(dot, this._elements.currentDot) &&
+                this._elements.dragDot !== dot) {
+                dot.setHovered(true);
+                hoveredObject = { 'type': 'dot', 'obj': dot };
+                found = true;
+            }
+        }
+        for (let angle of this._elements.angles) {
+            angle.setHovered(false);
+            if (anglesCloser(this._elements.currentDot, angle.getDot())) {
+                if (!found && dotBetweenAngle(angle, this._elements.currentDot)) {
+                    hoveredObject = { 'type': 'angle', 'obj': angle };
+                    angle.setHovered(true);
+                    found = true;
+                }
+            }
+        }
+        for (let line of this._elements.lines) {
+            for (let seg of line.getSegments()) {
+                seg.setHovered(false);
+                if (seg.getDot1() === this._elements.getDragDotObject() ||
+                    seg.getDot2() === this._elements.getDragDotObject()) {
+                    continue;
+                }
+                if (!found && dotOnLineSegment(seg, this._elements.currentDot)) {
+                    seg.setHovered(true);
+                    hoveredObject = { 'type': 'line', 'obj': seg };
+                    found = true;
+                }
+            }
+        }
+        for (let line of this._elements.lines) {
+            line.setHovered(false);
+            if (line.getDot1() === this._elements.getDragDotObject() ||
+                line.getDot2() === this._elements.getDragDotObject()) {
+                continue;
+            }
+            if (!found && dotOnLine(line, this._elements.currentDot)) {
+                line.setHovered(true);
+                hoveredObject = { 'type': 'line', 'obj': line };
+                found = true;
+            }
+        }
+        this._elements.hoveredObject = hoveredObject;
     },
 
     updateDrawing() {
@@ -71,6 +136,12 @@ Drawing.prototype = {
     },
 
     reset() {
+        resetNames();
+        this._valueObject = null;
+        this._question = null;
+        this._parallels = [];
+        this._equivalents = [];
+        this.setLineState();
         this._elements.reset();
         this._canvas.update();
         document.getElementById('questionDiv').innerHTML = '';
@@ -103,8 +174,20 @@ Drawing.prototype = {
     },
 
     updateQuestionText() {
-        let text = getQuestionText(this._elements, this._parallels, this._question);
+        let text = getQuestionText(
+            this._elements,
+            this._parallels,
+            this._equivalents,
+            this._question);
         document.getElementById('questionDiv').innerHTML = text;
+    },
+
+    setLineState() {
+        this._buttonState = new LineState(this, this._elements, this._canvas);
+    },
+
+    setEquivalenceState() {
+        this._buttonState = new EquivalenceState(this._elements, this._equivalents);
     }
 }
 

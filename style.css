@@ -12,12 +12,20 @@
     height: 100%;
 }
 
-.testDataButton {
-    text-align: left;
-    margin-top: 2px;
-    font-size: 10px;
-    background-color: whitesmoke;
-    border: 0.5px solid black;
+.canvasButton {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    text-align: center;
+    border: 0.5px solid grey;
+    border-radius: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+}
+
+.canvasButton.selected {
+    background-color: aliceblue;
+    border: 1px solid black;
 }
 
 .textDiv {
@@ -108,6 +116,7 @@ thead {
     cursor: pointer;
     overflow: hidden;
     outline: none;
+    font-size: 10px;
 }
 
 span.frac {

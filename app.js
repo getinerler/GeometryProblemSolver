@@ -53,6 +53,23 @@ App.prototype = {
                 }
             });
 
+
+        document.getElementById("lineButton")
+            .addEventListener('click', function () {
+                self.unselectCanvasButtons();
+                document.getElementById("lineButton").classList.add("selected");
+                self._drawing.setLineState();
+
+            });
+
+        document.getElementById("equalButton")
+            .addEventListener('click', function () {
+                self.unselectCanvasButtons();
+                document.getElementById("equalButton").classList.add("selected");
+                self._drawing.setEquivalenceState();
+
+            });
+
         document.getElementById(self._resetButton)
             .addEventListener('click', function () {
                 question = self._drawing.reset();
@@ -60,6 +77,13 @@ App.prototype = {
 
         function showAsAnswer(it) {
             document.getElementById(self._answerDiv).innerHTML = it + '</br>';
+        }
+    },
+
+    unselectCanvasButtons() {
+        let buttons = document.getElementsByClassName("canvasButton");
+        for (let button of buttons) {
+            button.classList.remove("selected");
         }
     },
 
