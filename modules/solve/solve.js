@@ -12,6 +12,7 @@ import SimilarityFinder from '../../modules/solve/similarityFinder.js';
 import Calculator from '../../modules/equations/calculator.js';
 import { getLineAngle, getAngleDegree } from '../graphic/geoHelper.js';
 import EquationTreeCreator from './equationTreeCreator.js';
+import Equivalence from '../../models/graphic/equivalence.js';
 
 function Solve(question) {
     this.question = question;
@@ -67,6 +68,7 @@ Solve.prototype = {
         this.checkSupplementaryAngles();
         this.checkCorrespondingAngles();
         this.checkTriangles180();
+        this.checkTrianglesEquivalents();
         this.checkIsoscelesTriangles();
         this.checkPythagoreanTheorems();
         this.checkRectangles360();
@@ -232,6 +234,17 @@ Solve.prototype = {
         }
     },
 
+    checkTrianglesEquivalents() {
+        let len = this.triangles.length;
+        for (let i = 0; i < len; i++) {
+            for (let j = i + 1; j < len + i; j++) {
+                let tri1 = this.triangles[i];
+                let tri2 = this.triangles[j % len];
+                this.checkTrianglesEquivalent(tri1, tri2);
+            }
+        }
+    },
+
     checkIsoscelesTriangles() {
         for (let triangle of this.triangles) {
             this.checkIsoscelesTriangle(triangle);
@@ -322,6 +335,35 @@ Solve.prototype = {
             }
         }
         this.equations.push(eq);
+    },
+
+    checkTrianglesEquivalent(tri1, tri2) {
+        let angs1 = tri1.getAngles();
+        let angs2 = tri2.getAngles();
+        let rest = [];
+        for (let i = 0; i < angs1.length; i++) {
+            let ang1 = angs1[i];
+            let ang2 = angs2.find((x) => this.areEquivalent(x, ang1));
+            if (ang2) {
+                rest.push(ang1);
+                rest.push(ang2);
+            }
+        }
+        if (rest.length === 2) {
+            let found = false;
+            let ang1 = rest[0];
+            let ang2 = rest[1];
+            for (let equi of this.equivalents) {
+                if (equi.contains(ang1) || equi.contains(ang2)) {
+                    found = true;
+                    equi.add(ang1);
+                    equi.add(ang2);
+                }
+            }
+            if (!found) {
+                this.equivalents.push(new Equivalence(rest));
+            }
+        }
     },
 
     checkIsoscelesTriangle(tri) {

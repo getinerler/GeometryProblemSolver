@@ -4,8 +4,10 @@ function Equivalence(elements) {
     this._elements = [];
     this._type = null;
 
-    for (element of elements) {
-        this.add(element);
+    if (elements) {
+        for (let el of elements) {
+            this.add(el);
+        }
     }
 }
 
@@ -35,7 +37,7 @@ Equivalence.prototype = {
         } else {
             if (this._type !== element.getType()) {
                 throw 'Equivalence.add: Wrong type.';
-            } else {
+            } else if (this._elements.indexOf(element) === -1) {
                 this._elements.push(element);
             }
         }
