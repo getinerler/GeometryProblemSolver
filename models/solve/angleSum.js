@@ -13,6 +13,10 @@ function AngleSum(angle) {
 
 AngleSum.prototype = {
 
+    getType() {
+        return 'AngleSum';
+    },
+
     getAngles() {
         return this._angles;
     },
@@ -71,9 +75,10 @@ AngleSum.prototype = {
     equals(angSum) {
         let angs1 = this._angles;
         let angs2 = angSum.getAngles();
-
         let angs1Unknown = angs1.filter((x) => !x.isKnown());
         let angs2Unknown = angs2.filter((x) => !x.isKnown());
+        let angs1Known = angs1.filter((x) => x.isKnown());
+        let angs2Known = angs2.filter((x) => x.isKnown());
 
         if (angs1.length !== angs2.length) {
             if (angs1Unknown.length > 0) {
@@ -86,9 +91,6 @@ AngleSum.prototype = {
             let ang2Sum = angs2.reduce((acc, x) => acc + x.getValue(), 0);
             return ang1Sum === ang2Sum;
         }
-
-        let angs1Known = angs1.filter((x) => x.isKnown());
-        let angs2Known = angs2.filter((x) => x.isKnown());
 
         if (angs1Known.length !== angs2Known.length) {
             return false;

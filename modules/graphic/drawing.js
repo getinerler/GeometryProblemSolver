@@ -131,6 +131,7 @@ Drawing.prototype = {
             lines: this._elements.lines,
             angles: this._elements.angles,
             parallels: this._parallels,
+            equivalents: this._equivalents,
             question: this._question
         };
     },

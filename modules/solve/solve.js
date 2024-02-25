@@ -5,7 +5,7 @@ import Value from '../../models/equations/value.js';
 import Variable from '../../models/equations/variable.js';
 import VariableValue from '../../models/equations/variableValue.js';
 import Term from '../../models/equations/term.js';
-import { getAllLines, getNarrowAngle } from '../../modules/solve/solveCommon.js';
+import { getAllLines, getNarrowAngle, areEquivalent } from '../../modules/solve/solveCommon.js';
 import { linesMatchAngle } from '../../modules/solve/solveCommon.js';
 import PolygonFinder from '../../modules/solve/polygonFinder.js';
 import SimilarityFinder from '../../modules/solve/similarityFinder.js';
@@ -20,6 +20,7 @@ function Solve(question) {
     this.angles = question.angles;
     this.angleNames = this.getAngleAlternativeNames();
     this.parallels = question.parallels;
+    this.equivalents = question.equivalents;
     this.unknown = question.question.getValueName();
     this.triangles = [];
     this.rectangles = [];
@@ -70,7 +71,7 @@ Solve.prototype = {
         this.checkPythagoreanTheorems();
         this.checkRectangles360();
 
-        let similarityFinder = new SimilarityFinder(this.triangles);
+        let similarityFinder = new SimilarityFinder(this.triangles, this.equivalents);
         this.similarTriangles = similarityFinder.find();
         this.checkTriangleSimilarities();
 
@@ -84,7 +85,7 @@ Solve.prototype = {
         if (solved.solved) {
             let treeCreator = new EquationTreeCreator(this.equations);
             let tree = treeCreator.createTree();
-         
+
             return {
                 'solved': true,
                 'tree': tree,
@@ -329,10 +330,8 @@ Solve.prototype = {
             for (let j = i + 1; j < len + i; j++) {
                 let ang1 = tri.getAngles()[i];
                 let ang2 = tri.getAngles()[j % len];
-                if (ang1.getValue() === null) {
-                    continue;
-                }
-                if (ang1.getValue() !== ang2.getValue()) {
+
+                if (!this.areEquivalent(ang1, ang2)) {
                     continue;
                 }
 
@@ -359,10 +358,8 @@ Solve.prototype = {
             for (let j = i + 1; j < len2 + i; j++) {
                 let line1 = tri.getLines()[i];
                 let line2 = tri.getLines()[j % len2];
-                if (line1.getValue() === null) {
-                    continue;
-                }
-                if (line1.getValue() !== line2.getValue()) {
+
+                if (!this.areEquivalent(line1, line2)) {
                     continue;
                 }
 
@@ -529,6 +526,10 @@ Solve.prototype = {
         for (let ang of this.question.angles) {
             ang.setCanvasAngle(getAngleDegree(ang));
         }
+    },
+
+    areEquivalent(val1, val2) {
+        return areEquivalent(this.equivalents, val1, val2);
     }
 }
 

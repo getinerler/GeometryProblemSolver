@@ -1,9 +1,11 @@
 'use strict';
 
 import { getNarrowAngle, linesMatchAngle } from '../../modules/solve/solveCommon.js';
+import { areEquivalent } from '../../modules/solve/solveCommon.js';
 
-function SimilarityFinder(triangles) {
+function SimilarityFinder(triangles, equivalents) {
     this.triangles = triangles;
+    this.equivalents = equivalents;
     this.similarTriangles = [];
 }
 
@@ -38,7 +40,7 @@ SimilarityFinder.prototype = {
     findLALSimilarity(tri1, tri2) {
         for (let ang1 of tri1.getAngles()) {
             for (let ang2 of tri2.getAngles()) {
-                if (!this.valuesSameOrEqual(ang1, ang2)) {
+                if (!this.areEquivalent(ang1, ang2)) {
                     continue;
                 }
 
@@ -48,11 +50,11 @@ SimilarityFinder.prototype = {
                 let line2a = this.getTriangleLine(tri2, ang2.getLine1());
                 let line2b = this.getTriangleLine(tri2, ang2.getLine2());
 
-                if (this.valuesSameOrEqual(line1a, line2a) &&
-                    this.valuesSameOrEqual(line1b, line2b)) {
+                if (this.areEquivalent(line1a, line2a) &&
+                    this.areEquivalent(line1b, line2b)) {
 
-                } else if (this.valuesSameOrEqual(line1a, line2b) &&
-                    this.valuesSameOrEqual(line1b, line2a)) {
+                } else if (this.areEquivalent(line1a, line2b) &&
+                    this.areEquivalent(line1b, line2a)) {
                     let lineTemp = line2a;
                     line2a = line2b;
                     line2b = lineTemp;
@@ -114,14 +116,8 @@ SimilarityFinder.prototype = {
         return null;
     },
 
-    valuesSameOrEqual(val1, val2) {
-        if (val1 === val2) {
-            return true;
-        }
-        if (val1.getValue() !== null && val1.getValue() === val2.getValue()) {
-            return true;
-        }
-        return false;
+    areEquivalent(val1, val2) {
+        return areEquivalent(this.equivalents, val1, val2);
     }
 }
 

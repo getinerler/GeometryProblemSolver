@@ -40,6 +40,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: seg2
             };
         }
@@ -81,6 +82,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[2]
             }
         }
@@ -132,6 +134,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[3]
             }
         }
@@ -176,6 +179,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[2]
             }
         }
@@ -279,6 +283,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[4]
             }
         }
@@ -348,6 +353,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[1]
             }
         }
@@ -409,6 +415,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[2]
             }
         }
@@ -459,6 +466,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[7]
             }
         }
@@ -492,6 +500,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: lines[1]
             }
         }
@@ -525,6 +534,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[5]
             }
         }
@@ -558,6 +568,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: lines[2]
             }
         }
@@ -595,6 +606,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[7]
             }
         }
@@ -698,6 +710,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[12]
             }
         }
@@ -745,6 +758,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
+                equivalents: [],
                 question: angles[10]
             }
         }
