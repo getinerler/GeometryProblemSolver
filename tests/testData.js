@@ -455,6 +455,7 @@ const TestData = {
                 new Angle(dots[1], seg2, lines[2]).setValue(60),
                 new Angle(dots[1], lines[2], seg2),
                 new Angle(dots[3], lines[3], seg2),
+                new Angle(dots[3], seg2, seg1).setValue(180),
                 new Angle(dots[3], seg1, lines[3]),
                 new Angle(dots[2], lines[1], lines[2]),
                 new Angle(dots[2], lines[2], lines[3]).setValue("?"),
@@ -467,7 +468,7 @@ const TestData = {
                 angles,
                 parallels: [],
                 equivalents: [],
-                question: angles[7]
+                question: angles[8]
             }
         }
     },
