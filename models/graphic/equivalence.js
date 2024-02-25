@@ -4,7 +4,7 @@ function Equivalence(elements) {
     this._elements = [];
     this._type = null;
 
-    for (element of this._elements) {
+    for (element of elements) {
         this.add(element);
     }
 }
