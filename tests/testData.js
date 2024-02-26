@@ -361,7 +361,7 @@ const TestData = {
 
     getTriangleAngleQuestion3: {
         'name': 'Triangle angle 3',
-        'explanation': 'Question: Find segment triangle\'s missing angle (70 + 80 + x = 180).',
+        'explanation': 'Question: Find triangle\'s missing angle (50 + (180 - 70 - 40) + x = 180).',
         'result': [new Value(60)],
         getQuestion() {
             let dots = [
@@ -423,7 +423,7 @@ const TestData = {
 
     getTriangleAngleQuestion4: {
         'name': 'Triangle angle 4',
-        'explanation': 'Question: Find segment triangle\'s missing angle (70 + 80 + x = 180).',
+        'explanation': 'Question: Find triangle\'s missing angle (60 + 50 + (20 + x) = 180).',
         'result': [new Value(50)],
         getQuestion() {
             let dots = [
