@@ -43,14 +43,10 @@ App.prototype = {
             .addEventListener('click', function () {
                 let question = self._drawing.getAll();
                 let solve = new Solve(question).solve();
-                if (solve.solved) {
-                    showAsAnswer(getEquationsText(solve));
-                } else {
+                if (!solve.solved) {
                     showAsAnswer(solve.message);
-                    showAsAnswer(solve.equations.map(function (x) {
-                        return x.toString();
-                    }).join('</br>'));
                 }
+                showAsAnswer(getEquationsText(solve));
             });
 
 

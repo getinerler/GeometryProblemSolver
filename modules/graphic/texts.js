@@ -154,30 +154,42 @@ function codeText(elements, parallels, question) {
 }
 
 export function getEquationsText(solve) {
+    let eqs = solve.equations;
     if (solve.solved) {
         let tree = solve.tree;
         let ids = tree.getKeyList();
-        let eqs = solve.equations.filter((x) => ids.indexOf(x.getCount()) > -1);
-        return eqs.map(function (x) {
-            let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
-            let ancestorIds = x.getAncestorIds();
-            if (ancestorIds.length > 0) {
-                for (let ancestorId of ancestorIds) {
-                    let ancestorEq = eqs.find((y) => y.getCount() === ancestorId);
-                    str +=
-                        `<span class="equationExplanation">${ancestorEq.toString()}</span>`;
-                }
-            }
-            str += x.toString();
-            return str;
-        }).join('</br>');
+        eqs = solve.equations.filter((x) => ids.indexOf(x.getCount()) > -1);
     }
-    return equations.map(function (x) {
+
+    let res = '';
+
+    if (!solve.solved) {
+        if (solve.triangles.length > 0) {
+            res += '</br>';
+            res += '<b>Triangles</b> </br>';
+            res += solve.triangles
+                .map((x) => x.toString() + ' (' + x.getLines().join(', ') + ')')
+                .join('</br>');
+        }
+        if (solve.rectangles.length > 0) {
+            res += '</br>';
+            res += '<b>Rectangles</b> </br>';
+            res += solve.rectangles.map((x) => x.toString()).join('</br>');
+        }
+        if (solve.similars.length > 0) {
+            res += '</br>';
+            res += '<b>Similars</b> </br>';
+            res += solve.similars.map((x) => x.toString()).join('</br>');
+        }
+        res += '</br>';
+    }
+
+    res += eqs.map(function (x) {
         let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
         let ancestorIds = x.getAncestorIds();
         if (ancestorIds.length > 0) {
             for (let ancestorId of ancestorIds) {
-                let ancestorEq = equations.find((y) => y.getCount() === ancestorId);
+                let ancestorEq = eqs.find((y) => y.getCount() === ancestorId);
                 str +=
                     `<span class="equationExplanation">${ancestorEq.toString()}</span>`;
             }
@@ -185,4 +197,6 @@ export function getEquationsText(solve) {
         str += x.toString();
         return str;
     }).join('</br>');
+
+    return res;
 }

@@ -1,7 +1,6 @@
 'use strict';
 
-import { dotBetweenAngle, getLineAngle } from '../graphic/geoHelper.js';
-import { getAllLines, linesMatchAngle } from '../../modules/solve/solveCommon.js';
+import { getAllLines } from '../../modules/solve/solveCommon.js';
 import Triangle from '../../models/solve/triangle.js';
 import Rectangle from '../../models/solve/rectangle.js';
 import AngleSum from '../../models/solve/angleSum.js';
@@ -189,7 +188,10 @@ PolygonFinder.prototype = {
                 tempLine = ang.getLine2();
             }
             count++;
-        } while (tempLine !== line2 && tempLine.getBase() !== line2 && count < this.angles.length);
+        } while (
+            tempLine !== line2 &&
+            tempLine.getBase() !== line2 &&
+            count < this.angles.length);
 
         tempLine = line2;
         tempAng = null;
@@ -215,12 +217,13 @@ PolygonFinder.prototype = {
                 tempLine = ang.getLine2();
             }
             count++;
-        } while (tempLine !== line1 && tempLine.getBase() !== line1 && count < this.angles.length);
+        } while (
+            tempLine !== line1 &&
+            tempLine.getBase() !== line1 &&
+            count < this.angles.length);
 
         let canvasAngleSum1 = angles1.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
-        //let canvasAngleSum2 = angles2.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
         let angleSum = new AngleSum(canvasAngleSum1 > 180 ? angles2 : angles1);
-
         return angleSum;
     },
 

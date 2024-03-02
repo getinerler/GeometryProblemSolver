@@ -1,5 +1,6 @@
 'use strict';
 
+import Similarity from '../../models/solve/similarity.js';
 import { getNarrowAngle, linesMatchAngle } from '../../modules/solve/solveCommon.js';
 import { areEquivalent } from '../../modules/solve/solveCommon.js';
 
@@ -24,13 +25,57 @@ SimilarityFinder.prototype = {
     },
 
     findTriangleSimilarity(tri1, tri2) {
+        let older = this.similarTriangles.find((x) => x.has(tri1) && x.has(tri2));
+        if (older) {
+            return;
+        }
         this.findAAASimilarity(tri1, tri2);
         this.findLALSimilarity(tri1, tri2);
         this.findLLLSimilarity(tri1, tri2);
     },
 
     findAAASimilarity(tri1, tri2) {
+        let len = 3;
+        for (let i = 0; i < len; i++) {
+            for (let j = 0; j < len; j++) {
+                let ang1a = tri1.getAngle(i);
+                let ang1b = tri1.getAngle((i + 1) % len);
+                let ang2a = tri2.getAngle(j);
+                let ang2b = tri2.getAngle((j + 1) % len);
 
+                if (this.areEquivalent(ang1a, ang2a) && this.areEquivalent(ang1b, ang2b)) {
+
+                } else if (this.areEquivalent(ang1a, ang2b) && this.areEquivalent(ang1b, ang2a)) {
+                    let temp = ang2a;
+                    ang2a = ang2b;
+                    ang2b = temp;
+                } else {
+                    continue;
+                }
+
+                let ang1c = tri1.getAngles().find((x) => x !== ang1a && x !== ang1b);
+                let ang2c = tri2.getAngles().find((x) => x !== ang2a && x !== ang2b);
+
+                let line1a = this.getAnglesLine(tri1, ang1a, ang1b);
+                let line1b = this.getAnglesLine(tri1, ang1b, ang1c);
+                let line1c = this.getAnglesLine(tri1, ang1c, ang1a);
+
+                let line2a = this.getAnglesLine(tri2, ang2a, ang2b);
+                let line2b = this.getAnglesLine(tri2, ang2b, ang2c);
+                let line2c = this.getAnglesLine(tri2, ang2c, ang2a);
+
+                let similarity = new Similarity({
+                    triangle1: tri1,
+                    triangle2: tri2,
+                    lines1: [line1a, line1b, line1c],
+                    lines2: [line2a, line2b, line2c],
+                    angles1: [ang1a, ang1b, ang1c],
+                    angles2: [ang2a, ang2b, ang2c]
+                });
+
+                this.similarTriangles.push(similarity);
+            }
+        }
     },
 
     findLLLSimilarity(tri1, tri2) {
@@ -65,9 +110,9 @@ SimilarityFinder.prototype = {
                 let line1c = tri1.getOtherLine(line1a, line1b);
                 let line2c = tri2.getOtherLine(line2a, line2b);
 
-                this.similarTriangles.push({
-                    tri1: tri1,
-                    tri2: tri2,
+                let similar = new Similarity({
+                    triangle1: tri1,
+                    triangle2: tri2,
                     lines1: [line1a, line1b, line1c],
                     lines2: [line2a, line2b, line2c],
                     angles1: [
@@ -81,6 +126,7 @@ SimilarityFinder.prototype = {
                         this.getLineAngle(tri2, line2c, line2a)
                     ]
                 });
+                this.similarTriangles.push(similar);
             }
         }
     },
@@ -101,6 +147,21 @@ SimilarityFinder.prototype = {
             }
         }
         return null;
+    },
+
+    getAnglesLine(tri, ang1, ang2) {
+        if (tri.getAngle(0) === ang1 && tri.getAngle(1) === ang2 ||
+            tri.getAngle(0) === ang2 && tri.getAngle(1) === ang1) {
+            return tri.getLine(0);
+        }
+        if (tri.getAngle(1) === ang1 && tri.getAngle(2) === ang2 ||
+            tri.getAngle(1) === ang2 && tri.getAngle(2) === ang1) {
+            return tri.getLine(1);
+        }
+        if (tri.getAngle(2) === ang1 && tri.getAngle(0) === ang2 ||
+            tri.getAngle(2) === ang2 && tri.getAngle(0) === ang1) {
+            return tri.getLine(2);
+        }
     },
 
     getNarrowAngle(line1, line2) {

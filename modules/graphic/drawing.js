@@ -161,6 +161,7 @@ Drawing.prototype = {
         this._elements.angles = info.angles;
         this._parallels = info.parallels;
         this._question = info.question;
+        this._equivalents = info.equivalents;
         this._canvas.update();
         this.updateQuestionText();
     },

@@ -36,23 +36,23 @@ Line.prototype = {
     },
 
     getX1() {
-        return this._dot1.getX()
+        return this._dot1.getX();
     },
 
     getY1() {
-        return this._dot1.getY()
+        return this._dot1.getY();
     },
 
     getX2() {
-        return this._dot2.getX()
+        return this._dot2.getX();
     },
 
     getY2() {
-        return this._dot2.getY()
+        return this._dot2.getY();
     },
 
     getName() {
-        return this._dot1.getName() + this._dot2.getName();
+        return [this._dot1.getName() + this._dot2.getName()].sort().join('');
     },
 
     getValueName() {
@@ -182,7 +182,6 @@ Line.prototype = {
         if (this._dot2 === line.getDot2()) {
             return this._dot2;
         }
-
         return null;
     },
 

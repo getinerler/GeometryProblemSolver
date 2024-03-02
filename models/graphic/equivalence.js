@@ -26,7 +26,7 @@ Equivalence.prototype = {
         return this._elements[i];
     },
 
-    getLines() {
+    getElements() {
         return this._elements;
     },
 

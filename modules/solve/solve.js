@@ -92,6 +92,9 @@ Solve.prototype = {
                 'solved': true,
                 'tree': tree,
                 'equations': solved.equations,
+                'triangles': this.triangles,
+                'rectangles': this.rectangles,
+                'similars': this.similarTriangles,
                 'unknown': solved.name,
                 'value': solved.value
             };
@@ -100,6 +103,9 @@ Solve.prototype = {
         return {
             'solved': false,
             'equations': solved.equations,
+            'triangles': this.triangles,
+            'rectangles': this.rectangles,
+            'similars': this.similarTriangles,
             'message': solved.message
         }
     },
@@ -452,13 +458,15 @@ Solve.prototype = {
     checkTriangleSimilarities() {
         for (let sim of this.similarTriangles) {
             for (let i = 0; i < 3; i++) {
-                let angSum1 = sim.angles1[i];
-                let angSum2 = sim.angles2[i];
+
+                //Angles
+                let angSum1 = sim.getAngles1()[i];
+                let angSum2 = sim.getAngles2()[i];
                 if (angSum1.isKnown() && angSum2.isKnown()) {
                     continue;
                 }
                 let eq = new Equation();
-                eq.setCreation('Similar triangle angles.');
+                eq.setCreation('Similar triangle (' + sim.toString() + ') angles.');
                 for (let ang of angSum1.getAngles()) {
                     eq.addLeftTerm(this.getTermFromValue(ang));
                 }
@@ -466,6 +474,29 @@ Solve.prototype = {
                     eq.addRightTerm(this.getTermFromValue(ang));
                 }
                 this.equations.push(eq);
+
+                //Lines
+                let len = 3;
+                for (let i = 0; i < len; i++) {
+                    let line1a = sim.getLines1()[i];
+                    let line2a = sim.getLines2()[i];
+                    let line1b = sim.getLines1()[(i + 1) % len];
+                    let line2b = sim.getLines2()[(i + 1) % len];
+
+                    let eq = new Equation();
+                    eq.setCreation('Similar triangle (' + sim.toString() + ') lines.');
+
+                    let termLine1a = this.getTermFromValue(line1a);
+                    let termLine2a = this.getTermFromValue(line2a, -1);
+                    let termLine1b = this.getTermFromValue(line1b);
+                    let termLine2b = this.getTermFromValue(line2b, -1);
+
+                    
+                    eq.addLeftTerm(termLine1a.multiply(termLine2a));
+                    eq.addRightTerm(termLine1b.multiply(termLine2b));
+
+                    this.equations.push(eq);
+                }
             }
         }
     },

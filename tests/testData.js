@@ -5,7 +5,8 @@ import Line from '../models/graphic/line.js';
 import Angle from '../models/graphic/angle.js';
 import Parallel from '../models/graphic/parallel.js';
 import Value from '../models/equations/value.js';
-import { getQuestionText } from '../modules/graphic/texts.js';
+import Equivalence from '../models/graphic/equivalence.js';
+import AngleSum from '../models/solve/angleSum.js';
 
 const TestData = {
 
@@ -746,11 +747,13 @@ const TestData = {
                 new Angle(dots[1], lines[0], lines[1]),
                 new Angle(dots[1], lines[1], lines[0]),
                 new Angle(dots[2], lines[1], lines[2]).setValue(80),
+
                 new Angle(dots[2], lines[2], lines[1]),
                 new Angle(dots[3], lines[5], lines[3]).setValue(70),
                 new Angle(dots[3], lines[3], lines[5]),
                 new Angle(dots[4], lines[3], lines[4]),
                 new Angle(dots[4], lines[4], lines[3]),
+                
                 new Angle(dots[5], lines[4], lines[5]).setValue('?'),
                 new Angle(dots[5], lines[5], lines[4])
             ];
@@ -761,6 +764,73 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[10]
+            }
+        }
+    },
+
+    getSimmilarityQuestion2: {
+        'name': 'SAS similarity 2',
+        'explanation': 'Question: Similar Triangle. Find line segment\'s length.',
+        'result': [new Value(80)],
+        getQuestion() {
+            let dots = [
+                new Dot(234, 65, 'A'),
+                new Dot(60, 287, 'B'),
+                new Dot(393, 291, 'C'),
+                new Dot(334.13419858201996, 207.32911244991516, 'E'),
+                new Dot(147.50887891147832, 175.35074069914836, 'F'),
+            ];
+
+            let seg1 = new Line(dots[0], dots[4]).setValue(6); // AF
+            let seg2 = new Line(dots[4], dots[1]).setValue(6); // FB
+            let seg3 = new Line(dots[2], dots[3]).setValue("?"); // CE
+            let seg4 = new Line(dots[3], dots[0]).setValue(8); // EA
+
+            let lines = [
+                new Line(dots[0], dots[1]) // AB
+                    .addSegment(seg1)
+                    .addSegment(seg2),
+                new Line(dots[2], dots[0]) // CA
+                    .addSegment(seg3)
+                    .addSegment(seg4),
+                new Line(dots[2], dots[1]), // CB
+                new Line(dots[3], dots[4])  // EF
+            ];
+
+            seg1.setBase(lines[0]);
+            seg2.setBase(lines[0]);
+            seg3.setBase(lines[1]);
+            seg4.setBase(lines[1]);
+
+            dots[3].setBaseLine(lines[2]).setLineRatio(0.37022516615081785);
+            dots[4].setBaseLine(lines[1]).setLineRatio(0.4970754085547223);
+
+            let angles = [
+                new Angle(dots[0], seg1, seg4),
+                new Angle(dots[0], seg4, seg1),
+                new Angle(dots[1], seg2, lines[2]),
+                new Angle(dots[1], lines[2], seg2),
+                new Angle(dots[2], seg3, lines[2]),
+
+                new Angle(dots[2], lines[2], seg3),
+                new Angle(dots[4],lines[3], seg2),
+                new Angle(dots[4], seg2, seg1).setValue(180),
+                new Angle(dots[4], seg1, lines[3]),
+                new Angle(dots[3], seg3, lines[3]),
+
+                new Angle(dots[3], lines[3], seg4),
+                new Angle(dots[3], seg4, seg3).setValue(180)
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [
+                    new Equivalence([new AngleSum([angles[2]]), new AngleSum([angles[10]])])
+                ],
+                question: seg3
             }
         }
     }

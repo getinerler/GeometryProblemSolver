@@ -16,8 +16,16 @@ Triangle.prototype = {
         return this._lines;
     },
 
+    getLine(i) {
+        return this._lines[i];
+    },
+
     getAngles() {
         return this._angles;
+    },
+
+    getAngle(i) {
+        return this._angles[i];
     },
 
     getOtherLine(line1, line2) {
@@ -45,8 +53,12 @@ Triangle.prototype = {
         return null;
     },
 
+    getName() {
+        return this.toString();
+    },
+
     toString() {
-        return this._lines.map((x) => x.getName()).join(',');
+        return "△" + this._dots.map((x) => x.getName()).sort().join('');
     }
 }
 

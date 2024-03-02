@@ -647,8 +647,7 @@ Term.prototype = {
         return `<span class="frac">
             <sup>${numStr}</sup>
             <span>&frasl;</span>
-            <sub>${denomStr}</sub></span>
-            <span class="fraction">`;
+            <sub>${denomStr}</sub></span>`;
     }
 }
 

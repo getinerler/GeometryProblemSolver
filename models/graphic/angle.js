@@ -113,6 +113,10 @@ Angle.prototype = {
         return this;
     },
 
+    isLine(line) {
+        return this._line1 === line || this._line2 === line;
+    },
+
     getValue() {
         return this._value;
     },

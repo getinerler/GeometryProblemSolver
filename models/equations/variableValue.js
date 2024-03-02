@@ -108,7 +108,7 @@ VariableValue.prototype = {
 
     toString() {
         return this._variable.getName() +
-            (this._exponent !== 1 ? `<sup>${this._exponent}</sup>` : '');
+            (Math.abs(this._exponent) !== 1 ? `<sup>${Math.abs(this._exponent)}</sup>` : '');
     }
 }
 

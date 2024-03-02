@@ -17,25 +17,21 @@ export function areEquivalent(equivalents, val1, val2) {
 
         let sum1 = knowns1.reduce((acc, x) => acc + x.getValue(), 0);
         let sum2 = knowns2.reduce((acc, x) => acc + x.getValue(), 0);
-
+        
         if (sum1 !== sum2) {
             return false;
         }
 
         let used = [];
-        for (let val1 of unknowns1) {
-            let val2 = unknowns2.find((x) => used.indexOf(x) === -1 &&
-                valuesAreEquivalent(equivalents, val1, x));
-            if (!val2) {
+        for (let un1 of unknowns1) {
+            let un2 = unknowns2.find((x) => used.indexOf(x) === -1 &&
+                valuesAreEquivalent(equivalents, un1, x));
+            if (!un2) {
                 return false;
-            } else {
-                used.push(val2);
             }
         }
-
         return true;
     }
-
     return valuesAreEquivalent(equivalents, val1, val2);
 }
 
@@ -49,6 +45,15 @@ function valuesAreEquivalent(equivalents, val1, val2) {
     for (let equi of equivalents) {
         if (equi.contains(val1) && equi.contains(val2)) {
             return true;
+        }
+        if (equi.getType() === "AngleSum") {
+            let elements = equi.getElements();
+            let el1 = elements.find((x) => x.equals(new AngleSum([val1])));
+            let el2 = elements.find((x) => x.equals(new AngleSum([val2])));
+
+            if (el1 && el2) {
+                return true;
+            }
         }
     }
     return false;

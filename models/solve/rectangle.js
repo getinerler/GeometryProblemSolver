@@ -42,7 +42,7 @@ Rectangle.prototype = {
     },
 
     toString() {
-        return this._dots.map((x) => x.toString()).join(', ');
+        return this._dots.map((x) => x.toString()).join('');
     }
 }
 

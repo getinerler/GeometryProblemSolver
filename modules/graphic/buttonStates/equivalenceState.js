@@ -1,6 +1,7 @@
 'use strict';
 
 import Equivalence from '../../../models/graphic/equivalence.js';
+import AngleSum from '../../../models/solve/angleSum.js';
 
 function EquivalenceState(elements, equivalents) {
     this._elements = elements;
@@ -31,7 +32,7 @@ EquivalenceState.prototype = {
         }
         if (!found) {
             let newEq = new Equivalence();
-            newEq.add(hovered);
+            newEq.add(hovered.getType() === "Angle" ? new AngleSum([hovered]) : hovered);
             newEq.setType(hovered.getType());
             this._equivalents.push(newEq);
         }
