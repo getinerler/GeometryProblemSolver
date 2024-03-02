@@ -152,15 +152,15 @@ SimilarityFinder.prototype = {
     getAnglesLine(tri, ang1, ang2) {
         if (tri.getAngle(0) === ang1 && tri.getAngle(1) === ang2 ||
             tri.getAngle(0) === ang2 && tri.getAngle(1) === ang1) {
-            return tri.getLine(0);
+            return tri.getLine(1);
         }
         if (tri.getAngle(1) === ang1 && tri.getAngle(2) === ang2 ||
             tri.getAngle(1) === ang2 && tri.getAngle(2) === ang1) {
-            return tri.getLine(1);
+            return tri.getLine(2);
         }
         if (tri.getAngle(2) === ang1 && tri.getAngle(0) === ang2 ||
             tri.getAngle(2) === ang2 && tri.getAngle(0) === ang1) {
-            return tri.getLine(2);
+            return tri.getLine(0);
         }
     },
 
