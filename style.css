@@ -119,6 +119,12 @@ thead {
     font-size: 10px;
 }
 
+.explanatory-small {
+    font-size: 7px;
+    color: grey;
+    display: block;
+}
+
 span.frac {
     display: inline-block;
     text-align: center;

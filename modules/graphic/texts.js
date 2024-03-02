@@ -165,21 +165,35 @@ export function getEquationsText(solve) {
 
     if (!solve.solved) {
         if (solve.triangles.length > 0) {
-            res += '</br>';
             res += '<b>Triangles</b> </br>';
             res += solve.triangles
                 .map((x) => x.toString() + ' (' + x.getLines().join(', ') + ')')
                 .join('</br>');
         }
         if (solve.rectangles.length > 0) {
-            res += '</br>';
+            res += '</br></br>';
             res += '<b>Rectangles</b> </br>';
             res += solve.rectangles.map((x) => x.toString()).join('</br>');
         }
         if (solve.similars.length > 0) {
-            res += '</br>';
+            res += '</br></br>';
             res += '<b>Similars</b> </br>';
-            res += solve.similars.map((x) => x.toString()).join('</br>');
+
+            for (let similar of solve.similars) {
+                res += similar.toString();
+                res += '</br>';
+                for (let i = 0; i < 3; i++) {
+                    res += '<span class="explanatory-small">' +
+                        similar.getAngles1()[i] + " ≅ " + similar.getAngles2()[i] +
+                        '</span>';
+                }
+                for (let i = 0; i < 3; i++) {
+                    res += '<span class="explanatory-small">' +
+                        similar.getLines1()[i] + " ≅ " + similar.getLines2()[i] +
+                        '</span>';
+                }
+                res += ".............";
+            }
         }
         res += '</br>';
     }
