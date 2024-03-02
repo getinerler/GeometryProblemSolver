@@ -40,6 +40,13 @@ Term.prototype = {
             throw 'Term.add: Variables not equal.';
         }
 
+        if (this.getVariables().length > 0) {
+            if (this.getVariables()[0].getName() === "|CE|") {
+                console.log(this.toString() + " + " + term.toString() + " = ")
+            }
+        }
+
+
         let num1 = this.getValues().filter((x) => x.getExponent() > 0);
         let num2 = term.getValues().filter((x) => x.getExponent() > 0);
         let denom1 = this.getValues().filter((x) => x.getExponent() < 0);
@@ -58,14 +65,19 @@ Term.prototype = {
         }
 
         if (num1.length === 0 && num2.length === 0) {
-            return new Term().addVariables(this.getVariables());
+            return new Term(null, this.getVariables());
         }
-        if (num1.length !== 0 && num2.length === 0) {
-            return this.copy();
+
+        if (this.getVariables().length === 0) {
+            if (num1.length !== 0 && num2.length === 0) {
+                console.log(this.copy().toString())
+                return this.copy();
+            }
+            if (num1.length === 0 && num2.length !== 0) {
+                return term.copy();
+            }
         }
-        if (num1.length === 0 && num2.length !== 0) {
-            return term.copy();
-        }
+
         //Simple sum
         if (num1.length === 1 &&
             num2.length === 1 &&
