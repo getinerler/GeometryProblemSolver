@@ -1,6 +1,6 @@
 'use strict';
 
-let trialLimit = 100;
+let trialLimit = 1000;
 
 import Term from '../../models/equations/term.js';
 import Value from '../../models/equations/value.js';
@@ -166,8 +166,10 @@ Calculator.prototype = {
         let remainder1 = var1.divide(gcd);
         let remainder2 = var2.divide(gcd);
         let firstMultiplied = eq1.multiplyTerm(remainder2);
+
         let secondMultiplied = eq2.multiplyTerm(remainder1);
         let newEq = firstMultiplied.subtract(secondMultiplied);
+        newEq.setCreation(firstMultiplied.toString() + " subtracted " + secondMultiplied.toString());
         newEq.setAncestors([eq1, eq2]);
         newEq.setAncestorIds([eq1.getCount(), eq2.getCount()]);
         this.equations.push(newEq);
@@ -207,16 +209,13 @@ Calculator.prototype = {
                 rightValueCount++;
             }
         }
-        if (newEq.getRight().length === 0) {
-            newEq.addRightTerm(new Term(0));
-        }
         this.equations.push(newEq);
         this.changed = true;
     },
 
     simplifyLeft(eq, parsed) {
         let sum = parsed.leftValues.reduce((acc, val) => acc.add(val), new Term());
-        let term = parsed.rightValues.length >= 1 ? parsed.rightValues[0] : new Term();
+        let term = this.getSideRemains(parsed.rightValues);
         let newEqRight = term.subtract(sum);
         let newEq = new Equation();
         newEq.setCreation('Left values simplified.');
@@ -242,7 +241,7 @@ Calculator.prototype = {
         }
 
         let newEq = new Equation();
-        newEq.addRightTerm(parsed.rightValues[0].copy());
+        newEq.addRightTerm(this.getSideRemains(parsed.rightValues).copy());
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([parsed.count]);
         newEq.setCreation('Variable simplified.');
@@ -267,7 +266,7 @@ Calculator.prototype = {
     simplifyExponent(eq, parsed, unknown) {
         let unknownVariable = unknown.getVariables()[0];
         if (unknown.getValues().length === 0) {
-            let newRightValue = parsed.rightValues[0]
+            let newRightValue = this.getSideRemains(parsed.rightValues)
                 .exp(unknownVariable.getRoot())
                 .root(unknownVariable.getExponent());
             let newEq = new Equation();
@@ -285,7 +284,7 @@ Calculator.prototype = {
             newEq.setAncestorIds([parsed.count]);
 
             for (let val of unknown.getValues()) {
-                newEq.addRightTerm(parsed.rightValues[0].divide(new Term(val)));
+                newEq.addRightTerm(this.getSideRemains(parsed.rightValues).divide(new Term(val)));
             }
             newEq.addLeftTerm(new Term(null, unknownVariable.copy()));
             this.equations.push(newEq);
@@ -306,7 +305,7 @@ Calculator.prototype = {
             }, new Term());
 
         let negativeValue = knownSum.multiply(new Term(-1));
-        let knownValue = negativeValue.add(parsed.rightValues[0]);
+        let knownValue = negativeValue.add(this.getSideRemains(parsed.rightValues));
         let newEqLeft = [];
 
         for (let element of parsed.unknownLeftVariables) {
@@ -379,6 +378,13 @@ Calculator.prototype = {
             }
         }
         return newTerm;
+    },
+
+    getSideRemains(elements) {
+        if (elements && elements.length > 0) {
+            return elements[0];
+        }
+        return new Term(0);
     },
 
     parseEquation(eq) {
