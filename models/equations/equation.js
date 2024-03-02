@@ -16,88 +16,70 @@ function Equation() {
 
 Equation.prototype = {
 
-    subtract(eq2) {
+    subtract(eq) {
         let newEq = new Equation();
         newEq.setCreation('Subtraction.');
-        newEq.setAncestors(this, eq2);
-        newEq.setAncestorIds([this.getCount(), eq2.getCount()]);
+        newEq.setAncestors(this, eq);
+        newEq.setAncestorIds([this.getCount(), eq.getCount()]);
 
-        for (let var1 of this._left) {
-            if (var1.isVariable()) {
-                let var2 = eq2.getLeft()
-                    .find((x) => x.isVariable() && x.variablesEqual(var1));
-                if (var2) {
-                    let newValue = var1.subtract(var2);
-                    if (!newValue.is0()) {
-                        newEq.addLeftTerm(newValue);
-                    }
-                } else {
-                    newEq.addLeftTerm(var1.copy());
+        for (let term1 of this._left) {
+            let term2;
+            if (term1.isVariable()) {
+                term2 = eq.getLeft().find((x) => x.isVariable() && x.variablesEqual(term1));
+            } else if (term1.isValue()) {
+                term2 = eq.getLeft().find((x) => x.isValue() && x.sameDegrees(term1));
+            }
+            if (term2) {
+                let newTerm = term1.subtract(term2);
+                if (!newTerm.is0()) {
+                    newEq.addLeftTerm(newTerm);
                 }
-            } else if (var1.isValue()) {
-                let var2 = eq2.getLeft().find((x) => x.isValue() && x.sameDegrees(var1));
-                if (var2) {
-                    let newValue = var1.subtract(var2);
-                    if (!newValue.is0()) {
-                        newEq.addLeftTerm(newValue);
-                    }
-                } else {
-                    newEq.addLeftTerm(var1.copy());
+            } else {
+                newEq.addLeftTerm(term1.copy());
+            }
+        }
+
+        for (let term1 of eq.getLeft()) {
+            if (term1.isVariable()) {
+                let term2 = this._left.find((x) => x.isVariable() && x.variablesEqual(term1));
+                if (!term2) {
+                    newEq.addLeftTerm(term1.multiply(new Term(-1)));
+                }
+            } else if (term1.isValue()) {
+                let term2 = this._left.find((x) => x.isValue() && x.sameDegrees(term1));
+                if (!term2) {
+                    newEq.addLeftTerm(term1.multiply(new Term(-1)));
                 }
             }
         }
 
-        for (let var1 of eq2.getLeft()) {
-            if (var1.isVariable()) {
-                let var2 = this._left
-                    .find((x) => x.isVariable() && x.variablesEqual(var1));
-                if (!var2) {
-                    newEq.addLeftTerm(var1.multiply(new Term(-1)));
+        for (let term1 of this._right) {
+            let term2;
+            if (term1.isVariable()) {
+                term2 = eq.getRight().find((x) => x.isVariable() && x.variablesEqual(term1));
+            } else if (term1.isValue()) {
+                term2 = eq.getRight().find((x) => x.isValue() && x.sameDegrees(term1));
+            }
+            if (term2) {
+                let newTerm = term1.subtract(term2);
+                if (!newTerm.is0()) {
+                    newEq.addRightTerm(newTerm);
                 }
-            } else if (var1.isValue()) {
-                let var2 = this._left.find((x) => x.isValue() && x.sameDegrees(var1));
-                if (!var2) {
-                    newEq.addLeftTerm(var1.multiply(new Term(-1)));
-                }
+            } else {
+                newEq.addRightTerm(term1.copy());
             }
         }
 
-        for (let var1 of this._right) {
-            if (var1.isVariable()) {
-                let var2 = eq2.getRight()
-                    .find((x) => x.isVariable() && x.variablesEqual(var1));
-                if (var2) {
-                    let newValue = var1.subtract(var2);
-                    if (!newValue.is0()) {
-                        newEq.addRightTerm(newValue);
-                    }
-                } else {
-                    newEq.addRightTerm(var1.copy());
+        for (let term1 of eq.getRight()) {
+            if (term1.isVariable()) {
+                let term2 = this._right.find((x) => x.isVariable() && x.variablesEqual(term1));
+                if (!term2) {
+                    newEq.addRightTerm(term1.multiply(new Term(-1)));
                 }
-            } else if (var1.isValue()) {
-                let var2 = eq2.getRight().find((x) => x.isValue() && x.sameDegrees(var1));
-                if (var2) {
-                    let newValue = var1.subtract(var2);
-                    if (!newValue.is0()) {
-                        newEq.addRightTerm(newValue);
-                    }
-                } else {
-                    newEq.addRightTerm(var1.copy());
-                }
-            }
-        }
-
-        for (let var1 of eq2.getRight()) {
-            if (var1.isVariable()) {
-                let var2 = this._right
-                    .find((x) => x.isVariable() && x.variablesEqual(var1));
-                if (!var2) {
-                    newEq.addRightTerm(var1.multiply(new Term(-1)));
-                }
-            } else if (var1.isValue()) {
-                let var2 = this._right.find((x) => x.isValue() && x.sameDegrees(var1));
-                if (!var2) {
-                    newEq.addRightTerm(var1.multiply(new Term(-1)));
+            } else if (term1.isValue()) {
+                let term2 = this._right.find((x) => x.isValue() && x.sameDegrees(term1));
+                if (!term2) {
+                    newEq.addRightTerm(term1.multiply(new Term(-1)));
                 }
             }
         }
@@ -262,9 +244,6 @@ Equation.prototype = {
         if (this._left.length === 0) {
             str += '0';
         }
-        if (this._left.length === 1 && this._left[0].is0()) {
-            str += '0';
-        }
         for (let i = 0; i < this._left.length; i++) {
             str += this._left[i].toString();
             if (i != this._left.length - 1 && this._left[i + 1].isPositive()) {
@@ -278,9 +257,6 @@ Equation.prototype = {
             str += "<span style='color:red'>";
         }
         if (this._right.length === 0) {
-            str += '0';
-        }
-        if (this._right.length === 1 && this._right[0].is0()) {
             str += '0';
         }
         for (let i = 0; i < this._right.length; i++) {
