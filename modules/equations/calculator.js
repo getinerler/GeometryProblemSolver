@@ -169,11 +169,14 @@ Calculator.prototype = {
 
         let secondMultiplied = eq2.multiplyTerm(remainder1);
         let newEq = firstMultiplied.subtract(secondMultiplied);
-        newEq.setCreation(firstMultiplied.toString() + " subtracted " + secondMultiplied.toString());
+        newEq.setCreation("Subtraction.");
         newEq.setAncestors([eq1, eq2]);
         newEq.setAncestorIds([eq1.getCount(), eq2.getCount()]);
-        this.equations.push(newEq);
 
+        if (newEq.getLeft().length === 0 && newEq.getRight().length === 0) {
+            return;
+        }
+        this.equations.push(newEq);
         this.changed = true;
     },
 
