@@ -753,7 +753,7 @@ const TestData = {
                 new Angle(dots[3], lines[3], lines[5]),
                 new Angle(dots[4], lines[3], lines[4]),
                 new Angle(dots[4], lines[4], lines[3]),
-                
+
                 new Angle(dots[5], lines[4], lines[5]).setValue('?'),
                 new Angle(dots[5], lines[5], lines[4])
             ];
@@ -771,7 +771,7 @@ const TestData = {
     getSimmilarityQuestion2: {
         'name': 'SAS similarity 2',
         'explanation': 'Question: Similar Triangle. Find line segment\'s length.',
-        'result': [new Value(80)],
+        'result': [new Value(1)],
         getQuestion() {
             let dots = [
                 new Dot(234, 65, 'A'),
@@ -813,7 +813,7 @@ const TestData = {
                 new Angle(dots[2], seg3, lines[2]),
 
                 new Angle(dots[2], lines[2], seg3),
-                new Angle(dots[4],lines[3], seg2),
+                new Angle(dots[4], lines[3], seg2),
                 new Angle(dots[4], seg2, seg1).setValue(180),
                 new Angle(dots[4], seg1, lines[3]),
                 new Angle(dots[3], seg3, lines[3]),
