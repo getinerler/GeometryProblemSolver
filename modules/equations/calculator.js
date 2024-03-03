@@ -106,6 +106,8 @@ Calculator.prototype = {
             let unknown = parsed.unknownLeftVariables[0];
             if (unknown.getVariables().length > 1) {
                 this.simplifyTermVariable(eq, parsed, unknown);
+            } else if (unknown.getValues().length > 0) {
+                this.simplifyCoefficients(eq, parsed, unknown);
             } else {
                 let var1 = unknown.getVariables()[0];
                 if (var1.getExponent() !== 1 || var1.getRoot() !== 1) {
@@ -258,6 +260,24 @@ Calculator.prototype = {
         }
 
         newEq.addLeftTerm(newTerm);
+        this.addEquation(newEq);
+    },
+
+    simplifyCoefficients(eq, parsed) {
+        let newEq = new Equation();
+        newEq.setAncestors([eq]);
+        newEq.setAncestorIds([parsed.count]);
+        newEq.setCreation('Coefficients simplified.');
+
+        let oldVariableTerm = eq.getLeft()[0];
+        let newTerm = eq.getRight()[0].copy();
+        for (let value of oldVariableTerm.getValues()) {
+            newTerm = newTerm.divide(new Term(value));
+        }
+
+        newEq.addLeftTerm(new Term(null, oldVariableTerm.getVariables()[0].copy()));
+        newEq.addRightTerm(newTerm);
+
         this.addEquation(newEq);
     },
 

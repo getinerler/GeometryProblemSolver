@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let unknown = 'a';
 
         let solve = new Calculator(eqs, unknown, [], [a, b]).solve();
-  
+
         assert(solve.solved === true);
         assert(solve.name === unknown);
         assert(solve.value[0].equals(new Value(4)));
