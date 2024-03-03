@@ -176,8 +176,7 @@ Calculator.prototype = {
         if (newEq.getLeft().length === 0 && newEq.getRight().length === 0) {
             return;
         }
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     simplifyValueExp(eq) {
@@ -191,8 +190,7 @@ Calculator.prototype = {
         for (let term of eq.getRight()) {
             newEq.addRightTerm(this.simplifyValueExponents(term));
         }
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     passRightVariablesToLeft(eq) {
@@ -212,8 +210,7 @@ Calculator.prototype = {
                 rightValueCount++;
             }
         }
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     simplifyLeft(eq, parsed) {
@@ -234,8 +231,7 @@ Calculator.prototype = {
         if (newEq.getLeft().length === 0) {
             return;
         }
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     simplifyTermVariable(eq, parsed, unknown) {
@@ -262,8 +258,7 @@ Calculator.prototype = {
         }
 
         newEq.addLeftTerm(newTerm);
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     simplifyExponent(eq, parsed, unknown) {
@@ -278,7 +273,7 @@ Calculator.prototype = {
             newEq.setAncestorIds([parsed.count]);
             newEq.addLeftTerm(new Term(null, unknownVariable.getVariable()));
             newEq.addRightTerm(new Term(newRightValue));
-            this.equations.push(newEq);
+            this.addEquation(newEq);
             this.changed = true;
         } else {
             let newEq = new Equation();
@@ -290,7 +285,7 @@ Calculator.prototype = {
                 newEq.addRightTerm(this.getSideRemains(parsed.rightValues).divide(new Term(val)));
             }
             newEq.addLeftTerm(new Term(null, unknownVariable.copy()));
-            this.equations.push(newEq);
+            this.addEquation(newEq);
             this.changed = true;
         }
     },
@@ -338,8 +333,7 @@ Calculator.prototype = {
         }
 
         newEq.addRightTerm((new Term(knownValue.getValues())));
-        this.equations.push(newEq);
-        this.changed = true;
+        this.addEquation(newEq);
     },
 
     findVariable(eq, parsed, unknownEl) {
@@ -388,6 +382,16 @@ Calculator.prototype = {
             return elements[0];
         }
         return new Term(0);
+    },
+
+    addEquation(eq) {
+        for (let eqOld of this.equations) {
+            if (eq.equals(eqOld)) {
+                return;
+            }
+        }
+        this.equations.push(eq);
+        this.changed = true;
     },
 
     parseEquation(eq) {
