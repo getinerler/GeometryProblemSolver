@@ -88,7 +88,7 @@ Solve.prototype = {
             let treeCreator = new EquationTreeCreator(this.equations);
             let tree = treeCreator.createTree();
 
-            return {
+            let response = {
                 'solved': true,
                 'tree': tree,
                 'equations': solved.equations,
@@ -98,6 +98,8 @@ Solve.prototype = {
                 'unknown': solved.name,
                 'value': solved.value
             };
+            
+            return response;
         }
 
         return {

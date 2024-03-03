@@ -38,10 +38,10 @@ Term.prototype = {
             throw 'Term.add: Variables not equal.';
         }
 
-        if(term.is0()) {
+        if (term.is0()) {
             return this.copy();
         }
-        if(this.is0()) {
+        if (this.is0()) {
             return term.copy();
         }
 
@@ -232,7 +232,7 @@ Term.prototype = {
             if (val.getNumber() === 0) {
                 return new Term();
             }
-            if (val.getNumber() === 1 || val.getExponent() === 0) {
+            if (val.getExponent() === 0) {
                 continue;
             }
             let calculated = Math.pow(val.getNumber(), Math.abs(val.getExponent()));

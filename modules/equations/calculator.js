@@ -219,6 +219,7 @@ Calculator.prototype = {
         let sum = parsed.leftValues.reduce((acc, val) => acc.add(val), new Term());
         let term = this.getSideRemains(parsed.rightValues);
         let newEqRight = term.subtract(sum);
+
         let newEq = new Equation();
         newEq.setCreation('Left values simplified.');
         newEq.setAncestors([eq]);
