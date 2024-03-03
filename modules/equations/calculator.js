@@ -100,7 +100,7 @@ Calculator.prototype = {
             this.passRightVariablesToLeft(eq);
         } else if (parsed.leftValueCount > 0) {
             this.simplifyLeft(eq, parsed);
-        } else if (parsed.knownVariableCount > 0) {
+        } else if (parsed.someKnownLeftVarsCount > 0) {
             this.simplifyKnownValues(eq, parsed);
         } else if (parsed.unknownVariableCount === 1) {
             let unknown = parsed.unknownLeftVariables[0];
@@ -311,34 +311,26 @@ Calculator.prototype = {
     },
 
     simplifyKnownValues(eq, parsed) {
-        let knownSum = parsed.knownLeftVariables
-            .reduce(function (acc, term) {
+        let newRight = this.getSideRemains(eq.getRight());
+        let newLeftTerms = [];
+
+        for (let term of eq.getLeft()) {
+            if (term.isValue()) {
+                newLeftTerms.push(term.copy());
+            } else if (term.isVariable()) {
+                let newTerm = new Term(term.getValues());
                 for (let var1 of term.getVariables()) {
-                    let newTerm = new Term(term.getValues())
-                        .addValues(var1.getValue())
-                        .exp(var1.getExponent())
-                        .root(var1.getRoot());
-                    acc = acc.add(newTerm);
+                    if (var1.isKnown()) {
+                        newTerm = newTerm.multiply(var1.calculate());
+                    } else {
+                        newTerm.addVariable(var1);
+                    }
                 }
-                return acc;
-            }, new Term());
-
-        let negativeValue = knownSum.multiply(new Term(-1));
-        let knownValue = negativeValue.add(this.getSideRemains(parsed.rightValues));
-        let newEqLeft = [];
-
-        for (let element of parsed.unknownLeftVariables) {
-            newEqLeft.push(element.copy());
-        }
-        for (let element of parsed.leftValues) {
-            newEqLeft.push(element.copy());
+                newLeftTerms.push(newTerm);
+            }
         }
 
-        if (newEqLeft.length === 0) {
-            return;
-        }
-
-        let names = parsed.knownLeftVariables
+        let names = parsed.someKnownLeftVariables
             .reduce((acc, x) => acc.concat(x.getVariables()), [])
             .map((x) => x.getName());
         let founds = this.founds.filter((x) => names.indexOf(x.name) > -1);
@@ -348,12 +340,10 @@ Calculator.prototype = {
         newEq.setCreation('Known values simplified.');
         newEq.setAncestors(foundEquations.concat([eq]));
         newEq.setAncestorIds(foundEquations.map((x) => x.getCount()).concat([parsed.count]));
-
-        for (let el of newEqLeft) {
+        newEq.addRightTerm(newRight);
+        for (let el of newLeftTerms) {
             newEq.addLeftTerm(el);
         }
-
-        newEq.addRightTerm((new Term(knownValue.getValues())));
         this.addEquation(newEq);
     },
 
@@ -417,6 +407,7 @@ Calculator.prototype = {
 
     parseEquation(eq) {
         let knownLeftVars = eq.getLeft().filter((x) => x.isVariable() && x.isKnown());
+        let someKnownLeftVars = eq.getLeft().filter((x) => x.isVariable() && x.isSomeKnown());
         let knownRightVars = eq.getRight().filter((x) => x.isVariable() && x.isKnown());
         let unknownLeftVars = eq.getLeft().filter((x) => x.isVariable() && !x.isKnown());
         let unknownRightVars = eq.getRight().filter((x) => x.isVariable() && !x.isKnown());
@@ -444,6 +435,7 @@ Calculator.prototype = {
         let variableCount = knownLeftVars.length + unknownLeftVars.length;
         let unknownVariableCount = unknownLeftVars.length + unknownRightVars.length;
         let knownVariableCount = knownLeftVars.length;
+        let someKnownLeftVarsCount = someKnownLeftVars.length;
         let leftValueCount = leftValues.length;
         let rightVariablesCount = unknownRightVars.length + knownRightVars.length;
         let leftValuesWithExpCount = leftValuesWithExp.length;
@@ -452,8 +444,10 @@ Calculator.prototype = {
         return {
             count: eq.getCount(),
             knownLeftVariables: knownLeftVars,
+            someKnownLeftVariables: someKnownLeftVars,
             knownRightVariables: knownRightVars,
             knownVariableCount,
+            someKnownLeftVarsCount,
             leftValues,
             leftValueCount,
             leftValuesWithExpCount,

@@ -453,6 +453,10 @@ Term.prototype = {
         return unknown === null || unknown === undefined;
     },
 
+    isSomeKnown() {
+        return this.getVariables().some((x) => x.isKnown());
+    },
+
     orderTermElements(el1, el2) {
         if (el1 instanceof VariableValue && !el2 instanceof VariableValue) {
             return 1;
