@@ -458,7 +458,6 @@ Solve.prototype = {
     checkTriangleSimilarities() {
         for (let sim of this.similarTriangles) {
             for (let i = 0; i < 3; i++) {
-
                 //Angles
                 let angSum1 = sim.getAngles1()[i];
                 let angSum2 = sim.getAngles2()[i];
@@ -474,29 +473,28 @@ Solve.prototype = {
                     eq.addRightTerm(this.getTermFromValue(ang));
                 }
                 this.equations.push(eq);
+            }
 
+            for (let i = 0; i < 3; i++) {
                 //Lines
-                let len = 3;
-                for (let i = 0; i < len; i++) {
-                    let line1a = sim.getLines1()[i];
-                    let line2a = sim.getLines2()[i];
-                    let line1b = sim.getLines1()[(i + 1) % len];
-                    let line2b = sim.getLines2()[(i + 1) % len];
+                let line1a = sim.getLines1()[i];
+                let line2a = sim.getLines2()[i];
+                let line1b = sim.getLines1()[(i + 1) % 3];
+                let line2b = sim.getLines2()[(i + 1) % 3];
 
-                    let eq = new Equation();
-                    eq.setCreation('Similar triangle (' + sim.toString() + ') lines.');
+                let eq = new Equation();
+                eq.setCreation('Similar triangle (' + sim.toString() + ') lines.');
 
-                    let termLine1a = this.getTermFromValue(line1a);
-                    let termLine2a = this.getTermFromValue(line2a, -1);
-                    let termLine1b = this.getTermFromValue(line1b);
-                    let termLine2b = this.getTermFromValue(line2b, -1);
+                let termLine1a = this.getTermFromValue(line1a);
+                let termLine2a = this.getTermFromValue(line2a, -1);
+                let termLine1b = this.getTermFromValue(line1b);
+                let termLine2b = this.getTermFromValue(line2b, -1);
 
-                    
-                    eq.addLeftTerm(termLine1a.multiply(termLine2a));
-                    eq.addRightTerm(termLine1b.multiply(termLine2b));
 
-                    this.equations.push(eq);
-                }
+                eq.addLeftTerm(termLine1a.multiply(termLine2a));
+                eq.addRightTerm(termLine1b.multiply(termLine2b));
+
+                this.equations.push(eq);
             }
         }
     },
