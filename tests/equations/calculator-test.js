@@ -234,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(solve.value[0].equals(new Value(20)));
     });
 
-
     it('Equations: a/2 + b/3 = 5, b = 9. Find a.', function () {
         let a = new Variable('a');
         let b = new Variable('b');
@@ -258,6 +257,33 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(solve.value[0].equals(new Value(4)));
     });
 
+    it('Equations: a/b + c/2 = 7, b = 2, c = 10. Find a.', function () {
+        let a = new Variable('a');
+        let b = new Variable('b');
+        let c = new Variable('c');
+
+        let eq1 = new Equation();
+        eq1.addLeftTerm(new Term(null, [new VariableValue(a), new VariableValue(b, -1)]));
+        eq1.addLeftTerm(new Term(new Value(2, -1), c));
+        eq1.addRightTerm(new Term(7));
+
+        let eq2 = new Equation();
+        eq2.addLeftTerm(new Term(null, b));
+        eq2.addRightTerm(new Term(2));
+
+        let eq3 = new Equation();
+        eq3.addLeftTerm(new Term(null, c));
+        eq3.addRightTerm(new Term(10));
+
+        let eqs = [eq1, eq2, eq3];
+        let unknown = 'a';
+
+        let solve = new Calculator(eqs, unknown, [], [a, b, c]).solve();
+
+        assert(solve.solved === true);
+        assert(solve.name === unknown);
+        assert(solve.value[0].equals(new Value(4)));
+    });
 
     it('Equations: a/bc = 5, b = 2, c = 3. Find a.', function () {
         let a = new Variable('a');
