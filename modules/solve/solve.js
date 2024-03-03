@@ -490,7 +490,6 @@ Solve.prototype = {
                 let termLine1b = this.getTermFromValue(line1b);
                 let termLine2b = this.getTermFromValue(line2b, -1);
 
-
                 eq.addLeftTerm(termLine1a.multiply(termLine2a));
                 eq.addRightTerm(termLine1b.multiply(termLine2b));
 
@@ -544,9 +543,15 @@ Solve.prototype = {
         if (val.isKnown()) {
             return new Term(new Value(val.getValue(), pow));
         }
-        let var1 = new Variable(val.getValueName());
+        let var1;
+        let oldVar = this.variables.find((x) => x.getName() === val.getValueName());
+        if (oldVar) {
+            var1 = oldVar;
+        } else {
+            var1 = new Variable(val.getValueName());
+            this.variables.push(var1);
+        }
         let term = new Term(null, new VariableValue(var1, pow));
-        this.variables.push(var1);
         return term;
     },
 
