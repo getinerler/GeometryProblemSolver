@@ -38,12 +38,12 @@ Term.prototype = {
             throw 'Term.add: Variables not equal.';
         }
 
-        if (this.getVariables().length > 0) {
-            if (this.getVariables()[0].getName() === "|CE|") {
-                console.log(this.toString() + " + " + term.toString() + " = ")
-            }
+        if(term.is0()) {
+            return this.copy();
         }
-
+        if(this.is0()) {
+            return term.copy();
+        }
 
         let num1 = this.getValues().filter((x) => x.getExponent() > 0);
         let num2 = term.getValues().filter((x) => x.getExponent() > 0);
@@ -54,11 +54,11 @@ Term.prototype = {
         if (!this.sameValues(denom1, denom2)) {
             let diff1 = this.getTermDiff(denom1, denom2);
             let diff2 = this.getTermDiff(denom2, denom1);
-            let m1 = new Term(num1).multiply(diff1);
-            let m2 = new Term(num2).multiply(diff2);
+            let m1 = new Term(num1).multiply(diff1).getValues();
+            let m2 = new Term(num2).multiply(diff2).getValues();
             let newDenominator = this.findCommonsTerm(denom1, denom2);
-            let new1 = new Term(newDenominator, this.getVariables()).addValue(m1);
-            let new2 = new Term(newDenominator, this.getVariables()).addValue(m2);
+            let new1 = new Term(newDenominator, this.getVariables()).addValues(m1);
+            let new2 = new Term(newDenominator, this.getVariables()).addValues(m2);
             return new1.add(new2);
         }
 
@@ -68,7 +68,6 @@ Term.prototype = {
 
         if (this.getVariables().length === 0) {
             if (num1.length !== 0 && num2.length === 0) {
-                console.log(this.copy().toString())
                 return this.copy();
             }
             if (num1.length === 0 && num2.length !== 0) {
