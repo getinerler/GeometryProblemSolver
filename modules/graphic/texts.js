@@ -198,7 +198,13 @@ export function getEquationsText(solve) {
         res += '</br>';
     }
 
-    res += eqs.map(function (x) {
+    res += getOnlyEquationsText(eqs);
+
+    return res;
+}
+
+export function getOnlyEquationsText(eqs) {
+    return eqs.map(function (x) {
         let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
         let ancestorIds = x.getAncestorIds();
         if (ancestorIds.length > 0) {
@@ -210,7 +216,5 @@ export function getEquationsText(solve) {
         }
         str += x.toString();
         return str;
-    }).join('</br>');
-
-    return res;
+    }).join('</br>')
 }

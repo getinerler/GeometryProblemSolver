@@ -12,10 +12,8 @@ function Term(values, variables) {
     if (values) {
         if (Array.isArray(values)) {
             this.addValues(values);
-        } else if (values instanceof Value) {
-            this._values = [values];
-        } else if (!isNaN(values)) {
-            this._values = [new Value(values)];
+        } else {
+            this.addValue(values);
         }
     }
     if (variables) {
@@ -417,10 +415,13 @@ Term.prototype = {
     },
 
     addValue(value) {
-        if (!value instanceof Value) {
+        if (value instanceof Value) {
+            this._values.push(value);
+        } else if (!isNaN(value)) {
+            this._values = [new Value(value)];
+        } else {
             throw 'Term.addValue: Wrong value type.';
         }
-        this._values.push(value);
         this._values = this._values.sort(this.orderTermElements);
         return this;
     },

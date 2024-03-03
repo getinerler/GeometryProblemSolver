@@ -7,6 +7,7 @@ import VariableValue from '../../models/equations/variableValue.js';
 import Term from '../../models/equations/term.js';
 import Calculator from '../../modules/equations/calculator.js';
 import { it, assert } from '../test.js';
+import { getOnlyEquationsText } from '../../modules/graphic/texts.js';
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -232,6 +233,31 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(solve.name === unknown);
         assert(solve.value[0].equals(new Value(20)));
     });
+
+
+    it('Equations: a/2 + b/3 = 5, b = 9. Find a.', function () {
+        let a = new Variable('a');
+        let b = new Variable('b');
+
+        let eq1 = new Equation();
+        eq1.addLeftTerm(new Term(new Value(2, -1), a));
+        eq1.addLeftTerm(new Term(new Value(3, -1), b));
+        eq1.addRightTerm(new Term(5));
+
+        let eq2 = new Equation();
+        eq2.addLeftTerm(new Term(null, b));
+        eq2.addRightTerm(new Term(9));
+
+        let eqs = [eq1, eq2];
+        let unknown = 'a';
+
+        let solve = new Calculator(eqs, unknown, [], [a, b]).solve();
+  
+        assert(solve.solved === true);
+        assert(solve.name === unknown);
+        assert(solve.value[0].equals(new Value(4)));
+    });
+
 
     it('Equations: a/bc = 5, b = 2, c = 3. Find a.', function () {
         let a = new Variable('a');

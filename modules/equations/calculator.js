@@ -292,9 +292,10 @@ Calculator.prototype = {
 
     simplifyKnownValues(eq, parsed) {
         let knownSum = parsed.knownLeftVariables
-            .reduce(function (acc, value) {
-                for (let var1 of value.getVariables()) {
-                    let newTerm = new Term(var1.getValue())
+            .reduce(function (acc, term) {
+                for (let var1 of term.getVariables()) {
+                    let newTerm = new Term(term.getValues())
+                        .addValues(var1.getValue())
                         .exp(var1.getExponent())
                         .root(var1.getRoot());
                     acc = acc.add(newTerm);
