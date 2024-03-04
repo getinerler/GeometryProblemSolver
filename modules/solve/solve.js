@@ -71,6 +71,7 @@ Solve.prototype = {
         this.checkTrianglesEquivalents();
         this.checkIsoscelesTriangles();
         this.checkPythagoreanTheorems();
+        this.checkGeometricMeanTheorems();
         this.checkRectangles360();
 
         let similarityFinder = new SimilarityFinder(this.triangles, this.equivalents);
@@ -98,7 +99,7 @@ Solve.prototype = {
                 'unknown': solved.name,
                 'value': solved.value
             };
-            
+
             return response;
         }
 
@@ -262,6 +263,12 @@ Solve.prototype = {
     checkPythagoreanTheorems() {
         for (let triangle of this.triangles) {
             this.checkPythagoreanTheorem(triangle);
+        }
+    },
+
+    checkGeometricMeanTheorems() {
+        for (let triangle of this.triangles) {
+            this.checkGeometricMeanTheorem(triangle);
         }
     },
 
@@ -455,6 +462,40 @@ Solve.prototype = {
         }
         eq.addRightTerm(this.getTermFromValue(hypothenus, 2));
         this.equations.push(eq);
+    },
+
+    checkGeometricMeanTheorem(tri) {
+        let angle90 = tri.getAngles().find((x) => x.valueEqual(90));
+        if (!angle90) {
+            return;
+        }
+        let sideLines = [angle90.getLine1(), angle90.getLine2()];
+        let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
+        if (!hypothenus) {
+            return;
+        }
+
+        for (let line of this.lines) {
+            if (line.getDot1() === angle90.getDot() && line.getDot2().isBaseLine(hypothenus) ||
+                line.getDot2() === angle90.getDot() && line.getDot1().isBaseLine(hypothenus)) {
+                let eq = new Equation();
+                eq.setCreation('Geometric Mean Theorem.');
+                eq.addLeftTerm(this.getTermFromValue(line, 2));
+
+                //TODO update codes for multiple line segments
+                let otherDot = line.getOtherDot(angle90.getDot());
+                let l1 = this.lines
+                    .find((x) => x.isLineEnd(otherDot) && x.isLineEnd(hypothenus.getDot1()));
+                let l2 = this.lines
+                    .find((x) => x.isLineEnd(otherDot) && x.isLineEnd(hypothenus.getDot2()));
+
+                let term1 = this.getTermFromValue(l1);
+                let term2 = this.getTermFromValue(l2);
+                let newTerm = term1.addVariables(term2.getVariables());
+                eq.addRightTerm(newTerm);
+                this.equations.push(eq);
+            }
+        }
     },
 
     checkTriangleSimilarities() {

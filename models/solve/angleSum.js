@@ -37,6 +37,10 @@ AngleSum.prototype = {
             });
     },
 
+    getDot() {
+        return this._angles[0].getDot();
+    },
+
     getLine1() {
         return this._angles[0].getLine1();
     },

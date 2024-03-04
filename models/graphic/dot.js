@@ -14,7 +14,7 @@ function Dot(x, y, name) {
 }
 
 Dot.prototype = {
-    
+
     getType() {
         return 'Dot';
     },
@@ -99,6 +99,10 @@ Dot.prototype = {
 
     isOnLine() {
         return this._baseLine !== null;
+    },
+
+    isBaseLine(line) {
+        return this._baseLine == line;
     },
 
     getBaseLine() {
