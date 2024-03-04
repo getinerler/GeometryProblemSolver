@@ -23,63 +23,61 @@ App.prototype = {
         let canvas = document.getElementById(this._canvas);
         self._drawing = new Drawing().bind(canvas);
 
-        document.getElementById(this._inputElement)
-            .addEventListener('keydown', function (event) {
-                if (event.keyCode === 13) {
-                    let hoveredObj = self._drawing.getValueObject();
-                    if (hoveredObj !== null) {
-                        hoveredObj.obj.setValue(this.value);
-                        self._drawing.updateDrawing();
-                    }
-                    if (this.value === '?') {
-                        self._drawing.setQuestion(hoveredObj.obj);
-                    }
-                    self._drawing.updateQuestionText();
-                    this.style.display = 'none';
+        document.getElementById(this._inputElement).addEventListener('keydown', function (event) {
+            if (event.keyCode === 13) {
+                let hoveredObj = self._drawing.getValueObject();
+                if (hoveredObj !== null) {
+                    hoveredObj.obj.setValue(this.value);
+                    self._drawing.updateDrawing();
                 }
-            });
-
-        document.getElementById(this._solveButton)
-            .addEventListener('click', function () {
-                let question = self._drawing.getAll();
-                let solve = new Solve(question).solve();
-                if (!solve.solved) {
-                    showAsAnswer(solve.message);
+                if (this.value === '?') {
+                    self._drawing.setQuestion(hoveredObj.obj);
                 }
-                showAsAnswer(getEquationsText(solve));
-            });
+                self._drawing.updateQuestionText();
+                this.style.display = 'none';
+            }
+        });
+
+        document.getElementById(this._solveButton).addEventListener('click', function () {
+            let question = self._drawing.getAll();
+            let solve = new Solve(question).solve();
+            document.getElementById('answerHeader').style.display = 'block';
+            if (!solve.solved) {
+                showAsAnswer(solve.message);
+            }
+            showAsAnswer(getEquationsText(solve));
+        });
 
 
-        document.getElementById("lineButton")
-            .addEventListener('click', function () {
-                self.unselectCanvasButtons();
-                document.getElementById("lineButton").classList.add("selected");
-                self._drawing.setLineState();
+        document.getElementById('lineButton').addEventListener('click', function () {
+            self.unselectCanvasButtons();
+            document.getElementById('lineButton').classList.add('selected');
+            self._drawing.setLineState();
 
-            });
+        });
 
-        document.getElementById("equalButton")
-            .addEventListener('click', function () {
-                self.unselectCanvasButtons();
-                document.getElementById("equalButton").classList.add("selected");
-                self._drawing.setEquivalenceState();
+        document.getElementById('equalButton').addEventListener('click', function () {
+            self.unselectCanvasButtons();
+            document.getElementById('equalButton').classList.add('selected');
+            self._drawing.setEquivalenceState();
 
-            });
+        });
 
-        document.getElementById(self._resetButton)
-            .addEventListener('click', function () {
-                question = self._drawing.reset();
-            });
+        document.getElementById(self._resetButton).addEventListener('click', function () {
+            document.getElementById('questionHeader').style.display = "none";
+            document.getElementById('answerHeader').style.display = "none";
+            question = self._drawing.reset();
+        });
 
         function showAsAnswer(it) {
-            document.getElementById(self._answerDiv).innerHTML = it + '</br>';
+            document.getElementById('answerText').innerHTML = it + '</br>';
         }
     },
 
     unselectCanvasButtons() {
-        let buttons = document.getElementsByClassName("canvasButton");
+        let buttons = document.getElementsByClassName('canvasButton');
         for (let button of buttons) {
-            button.classList.remove("selected");
+            button.classList.remove('selected');
         }
     },
 

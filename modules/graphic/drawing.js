@@ -145,8 +145,8 @@ Drawing.prototype = {
         this.setLineState();
         this._elements.reset();
         this._canvas.update();
-        document.getElementById('questionDiv').innerHTML = '';
-        document.getElementById('answerDiv').innerHTML = '';
+        document.getElementById('questionText').innerHTML = '';
+        document.getElementById('answerText').innerHTML = '';
     },
 
     setQuestion(question) {
@@ -154,8 +154,11 @@ Drawing.prototype = {
     },
 
     fillTestData(info) {
-        document.getElementById('questionDiv').innerHTML = '';
-        document.getElementById('answerDiv').innerHTML = '';
+        document.getElementById('questionText').innerHTML = '';
+        document.getElementById('answerText').innerHTML = '';
+        document.getElementById('questionHeader').style.display = "none";
+        document.getElementById('answerHeader').style.display = "none";
+
         this._elements.lines = info.lines;
         this._elements.dots = info.dots;
         this._elements.angles = info.angles;
@@ -181,7 +184,10 @@ Drawing.prototype = {
             this._parallels,
             this._equivalents,
             this._question);
-        document.getElementById('questionDiv').innerHTML = text;
+
+        let header = document.getElementById('questionHeader');
+        header.style.display = text ? "block" : "none";
+        document.getElementById('questionText').innerHTML = text;
     },
 
     setLineState() {

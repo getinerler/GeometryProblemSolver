@@ -254,7 +254,7 @@ Equation.prototype = {
         }
         str += ' = ';
         if (this._answer) {
-            str += "<span style='color:red'>";
+            str += "<b>";
         }
         if (this._right.length === 0) {
             str += '0';
@@ -268,7 +268,7 @@ Equation.prototype = {
             }
         }
         if (this._answer) {
-            str += "</span>";
+            str += "</b>";
         }
         return str;
     }
