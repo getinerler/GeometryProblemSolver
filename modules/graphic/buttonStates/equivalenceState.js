@@ -3,9 +3,8 @@
 import Equivalence from '../../../models/graphic/equivalence.js';
 import AngleSum from '../../../models/solve/angleSum.js';
 
-function EquivalenceState(elements, equivalents) {
+function EquivalenceState(elements) {
     this._elements = elements;
-    this._equivalents = equivalents;
     this._equivalentTemp = null;
 }
 
@@ -20,7 +19,7 @@ EquivalenceState.prototype = {
             return;
         }
         let found = false;
-        for (let equi of this._equivalents) {
+        for (let equi of this._elements.equivalents) {
             if (equi.getType() === hovered.getType()) {
                 found = true;
                 if (equi.contains(hovered)) {
@@ -34,7 +33,7 @@ EquivalenceState.prototype = {
             let newEq = new Equivalence();
             newEq.add(hovered.getType() === "Angle" ? new AngleSum([hovered]) : hovered);
             newEq.setType(hovered.getType());
-            this._equivalents.push(newEq);
+            this._elements.equivalents.push(newEq);
         }
     },
 

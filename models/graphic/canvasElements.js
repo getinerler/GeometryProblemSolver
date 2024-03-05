@@ -9,6 +9,7 @@ function CanvasElements() {
     this.angles = [];
     this.intersectionDots = [];
     this.parallelsTemp = [];
+    this.equivalents = [];
     this.dragStartPoint = null;
     this.dragDot = null;
     this.currentDot = new Point(0, 0);

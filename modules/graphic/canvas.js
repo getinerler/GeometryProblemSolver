@@ -2,7 +2,7 @@
 
 import Line from '../../models/graphic/line.js';
 import { getLineAngleRadian, getAngleTextPoint, getLineTextPoint } from './geoHelper.js';
-import { getLongLine, get90DegreeSymbolPoints } from './geoHelper.js';
+import { getLongLine, get90DegreeSymbolPoints, getLineSimilarSymbolLine1 } from './geoHelper.js';
 
 function Canvas(canvas, canvasObjects) {
     if (!canvas) {
@@ -27,7 +27,6 @@ function Canvas(canvas, canvasObjects) {
 Canvas.prototype = {
 
     drawObjects() {
-        console.log(this._ctx.width);
         this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         if (this._elements.dragStartPoint && this._elements.dragDot === null) {
             let lineToDraw =
@@ -98,6 +97,18 @@ Canvas.prototype = {
         this._ctx.lineTo(line.getX2(), line.getY2());
         this._ctx.closePath();
         this._ctx.stroke();
+
+        for (let equi of this._elements.equivalents) {
+            if (equi.contains(line)) {
+                let similarLine = getLineSimilarSymbolLine1(line);
+                this._ctx.beginPath();
+                this._ctx.setLineDash([0]);
+                this._ctx.moveTo(similarLine[0].getX(), similarLine[0].getY());
+                this._ctx.lineTo(similarLine[1].getX(), similarLine[1].getY());
+                this._ctx.closePath();
+                this._ctx.stroke();
+            }
+        }
     },
 
     drawLineSegments(line) {

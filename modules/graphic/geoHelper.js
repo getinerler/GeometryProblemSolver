@@ -233,6 +233,17 @@ export function get90DegreeSymbolPoints(ang) {
     return [ang.getDot(), dot1, dot2, dot3];
 }
 
+export function getLineSimilarSymbolLine1(line) {
+    let middleX = (line.getX1() + line.getX2()) / 2;
+    let middleY = (line.getY1() + line.getY2()) / 2;
+    let ang = (getSlopeAngle(line.getDot1(), line.getDot2()) + 90) * Math.PI / 180;
+    let x1 = middleX - 5 * Math.cos(ang);
+    let y1 = middleY - 5 * Math.sin(ang);
+    let x2 = middleX + 5 * Math.cos(ang);
+    let y2 = middleY + 5 * Math.sin(ang);
+    return [new Point(x1, y1), new Point(x2, y2)];
+}
+
 function rotate(ref, dot, ang) {
     ang = getAngle(ref, dot) + ang;
     let dist = getDistance(dot, ref);

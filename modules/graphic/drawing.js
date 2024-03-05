@@ -22,7 +22,6 @@ function Drawing() {
     this._valueObject = null;
     this._question = null;
     this._parallels = [];
-    this._equivalents = [];
     this._elements = new CanvasElements();
     this._buttonState = null;
 }
@@ -341,7 +340,7 @@ Drawing.prototype = {
             lines: this._elements.lines,
             angles: this._elements.angles,
             parallels: this._parallels,
-            equivalents: this._equivalents,
+            equivalents: this._elements._equivalents,
             question: this._question
         };
     },
@@ -351,7 +350,7 @@ Drawing.prototype = {
         this._valueObject = null;
         this._question = null;
         this._parallels = [];
-        this._equivalents = [];
+        this._elements.equivalents = [];
         this.setButtonState('line');
         this._elements.reset();
         this._canvas.update();
@@ -374,7 +373,7 @@ Drawing.prototype = {
         this._elements.angles = info.angles;
         this._parallels = info.parallels;
         this._question = info.question;
-        this._equivalents = info.equivalents;
+        this._elements.equivalents = info.equivalents;
         this._canvas.update();
         this.updateQuestionText();
     },
@@ -392,7 +391,7 @@ Drawing.prototype = {
         let text = getQuestionText(
             this._elements,
             this._parallels,
-            this._equivalents,
+            this._elements.equivalents,
             this._question);
 
         let header = document.getElementById('questionHeader');
@@ -415,7 +414,7 @@ Drawing.prototype = {
                 this._buttonState = new SquareState(this);
                 break;
             case 'equal':
-                this._buttonState = new EquivalenceState(this._elements, this._equivalents);
+                this._buttonState = new EquivalenceState(this._elements);
                 break;
             default:
                 this._buttonState = new LineState(this, this._elements, this._canvas);
