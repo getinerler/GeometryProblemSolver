@@ -2,8 +2,8 @@
 
 import Line from '../../models/graphic/line.js';
 import { getLineAngleRadian, getAngleTextPoint, getLineTextPoint } from './geoHelper.js';
-import { getLongLine, get90DegreeSymbolPoints, getLineSimilarSymbolLine1 } from './geoHelper.js';
-
+import { getLongLine, get90DegreeSymbolPoints } from './geoHelper.js';
+import { getLineSimilarSymbolLine1, getLineSimilarSymbolLine2 } from './geoHelper.js';
 function Canvas(canvas, canvasObjects) {
     if (!canvas) {
         throw 'Canvas.Canvas: No canvas object.';
@@ -98,16 +98,28 @@ Canvas.prototype = {
         this._ctx.closePath();
         this._ctx.stroke();
 
-        for (let equi of this._elements.equivalents) {
-            if (equi.contains(line)) {
-                let similarLine = getLineSimilarSymbolLine1(line);
-                this._ctx.beginPath();
-                this._ctx.setLineDash([0]);
-                this._ctx.moveTo(similarLine[0].getX(), similarLine[0].getY());
-                this._ctx.lineTo(similarLine[1].getX(), similarLine[1].getY());
-                this._ctx.closePath();
-                this._ctx.stroke();
-            }
+        if (this._elements.equivalents.length > 0 &&
+            this._elements.equivalents[0].contains(line)) {
+            let similarLine = getLineSimilarSymbolLine1(line);
+            this._ctx.beginPath();
+            this._ctx.setLineDash([0]);
+            this._ctx.moveTo(similarLine[0].getX(), similarLine[0].getY());
+            this._ctx.lineTo(similarLine[1].getX(), similarLine[1].getY());
+            this._ctx.closePath();
+            this._ctx.stroke();
+        }
+
+        if (this._elements.equivalents.length > 1 &&
+            this._elements.equivalents[1].contains(line)) {
+            let similarLine = getLineSimilarSymbolLine2(line);
+            this._ctx.beginPath();
+            this._ctx.setLineDash([0]);
+            this._ctx.moveTo(similarLine[0].getX(), similarLine[0].getY());
+            this._ctx.lineTo(similarLine[1].getX(), similarLine[1].getY());
+            this._ctx.moveTo(similarLine[2].getX(), similarLine[2].getY());
+            this._ctx.lineTo(similarLine[3].getX(), similarLine[3].getY());
+            this._ctx.closePath();
+            this._ctx.stroke();
         }
     },
 

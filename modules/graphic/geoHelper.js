@@ -188,10 +188,8 @@ export function getDotOnLineWithRatio(dot) {
     let line = dot.getBaseLine();
     let xM = line.getX1() > line.getX2() ? -1 : 1;
     let yM = line.getY1() > line.getY2() ? -1 : 1;
-    let x = line.getX1() +
-        Math.abs(line.getX1() - line.getX2()) * dot.getLineRatio() * xM;
-    let y = line.getY1() +
-        Math.abs(line.getY1() - line.getY2()) * dot.getLineRatio() * yM;
+    let x = line.getX1() + Math.abs(line.getX1() - line.getX2()) * dot.getLineRatio() * xM;
+    let y = line.getY1() + Math.abs(line.getY1() - line.getY2()) * dot.getLineRatio() * yM;
     return new Point(x, y);
 }
 
@@ -242,6 +240,29 @@ export function getLineSimilarSymbolLine1(line) {
     let x2 = middleX + 5 * Math.cos(ang);
     let y2 = middleY + 5 * Math.sin(ang);
     return [new Point(x1, y1), new Point(x2, y2)];
+}
+
+export function getLineSimilarSymbolLine2(line) {
+    let x1M = line.getX1() > line.getX2() ? -1 : 1;
+    let y1M = line.getY1() > line.getY2() ? -1 : 1;
+    let middleX1 = line.getX1() + Math.abs(line.getX1() - line.getX2()) * 0.49 * x1M;
+    let middleY1 = line.getY1() + Math.abs(line.getY1() - line.getY2()) * 0.49 * y1M;
+
+    let x2M = line.getX1() > line.getX2() ? -1 : 1;
+    let y2M = line.getY1() > line.getY2() ? -1 : 1;
+    let middleX2 = line.getX1() + Math.abs(line.getX1() - line.getX2()) * 0.51 * x2M;
+    let middleY2 = line.getY1() + Math.abs(line.getY1() - line.getY2()) * 0.51 * y2M;
+
+    let ang = (getSlopeAngle(line.getDot1(), line.getDot2()) + 90) * Math.PI / 180;
+    let x1 = middleX1 - 5 * Math.cos(ang);
+    let y1 = middleY1 - 5 * Math.sin(ang);
+    let x2 = middleX1 + 5 * Math.cos(ang);
+    let y2 = middleY1 + 5 * Math.sin(ang);
+    let x3 = middleX2 - 5 * Math.cos(ang);
+    let y3 = middleY2 - 5 * Math.sin(ang);
+    let x4 = middleX2 + 5 * Math.cos(ang);
+    let y4 = middleY2 + 5 * Math.sin(ang);
+    return [new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), new Point(x4, y4)];
 }
 
 function rotate(ref, dot, ang) {
