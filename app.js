@@ -49,36 +49,25 @@ App.prototype = {
         });
 
 
-        document.getElementById('lineButton').addEventListener('click', function () {
-            self.unselectCanvasButtons();
-            document.getElementById('lineButton').classList.add('selected');
-            self._drawing.setLineState();
+        let buttonNames = [
+            'lineButton',
+            'triangleButton',
+            'rectangleButton',
+            'squareButton',
+            'equalButton'];
 
-        });
-
-        document.getElementById("triangleButton").addEventListener('click', function () {
-            self.unselectCanvasButtons();
-            document.getElementById('triangleButton').classList.add('selected');
-            self._drawing.setTriangleState();
-        });
-
-        document.getElementById("rectangleButton").addEventListener('click', function () {
-            self.unselectCanvasButtons();
-            document.getElementById('rectangleButton').classList.add('selected');
-            self._drawing.setRectangleState();
-        });
-
-
-        document.getElementById('equalButton').addEventListener('click', function () {
-            self.unselectCanvasButtons();
-            document.getElementById('equalButton').classList.add('selected');
-            self._drawing.setEquivalenceState();
-
-        });
+        for (let buttonName of buttonNames) {
+            let el = document.getElementById(buttonName);
+            el.addEventListener('click', function () {
+                self.unselectCanvasButtons();
+                el.classList.add('selected');
+                self._drawing.setButtonState(buttonName.replace('Button', ''));
+            });
+        }
 
         document.getElementById(self._resetButton).addEventListener('click', function () {
-            document.getElementById('questionHeader').style.display = "none";
-            document.getElementById('answerHeader').style.display = "none";
+            document.getElementById('questionHeader').style.display = 'none';
+            document.getElementById('answerHeader').style.display = 'none';
             question = self._drawing.reset();
         });
 

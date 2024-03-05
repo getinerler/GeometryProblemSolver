@@ -3,7 +3,7 @@
 import Canvas from '../graphic/canvas.js';
 import CanvasElements from '../../models/graphic/canvasElements.js';
 import { dotOnLine, dotsCloser, anglesCloser, dotBetweenAngle } from './geoHelper.js';
-import { dotOnLineSegment, getLineAngle } from './geoHelper.js';
+import { dotOnLineSegment, getLineAngle, lineIntersect } from './geoHelper.js';
 import { getDotsLineRatio, getDotOnLineWithRatio } from './geoHelper.js';
 import { getQuestionText } from './texts.js';
 import LineState from './buttonStates/lineState.js';
@@ -15,6 +15,7 @@ import Parallel from '../../models/graphic/parallel.js';
 import Angle from '../../models/graphic/angle.js';
 import TriangleState from './buttonStates/triangleState.js';
 import RectangleState from './buttonStates/rectangleState.js';
+import SquareState from './buttonStates/squareState.js';
 
 function Drawing() {
     this._canvas = null;
@@ -31,7 +32,7 @@ Drawing.prototype = {
     bind(canvas) {
         let self = this;
         self._canvas = new Canvas(canvas, this._elements);
-        self.setLineState();
+        self.setButtonState('line');
 
         canvas.addEventListener('mousemove', function (event) {
             let x = event.pageX - self._canvas.getLeft();
@@ -351,7 +352,7 @@ Drawing.prototype = {
         this._question = null;
         this._parallels = [];
         this._equivalents = [];
-        this.setLineState();
+        this.setButtonState('line');
         this._elements.reset();
         this._canvas.update();
         document.getElementById('questionText').innerHTML = '';
@@ -365,8 +366,8 @@ Drawing.prototype = {
     fillTestData(info) {
         document.getElementById('questionText').innerHTML = '';
         document.getElementById('answerText').innerHTML = '';
-        document.getElementById('questionHeader').style.display = "none";
-        document.getElementById('answerHeader').style.display = "none";
+        document.getElementById('questionHeader').style.display = 'none';
+        document.getElementById('answerHeader').style.display = 'none';
 
         this._elements.lines = info.lines;
         this._elements.dots = info.dots;
@@ -395,24 +396,30 @@ Drawing.prototype = {
             this._question);
 
         let header = document.getElementById('questionHeader');
-        header.style.display = text ? "block" : "none";
+        header.style.display = text ? 'block' : 'none';
         document.getElementById('questionText').innerHTML = text;
     },
 
-    setLineState() {
-        this._buttonState = new LineState(this, this._elements, this._canvas);
-    },
-
-    setTriangleState() {
-        this._buttonState = new TriangleState(this);
-    },
-
-    setRectangleState() {
-        this._buttonState = new RectangleState(this);
-    },
-
-    setEquivalenceState() {
-        this._buttonState = new EquivalenceState(this._elements, this._equivalents);
+    setButtonState(state) {
+        switch (state) {
+            case 'line':
+                this._buttonState = new LineState(this, this._elements, this._canvas);
+                break;
+            case 'triangle':
+                this._buttonState = new TriangleState(this);
+                break;
+            case 'rectangle':
+                this._buttonState = new RectangleState(this);
+                break;
+            case 'square':
+                this._buttonState = new SquareState(this);
+                break;
+            case 'equal':
+                this._buttonState = new EquivalenceState(this._elements, this._equivalents);
+                break;
+            default:
+                this._buttonState = new LineState(this, this._elements, this._canvas);
+        }
     }
 }
 
