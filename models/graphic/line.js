@@ -52,7 +52,7 @@ Line.prototype = {
     },
 
     getName() {
-        return [this._dot1.getName() + this._dot2.getName()].sort().join('');
+        return [this._dot1.getName(), this._dot2.getName()].sort().join('');
     },
 
     getValueName() {
