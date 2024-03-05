@@ -7,113 +7,114 @@ import { getLongLine, get90DegreeSymbolPoints } from './geoHelper.js';
 function Canvas(canvas, canvasObjects) {
     if (!canvas) {
         throw 'Canvas.Canvas: No canvas object.';
-    }
-    if (!canvasObjects) {
+    } else if (!canvasObjects) {
         throw 'Canvas.Canvas: No canvasObjects object.';
     }
 
-    this.left = canvas.getBoundingClientRect().left;
-    this.top = canvas.getBoundingClientRect().top;
-    this.ctx = canvas.getContext('2d');
+    this._canvas = canvas;
+    this._left = this._canvas.getBoundingClientRect().left;
+    this._top = this._canvas.getBoundingClientRect().top;
+    this._ctx = this._canvas.getContext('2d');
 
-    this.hoveredColor = '#FFC0CB';
-    this.blackColor = '#000000';
-    this.intersectionColor = 'grey';
-    this.dotSize = 2;
+    this._hoveredColor = '#FFC0CB';
+    this._blackColor = '#000000';
+    this._intersectionColor = 'grey';
+    this._dotSize = 2;
 
-    this.elements = canvasObjects;
+    this._elements = canvasObjects;
 }
 
 Canvas.prototype = {
 
     drawObjects() {
-        this.ctx.clearRect(0, 0, 500, 500);
-        if (this.elements.dragStartPoint && this.elements.dragDot === null) {
+        console.log(this._ctx.width);
+        this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
+        if (this._elements.dragStartPoint && this._elements.dragDot === null) {
             let lineToDraw =
-                new Line(this.elements.dragStartPoint, this.elements.currentDot)
+                new Line(this._elements.dragStartPoint, this._elements.currentDot)
             this.drawLine(lineToDraw);
         }
-        for (let ang of this.elements.angles) {
+        for (let ang of this._elements.angles) {
             this.drawAngle(ang);
         }
-        for (let line of this.elements.lines) {
+        for (let line of this._elements.lines) {
             this.drawLine(line);
         }
-        for (let line of this.elements.lines) {
+        for (let line of this._elements.lines) {
             this.drawLineSegments(line);
         }
-        for (let dot of this.elements.dots) {
+        for (let dot of this._elements.dots) {
             this.drawDot(dot);
         }
-        for (let int of this.elements.intersectionDots) {
-            this.drawDot(int, this.intersectionColor);
+        for (let int of this._elements.intersectionDots) {
+            this.drawDot(int, this._intersectionColor);
         }
-        for (let parallel of this.elements.parallelsTemp) {
+        for (let parallel of this._elements.parallelsTemp) {
             this.drawParallel(parallel);
         }
     },
 
     drawDot(dot, color) {
         if (color) {
-            this.ctx.fillStyle = color;
+            this._ctx.fillStyle = color;
         } else if (dot.isHovered()) {
-            this.ctx.fillStyle = this.hoveredColor;
+            this._ctx.fillStyle = this._hoveredColor;
         } else {
-            this.ctx.fillStyle = this.blackColor;
+            this._ctx.fillStyle = this._blackColor;
         }
 
-        this.ctx.beginPath();
-        this.ctx.setLineDash([0]);
-        this.ctx.arc(dot.getX(), dot.getY(), this.dotSize, 0, 2 * Math.PI);
-        this.ctx.closePath();
-        this.ctx.fill();
+        this._ctx.beginPath();
+        this._ctx.setLineDash([0]);
+        this._ctx.arc(dot.getX(), dot.getY(), this._dotSize, 0, 2 * Math.PI);
+        this._ctx.closePath();
+        this._ctx.fill();
 
         if (dot.getName()) {
-            this.ctx.fillText(dot.getName(), dot.getX() + 5, dot.getY() - 7);
+            this._ctx.fillText(dot.getName(), dot.getX() + 5, dot.getY() - 7);
         }
 
-        this.ctx.beginPath();
-        this.ctx.setLineDash([0]);
-        this.ctx.arc(dot.getX(), dot.getY(), this.dotSize, 0, 2 * Math.PI);
-        this.ctx.closePath();
-        this.ctx.stroke();
+        this._ctx.beginPath();
+        this._ctx.setLineDash([0]);
+        this._ctx.arc(dot.getX(), dot.getY(), this._dotSize, 0, 2 * Math.PI);
+        this._ctx.closePath();
+        this._ctx.stroke();
     },
 
     drawLine(line) {
         if (line.isHovered()) {
-            this.ctx.strokeStyle = this.hoveredColor;
+            this._ctx.strokeStyle = this._hoveredColor;
         } else {
-            this.ctx.strokeStyle = this.blackColor;
+            this._ctx.strokeStyle = this._blackColor;
         }
 
         if (line.getValue()) {
             let point = getLineTextPoint(line);
-            this.ctx.fillText(`${line.getValue()} cm`, point.getX(), point.getY());
+            this._ctx.fillText(`${line.getValue()} cm`, point.getX(), point.getY());
         }
 
-        this.ctx.beginPath();
-        this.ctx.setLineDash([0]);
-        this.ctx.moveTo(line.getX1(), line.getY1());
-        this.ctx.lineTo(line.getX2(), line.getY2());
-        this.ctx.closePath();
-        this.ctx.stroke();
+        this._ctx.beginPath();
+        this._ctx.setLineDash([0]);
+        this._ctx.moveTo(line.getX1(), line.getY1());
+        this._ctx.lineTo(line.getX2(), line.getY2());
+        this._ctx.closePath();
+        this._ctx.stroke();
     },
 
     drawLineSegments(line) {
         for (let seg of line.getSegments()) {
             if (seg.getValue()) {
                 let point = getLineTextPoint(seg);
-                this.ctx.fillText(`${seg.getValue()} cm`, point.getX(), point.getY());
+                this._ctx.fillText(`${seg.getValue()} cm`, point.getX(), point.getY());
             }
 
             if (seg.isHovered()) {
-                this.ctx.beginPath();
-                this.ctx.strokeStyle = this.hoveredColor;
-                this.ctx.setLineDash([0]);
-                this.ctx.moveTo(seg.getX1(), seg.getY1());
-                this.ctx.lineTo(seg.getX2(), seg.getY2());
-                this.ctx.closePath();
-                this.ctx.stroke();
+                this._ctx.beginPath();
+                this._ctx.strokeStyle = this._hoveredColor;
+                this._ctx.setLineDash([0]);
+                this._ctx.moveTo(seg.getX1(), seg.getY1());
+                this._ctx.lineTo(seg.getX2(), seg.getY2());
+                this._ctx.closePath();
+                this._ctx.stroke();
             }
         }
     },
@@ -122,65 +123,65 @@ Canvas.prototype = {
         if (ang.getValue()) {
             if (ang.getValue() === 90) {
                 let points90 = get90DegreeSymbolPoints(ang);
-                this.ctx.beginPath();
-                this.ctx.setLineDash([0]);
+                this._ctx.beginPath();
+                this._ctx.setLineDash([0]);
                 for (let i = 1; i < points90.length + 1; i++) {
                     let dot1 = points90[(i - 1) % points90.length];
                     let dot2 = points90[i % points90.length];
-                    this.ctx.moveTo(dot1.getX(), dot1.getY());
-                    this.ctx.lineTo(dot2.getX(), dot2.getY());
+                    this._ctx.moveTo(dot1.getX(), dot1.getY());
+                    this._ctx.lineTo(dot2.getX(), dot2.getY());
                 }
 
                 let middleX = (points90[0].getX() + points90[2].getX()) / 2;
                 let middleY = (points90[0].getY() + points90[2].getY()) / 2;
-                this.ctx.stroke();
-                this.ctx.closePath();
+                this._ctx.stroke();
+                this._ctx.closePath();
 
-                this.ctx.beginPath();
-                this.ctx.arc(middleX, middleY, this.dotSize / 2, 0, 2 * Math.PI);
-                this.ctx.fill();
+                this._ctx.beginPath();
+                this._ctx.arc(middleX, middleY, this._dotSize / 2, 0, 2 * Math.PI);
+                this._ctx.fill();
             } else if (ang.getValue() !== 180) {
-                let textWidth = this.ctx.measureText(ang.getValue()).width;
+                let textWidth = this._ctx.measureText(ang.getValue()).width;
                 let point = getAngleTextPoint(ang, textWidth);
-                this.ctx.fillText(ang.getValue(), point.getX(), point.getY());
+                this._ctx.fillText(ang.getValue(), point.getX(), point.getY());
             }
         }
 
         if (ang.isHovered()) {
-            this.ctx.fillStyle = this.hoveredColor;
+            this._ctx.fillStyle = this._hoveredColor;
             let ang1 = getLineAngleRadian(ang.getLine1(), ang.getDot());
             let ang2 = getLineAngleRadian(ang.getLine2(), ang.getDot());
-            this.ctx.beginPath();
-            this.ctx.setLineDash([0]);
-            this.ctx.arc(ang.getDot().getX(), ang.getDot().getY(), 15, ang1, ang2);
-            this.ctx.lineTo(ang.getDot().getX(), ang.getDot().getY());
-            this.ctx.fill();
-            this.ctx.stroke();
+            this._ctx.beginPath();
+            this._ctx.setLineDash([0]);
+            this._ctx.arc(ang.getDot().getX(), ang.getDot().getY(), 15, ang1, ang2);
+            this._ctx.lineTo(ang.getDot().getX(), ang.getDot().getY());
+            this._ctx.fill();
+            this._ctx.stroke();
         } else {
-            this.ctx.setLineDash([0]);
-            this.ctx.strokeStyle = this.blackColor;
+            this._ctx.setLineDash([0]);
+            this._ctx.strokeStyle = this._blackColor;
         }
     },
 
     drawParallel(parallel) {
         for (let line of parallel) {
             let longLine = getLongLine(line);
-            this.ctx.beginPath();
-            this.ctx.strokeStyle = this.hoveredColor;
-            this.ctx.setLineDash([5, 3]);
-            this.ctx.moveTo(longLine.getX1(), longLine.getY1());
-            this.ctx.lineTo(longLine.getX2(), longLine.getY2());
-            this.ctx.closePath();
-            this.ctx.stroke();
+            this._ctx.beginPath();
+            this._ctx.strokeStyle = this._hoveredColor;
+            this._ctx.setLineDash([5, 3]);
+            this._ctx.moveTo(longLine.getX1(), longLine.getY1());
+            this._ctx.lineTo(longLine.getX2(), longLine.getY2());
+            this._ctx.closePath();
+            this._ctx.stroke();
         }
     },
 
     getLeft() {
-        return this.left;
+        return this._left;
     },
 
     getTop() {
-        return this.top;
+        return this._top;
     },
 
     getValueObject() {
