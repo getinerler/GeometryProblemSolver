@@ -170,9 +170,9 @@ const TestData = {
 
             let angles = [
                 new Angle(dots[4], imgLines[1], imgLines[3]).setValue(120),
-                new Angle(dots[4], imgLines[3], imgLines[0]).setValue(60),
+                new Angle(dots[4], imgLines[3], imgLines[0]),
                 new Angle(dots[4], imgLines[0], imgLines[2]).setValue('?'),
-                new Angle(dots[4], imgLines[2], imgLines[1]).setValue(60)
+                new Angle(dots[4], imgLines[2], imgLines[1])
             ];
 
             return {

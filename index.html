@@ -34,6 +34,7 @@
   <script type="module" src="./modules/equations/gcd.js"></script>
 
   <script type="module" src="./modules/graphic/buttonStates/lineState.js"></script>
+  <script type="module" src="./modules/graphic/buttonStates/triangleState.js"></script>
   <script type="module" src="./modules/graphic/canvas.js"></script>
   <script type="module" src="./modules/graphic/drawing.js"></script>
   <script type="module" src="./modules/graphic/geoHelper.js"></script>
@@ -68,6 +69,12 @@
             <line x1="2" y1="2" x2="15" y2="15" />
           </svg>
         </button>
+        <button class="canvasButton" id="triangleButton" title="Draw Triangle">
+          <svg style="stroke-width:5px;fill:none" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 100 100">
+            <polygon points="50,10 90,90 10,90"/>
+          </svg>
+          
+        </button>
         <button class="canvasButton" id="equalButton" title="Select Equals">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" width="12" height="12">
             <path
@@ -79,7 +86,7 @@
         <div> </div>
         <button class="canvasButton" id="resetButton" title="Reset">
           <svg fill="red" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" viewBox="0 0 408.483 408.483"
+            xmlns:xlink="http://www.w3.org/1999/xlink" width="15px" height="15px" viewBox="0 0 408.483 408.483"
             xml:space="preserve">
             <g>
               <g>
@@ -97,7 +104,7 @@
           </svg>
         </button>
         <button class="canvasButton" id="solveButton" title="Solve">
-          <svg style="stroke:none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <svg style="stroke:none" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 20 20">
             <polygon points="5 3 19 12 5 21" fill="#4CAF50" />
           </svg>
         </button>

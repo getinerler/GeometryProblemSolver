@@ -3,11 +3,17 @@
 import Canvas from '../graphic/canvas.js';
 import CanvasElements from '../../models/graphic/canvasElements.js';
 import { dotOnLine, dotsCloser, anglesCloser, dotBetweenAngle } from './geoHelper.js';
-import { dotOnLineSegment } from './geoHelper.js';
+import { dotOnLineSegment, getLineAngle } from './geoHelper.js';
+import { getDotsLineRatio, getDotOnLineWithRatio } from './geoHelper.js';
 import { getQuestionText } from './texts.js';
 import LineState from './buttonStates/lineState.js';
 import EquivalenceState from './buttonStates/equivalenceState.js';
 import { resetNames } from './names.js';
+import Dot from '../../models/graphic/dot.js';
+import Line from '../../models/graphic/line.js';
+import Parallel from '../../models/graphic/parallel.js';
+import Angle from '../../models/graphic/angle.js';
+import TriangleState from './buttonStates/triangleState.js';
 
 function Drawing() {
     this._canvas = null;
@@ -52,6 +58,208 @@ Drawing.prototype = {
             self.updateQuestionText();
         });
         return this;
+    },
+
+    createDot(x, y) {
+        let hovered = this._elements.hoveredObject;
+        let dot = hovered && hovered.type === 'dot' ? hovered.obj : new Dot(x, y);
+        this._elements.addDot(dot);
+        return dot;
+    },
+
+    createNewLine(dot1, dot2) {
+        let line;
+        if (!this._elements.hoveredObject) {
+            line = new Line(dot1, dot2);
+            this.saveTempParallels(line);
+            this._elements.addLine(line);
+        } else {
+            let hovered = this._elements.hoveredObject;
+            if (hovered.type === 'dot') {
+                line = new Line(dot1, dot2);
+                this.saveTempParallels(line);
+                this._elements.addLine(line);
+            } else if (hovered.type === 'line') {
+                line = new Line(dot1, dot2);
+                this.saveTempParallels(line);
+                this._elements.addLine(line);
+                this.handleDotOnLine(hovered.obj, dot2);
+            }
+        }
+        this.handleIntersectionDots(line);
+        this.arrangeAngles(dot2);
+    },
+
+    createSegmentLines(targetLine, dot) {
+        let oneOfOtherLines = dot.getIntersectionLines()
+            .find(function (x) {
+                return x !== targetLine;
+            })
+        if (oneOfOtherLines.isSegment()) {
+            oneOfOtherLines = oneOfOtherLines.getBase();
+        }
+
+        for (let seg of targetLine.getSegments()) {
+            let intrDot = lineIntersect(oneOfOtherLines, seg);
+            if (!intrDot) {
+                continue;
+            }
+            if (dotsCloser(intrDot, seg.getDot1())) {
+                continue;
+            }
+            if (dotsCloser(intrDot, seg.getDot2())) {
+                continue;
+            }
+            let base = seg.getBase();
+            let seg1 = new Line(seg.getDot1(), dot).setBase(base);
+            let seg2 = new Line(dot, seg.getDot2()).setBase(base);
+            base.addSegment(seg1);
+            base.addSegment(seg2);
+            dot.setBaseLine(base);
+            dot.removeIntersection(targetLine);
+            dot.addIntersectionLine(seg1);
+            dot.addIntersectionLine(seg2);
+            base.removeSegment(seg);
+            this.updateAnglesAfterSegmentation(seg, seg1, seg2);
+            return;
+        }
+        if (targetLine.isSegment()) {
+            let base = targetLine.getBase();
+            let seg1 = new Line(targetLine.getDot1(), dot).setBase(base);
+            let seg2 = new Line(dot, targetLine.getDot2()).setBase(base);
+            base.addSegment(seg1);
+            base.addSegment(seg2);
+            dot.setBaseLine(base);
+            dot.removeIntersection(targetLine);
+            dot.addIntersectionLine(seg1);
+            dot.addIntersectionLine(seg2);
+            this.updateAnglesAfterSegmentation(targetLine, seg1, seg2);
+            base.removeSegment(targetLine);
+        } else {
+            let line1 = new Line(targetLine.getDot1(), dot).setBase(targetLine);
+            let line2 = new Line(dot, targetLine.getDot2()).setBase(targetLine);
+            targetLine.addSegment(line1);
+            targetLine.addSegment(line2);
+            this.updateAnglesAfterSegmentation(targetLine, line1, line2);
+            dot.removeIntersection(targetLine);
+            dot.addIntersectionLine(line1);
+            dot.addIntersectionLine(line2);
+        }
+    },
+
+    arrangeAngles(dot) {
+        this._elements.angles = this._elements.angles.filter((x) => x.getDot() !== dot);
+
+        if (dot.isIntersectionDot() || dot.isOnLine()) {
+            let lines = dot.getIntersectionLines()
+                .map(function (line) {
+                    line.setAngle(getLineAngle(line, dot));
+                    return line;
+                })
+                .sort(function (line1, line2) {
+                    if (line1.getAngle() > line2.getAngle()) {
+                        return 1;
+                    } else if (line1.getAngle() < line2.getAngle()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+
+            for (let i = 0; i < lines.length; i++) {
+                let line1 = lines[i];
+                let line2 = lines[(i + 1) % lines.length];
+                let newAngle = new Angle(dot).setLine1(line1).setLine2(line2);
+                if (line1.getBaseOrSelf() === line2.getBaseOrSelf()) {
+                    newAngle.setValue(180);
+                }
+                this._elements.angles.push(newAngle);
+            }
+        } else {
+            let connectedLines = this._elements.lines.filter((x) => x.isLineEnd(dot));
+            if (connectedLines.length === 0) {
+                return;
+            }
+            for (let i = 0; i < connectedLines.length; i++) {
+                let line1 = connectedLines[i];
+                let line2 = connectedLines[(i + 1) % connectedLines.length];
+                if (line1 === line2) {
+                    continue;
+                }
+                this._elements.angles.push(new Angle(dot).setLine1(line1).setLine2(line2));
+            }
+        }
+    },
+
+    saveTempParallels(newLine) {
+        if (newLine) {
+            if (this._elements.parallelsTemp.length === 0) {
+                this._elements.parallelsTemp.push([newLine]);
+            } else {
+                this._elements.parallelsTemp[0].push(newLine);
+            }
+        }
+        for (let parallelTemp of this._elements.parallelsTemp) {
+            let found = false;
+            for (let parallel of this.getParallels()) {
+                if (parallel.containsList(parallelTemp)) {
+                    found = true;
+                    for (let line of parallelTemp) {
+                        if (!parallel.contains(line)) {
+                            parallel.add(line);
+                        }
+                    }
+                }
+            }
+            if (!found) {
+                this.addParallel(new Parallel(parallelTemp));
+            }
+        }
+        this._elements.parallelsTemp = [];
+    },
+
+    handleIntersectionDots(movingLine) {
+        for (let intDot of this._elements.intersectionDots) {
+            this.handleLineIntersection(movingLine, intDot)
+        }
+        this._elements.intersectionDots = [];
+    },
+
+    handleLineIntersection(movingLine, intDot) {
+        intDot.addIntersectionLine(movingLine);
+        let newDot = intDot.createDot();
+        this._elements.addDot(newDot);
+        for (let line of newDot.getIntersectionLines()) {
+            this.createSegmentLines(line, newDot);
+        }
+        this.arrangeAngles(newDot);
+    },
+
+    updateAnglesAfterSegmentation(deleted, new1, new2) {
+        for (let ang of this._elements.angles) {
+            if (ang.getLine1() === deleted) {
+                ang.setLine1(new1.isLineEnd(ang.getDot()) ? new1 : new2);
+            }
+            if (ang.getLine2() === deleted) {
+                ang.setLine2(new1.isLineEnd(ang.getDot()) ? new1 : new2);
+            }
+        }
+    },
+
+    handleDotOnLine(targetLine, dot) {
+        dot.setBaseLine(targetLine);
+        dot.setLineRatio(getDotsLineRatio(dot, targetLine));
+        let newDotXY = getDotOnLineWithRatio(dot);
+        dot.setX(newDotXY.getX());
+        dot.setY(newDotXY.getY());
+
+        let dotLines = this._elements.lines.filter((x) => x.isLineEnd(dot));
+        for (let line of dotLines) {
+            dot.addIntersectionLine(line);
+        }
+
+        this.createSegmentLines(targetLine, dot);
+        this.arrangeAngles(dot);
     },
 
     updateHovered() {
@@ -192,6 +400,10 @@ Drawing.prototype = {
 
     setLineState() {
         this._buttonState = new LineState(this, this._elements, this._canvas);
+    },
+
+    setTriangleState() {
+        this._buttonState = new TriangleState(this, this._elements, this._canvas);
     },
 
     setEquivalenceState() {

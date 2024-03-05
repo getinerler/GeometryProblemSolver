@@ -56,6 +56,13 @@ App.prototype = {
 
         });
 
+        document.getElementById("triangleButton").addEventListener('click', function () {
+            self.unselectCanvasButtons();
+            document.getElementById('triangleButton').classList.add('selected');
+            self._drawing.setTriangleState();
+
+        });
+
         document.getElementById('equalButton').addEventListener('click', function () {
             self.unselectCanvasButtons();
             document.getElementById('equalButton').classList.add('selected');
