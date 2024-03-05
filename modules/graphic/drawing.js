@@ -14,6 +14,7 @@ import Line from '../../models/graphic/line.js';
 import Parallel from '../../models/graphic/parallel.js';
 import Angle from '../../models/graphic/angle.js';
 import TriangleState from './buttonStates/triangleState.js';
+import RectangleState from './buttonStates/rectangleState.js';
 
 function Drawing() {
     this._canvas = null;
@@ -403,7 +404,11 @@ Drawing.prototype = {
     },
 
     setTriangleState() {
-        this._buttonState = new TriangleState(this, this._elements, this._canvas);
+        this._buttonState = new TriangleState(this);
+    },
+
+    setRectangleState() {
+        this._buttonState = new RectangleState(this);
     },
 
     setEquivalenceState() {

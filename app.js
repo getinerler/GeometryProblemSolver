@@ -60,8 +60,14 @@ App.prototype = {
             self.unselectCanvasButtons();
             document.getElementById('triangleButton').classList.add('selected');
             self._drawing.setTriangleState();
-
         });
+
+        document.getElementById("rectangleButton").addEventListener('click', function () {
+            self.unselectCanvasButtons();
+            document.getElementById('rectangleButton').classList.add('selected');
+            self._drawing.setRectangleState();
+        });
+
 
         document.getElementById('equalButton').addEventListener('click', function () {
             self.unselectCanvasButtons();
