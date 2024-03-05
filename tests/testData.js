@@ -519,8 +519,8 @@ const TestData = {
                 new Dot(364, 255, 'C')
             ];
             let lines = [
-                new Line(dots[0], dots[1]).setValue(10), // AB
-                new Line(dots[2], dots[0]).setValue(10), // CA
+                new Line(dots[0], dots[1]), // AB
+                new Line(dots[2], dots[0]), // CA
                 new Line(dots[2], dots[1]) // CB
             ];
             let angles = [
@@ -536,7 +536,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [],
-                equivalents: [],
+                equivalents: [new Equivalence([lines[0], lines[1]])],
                 question: angles[5]
             }
         }
