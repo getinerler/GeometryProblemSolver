@@ -228,11 +228,29 @@ Term.prototype = {
     simplify() {
         let newTerm = new Term();
 
+        for (let var1 of this._variables) {
+            if (var1.getExponent() === 0) {
+                continue;
+            }
+            let found = newTerm.getVariables().find((x) => x.getName() === var1.getName());
+            if (found) {
+                found.setExponent(found.getExponent() + var1.getExponent());
+                if (found.getExponent() === 0) {
+                    newTerm._variables.splice(newTerm._variables.indexOf(found), 1);
+                }
+            } else {
+                newTerm.addVariable(var1.copy());
+            }
+        }
+
         for (let val of this._values) {
             if (val.getNumber() === 0) {
                 return new Term();
             }
             if (val.getExponent() === 0) {
+                continue;
+            }
+            if (val.getNumber() === 1 && newTerm.getVariables().length > 0) {
                 continue;
             }
             let calculated = Math.pow(val.getNumber(), Math.abs(val.getExponent()));
@@ -268,21 +286,6 @@ Term.prototype = {
                     calculated,
                     val.getExponent() > 0 ? 1 : -1,
                     val.getRoot()));
-            }
-        }
-
-        for (let var1 of this._variables) {
-            if (var1.getExponent() === 0) {
-                continue;
-            }
-            let found = newTerm.getVariables().find((x) => x.getName() === var1.getName());
-            if (found) {
-                found.setExponent(found.getExponent() + var1.getExponent());
-                if (found.getExponent() === 0) {
-                    newTerm._variables.splice(newTerm._variables.indexOf(found), 1);
-                }
-            } else {
-                newTerm.addVariable(var1.copy());
             }
         }
 
