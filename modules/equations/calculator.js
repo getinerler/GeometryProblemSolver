@@ -238,7 +238,7 @@ Calculator.prototype = {
 
     simplifyLeft(eq, parsed) {
         let sum = parsed.leftValues.reduce((acc, val) => acc.add(val), new Term());
-        let term = this.getSideRemains(parsed.rightValues);
+        let term = this.getSideRemains(parsed.rightValues) || new Term(0);
         let newEqRight = term.subtract(sum);
 
         let newEq = new Equation();
@@ -362,7 +362,9 @@ Calculator.prototype = {
         newEq.setCreation('Known values simplified.');
         newEq.setAncestors(foundEquations.concat([eq]));
         newEq.setAncestorIds(foundEquations.map((x) => x.getCount()).concat([parsed.count]));
-        newEq.addRightTerm(newRight);
+        if (newRight) {
+            newEq.addRightTerm(newRight);
+        }
         for (let el of newLeftTerms) {
             newEq.addLeftTerm(el);
         }
@@ -433,7 +435,7 @@ Calculator.prototype = {
         if (elements && elements.length > 0) {
             return elements[0];
         }
-        return new Term(0);
+        return null;
     },
 
     addEquation(eq) {
