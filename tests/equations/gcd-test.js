@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(gcd === 1);
     });
 
+    it('gcd(3, 2) = 1', function () {
+        let gcd = getGcd(3, 2);
+        assert(gcd === 1);
+    });
+
     it('gcd(30, 6) = 6', function () {
         let gcd = getGcd(30, 6);
         assert(gcd === 6);
