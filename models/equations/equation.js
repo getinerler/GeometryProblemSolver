@@ -195,6 +195,16 @@ Equation.prototype = {
         this._right.push(term);
     },
 
+    removeLeftTerm(term) {
+        this._left = this._left.filter((x) => x !== term);
+        this._left = this._left.sort(this.sortTerms);
+    },
+
+    removeRightTerm(term) {
+        this._right = this._right.filter((x) => x !== term);
+        this._right = this._right.sort(this.sortTerms);
+    },
+
     sortTerms(t1, t2) {
         if (t1.isVariable() && !t2.isVariable()) {
             return 1;

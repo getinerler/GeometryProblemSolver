@@ -561,6 +561,12 @@ Term.prototype = {
         return sameArray;
     },
 
+    isNaturalNumber() {
+        return this.isValue() &&
+            this._values.length === 1 &&
+            this._values[0].isNaturalNumber();
+    },
+
     is0() {
         if (this._values.length === 0 && this._variables.length === 0) {
             return true;

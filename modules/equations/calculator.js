@@ -200,18 +200,39 @@ Calculator.prototype = {
         newEq.setCreation('Left and right elements fixed.');
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([eq.getCount()]);
+
+        let rightNatural = null;
+
         for (let term of eq.getLeft()) {
-            newEq.addLeftTerm(term.copy());
-        }
-        let rightValueCount = 0;
-        for (let term of eq.getRight()) {
-            if (term.isVariable() || rightValueCount < 1) {
-                newEq.addLeftTerm(term.copy().multiply(new Term(-1)));
-            } else {
-                newEq.addRightTerm(term.copy());
-                rightValueCount++;
+            if (term.isNaturalNumber()) {
+                if (rightNatural === null) {
+                    rightNatural = term.copy().multiply(new Term(-1));
+                } else {
+                    rightNatural = rightNatural.add(term.copy().multiply(new Term(-1)));
+                }
+            } else if (term.isValue() || term.isVariable()) {
+                newEq.addLeftTerm(term.copy());
             }
         }
+
+        for (let term of eq.getRight()) {
+            if (term.isNaturalNumber()) {
+                if (rightNatural === null) {
+                    rightNatural = term.copy();
+                } else {
+                    rightNatural = rightNatural.add(term.copy());
+                }
+            } else if (term.isValue()) {
+                newEq.addRightTerm(term.copy());
+            } else if (term.isVariable()) {
+                newEq.addLeftTerm(term.copy().multiply(new Term(-1)));
+            }
+        }
+
+        if (rightNatural) {
+            newEq.addRightTerm(rightNatural);
+        }
+
         this.addEquation(newEq);
     },
 
