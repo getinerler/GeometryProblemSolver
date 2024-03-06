@@ -2,8 +2,9 @@
 
 import Line from '../../models/graphic/line.js';
 import { getLineAngleRadian, getAngleTextPoint, getLineTextPoint } from './geoHelper.js';
-import { getLongLine, get90DegreeSymbolPoints } from './geoHelper.js';
+import { getLongLine, get90DegreeSymbolPoints, getAngleSimilarSymbolI } from './geoHelper.js';
 import { getLineSimilarSymbolLine1, getLineSimilarSymbolLine2 } from './geoHelper.js';
+
 function Canvas(canvas, canvasObjects) {
     if (!canvas) {
         throw 'Canvas.Canvas: No canvas object.';
@@ -98,8 +99,12 @@ Canvas.prototype = {
         this._ctx.closePath();
         this._ctx.stroke();
 
-        if (this._elements.equivalents.length > 0 &&
-            this._elements.equivalents[0].contains(line)) {
+        if (line.getValue()) {
+            return;
+        }
+
+        let equivalents = this._elements.equivalents.filter((x) => x.getType() === 'Line');
+        if (equivalents.length > 0 && equivalents[0].contains(line)) {
             let similarLine = getLineSimilarSymbolLine1(line);
             this._ctx.beginPath();
             this._ctx.setLineDash([0]);
@@ -109,8 +114,7 @@ Canvas.prototype = {
             this._ctx.stroke();
         }
 
-        if (this._elements.equivalents.length > 1 &&
-            this._elements.equivalents[1].contains(line)) {
+        if (equivalents.length > 1 && equivalents[1].contains(line)) {
             let similarLine = getLineSimilarSymbolLine2(line);
             this._ctx.beginPath();
             this._ctx.setLineDash([0]);
@@ -183,6 +187,36 @@ Canvas.prototype = {
         } else {
             this._ctx.setLineDash([0]);
             this._ctx.strokeStyle = this._blackColor;
+        }
+
+        if (ang.getValue()) {
+            return;
+        }
+
+        let equivalents = this._elements.equivalents
+            .filter((x) => x.getType() === 'Angle' || x.getType() === 'AngleSum');
+        if ((equivalents.length > 0 &&
+            equivalents[0].getType() === "AngleSum" &&
+            equivalents[0].getElements()
+                .some((x) => x.getAngles().length === 1 && x.getAngles()[0] === ang))
+            ||
+            equivalents.length > 0 &&
+            equivalents[0].getType() === "Angle" &&
+            equivalents[0].contains(ang)) {
+            let dotPoint = getAngleSimilarSymbolI(ang);
+            this._ctx.beginPath();
+            this._ctx.setLineDash([0]);
+            this._ctx.arc(dotPoint.getX(), dotPoint.getY(), this._dotSize, 0, 2 * Math.PI);
+            this._ctx.closePath();
+            this._ctx.fill();
+
+            let ang1 = getLineAngleRadian(ang.getLine1(), ang.getDot());
+            let ang2 = getLineAngleRadian(ang.getLine2(), ang.getDot());
+            this._ctx.beginPath();
+            this._ctx.setLineDash([0]);
+            this._ctx.arc(ang.getDot().getX(), ang.getDot().getY(), 20, ang1, ang2);
+            this._ctx.lineTo(ang.getDot().getX(), ang.getDot().getY());
+            this._ctx.stroke();
         }
     },
 

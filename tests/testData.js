@@ -213,6 +213,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [new Parallel([lines[0], lines[1]])],
+                equivalents: [],
                 question: angles[3]
             }
         },
@@ -245,6 +246,7 @@ const TestData = {
                 lines,
                 angles,
                 parallels: [new Parallel([lines[0], lines[2]])],
+                equivalents: [],
                 question: angles[2]
             }
         }
@@ -492,17 +494,17 @@ const TestData = {
             let angles = [
                 new Angle(dots[0], lines[0], lines[1]),
                 new Angle(dots[0], lines[1], lines[0]),
-                new Angle(dots[1], lines[0], lines[2]).setValue(50),
+                new Angle(dots[1], lines[0], lines[2]),
                 new Angle(dots[1], lines[2], lines[0]),
                 new Angle(dots[2], lines[1], lines[2]),
-                new Angle(dots[2], lines[2], lines[1]).setValue(50)
+                new Angle(dots[2], lines[2], lines[1])
             ];
             return {
                 dots,
                 lines,
                 angles,
                 parallels: [],
-                equivalents: [],
+                equivalents: [new Equivalence([angles[2], angles[5]])],
                 question: lines[1]
             }
         }

@@ -193,6 +193,26 @@ export function getDotOnLineWithRatio(dot) {
     return new Point(x, y);
 }
 
+export function getAngleSimilarSymbolI(ang) {
+    let d = new Point(
+        ang.getDot().getX() + angleTextDistance  / 2,
+        ang.getDot().getY());
+    let smaller = getAngle(
+        ang.getDot(),
+        ang.getLine1().getDot1() === ang.getDot() ?
+            ang.getLine1().getDot2() :
+            ang.getLine1().getDot1());
+    let greater = getAngle(
+        ang.getDot(),
+        ang.getLine2().getDot1() === ang.getDot() ?
+            ang.getLine2().getDot2() :
+            ang.getLine2().getDot1());
+    let middle = greater > smaller ?
+        (greater - smaller) / 2 + smaller :
+        (360 - smaller + greater) / 2 + smaller;
+    return rotate(ang.getDot(), d, middle);
+}
+
 export function getAngleTextPoint(ang, textWidth) {
     let d = new Point(
         ang.getDot().getX() + angleTextDistance - (textWidth / 2),
