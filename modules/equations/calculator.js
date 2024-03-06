@@ -298,7 +298,7 @@ Calculator.prototype = {
         }
 
         newEq.addLeftTerm(new Term(null, oldVariableTerm.getVariables()[0].copy()));
-        newEq.addRightTerm(newTerm);
+        newEq.addRightTerm(newTerm.simplify());
 
         this.addEquation(newEq);
     },
