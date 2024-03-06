@@ -13,6 +13,7 @@ import Calculator from '../../modules/equations/calculator.js';
 import { getLineAngle, getAngleDegree } from '../graphic/geoHelper.js';
 import EquationTreeCreator from './equationTreeCreator.js';
 import Equivalence from '../../models/graphic/equivalence.js';
+import Creations from '../equations/creations.js';
 
 function Solve(question) {
     this.question = question;
@@ -149,7 +150,7 @@ Solve.prototype = {
             return;
         }
         let eq = new Equation();
-        eq.setCreation('Segment\'s length sum equal to line length.');
+        eq.setCreation(Creations.SegmentSum);
         eq.addRightTerm(this.getTermFromValue(line));
         for (let seg of line.getSegments()) {
             eq.addLeftTerm(this.getTermFromValue(seg));
@@ -159,7 +160,7 @@ Solve.prototype = {
 
     checkSupplementaryAngleOnLine(dot) {
         let eq = new Equation();
-        eq.setCreation('Supplementary angles equal to 180.');
+        eq.setCreation(Creations.Supplementary180);
         for (let ang of this.angles) {
             if (ang.getDot() !== dot) {
                 continue;
@@ -192,7 +193,7 @@ Solve.prototype = {
             arr.unshift(ang1);
 
             let eq = new Equation();
-            eq.setCreation('Supplementary angles.');
+            eq.setCreation(Creations.SupplementaryAngles);
             for (let ang of arr) {
                 eq.addLeftTerm(this.getTermFromValue(ang));
             }
@@ -284,7 +285,7 @@ Solve.prototype = {
             return null;
         }
         let eq = new Equation();
-        eq.setCreation('Round angle equals to 360.');
+        eq.setCreation(Creations.Round360);
         eq.addRightTerm(new Term(360));
         for (let angle of dotAngles) {
             eq.addLeftTerm(this.getTermFromValue(angle));
@@ -307,7 +308,7 @@ Solve.prototype = {
             let ang2 = angles[i + halfLength];
 
             let eq = new Equation();
-            eq.setCreation('Reverse angles.');
+            eq.setCreation(Creations.ReverseAngles);
             eq.addLeftTerm(this.getTermFromValue(ang1));
             eq.addRightTerm(this.getTermFromValue(ang2));
 
@@ -323,14 +324,14 @@ Solve.prototype = {
 
         if (Math.abs(deg1 - deg2) > 30) {
             let eq = new Equation();
-            eq.setCreation('Corresponding angles.');
+            eq.setCreation(Creations.CorrespondingAngles);
             eq.addLeftTerm(this.getTermFromValue(ang1));
             eq.addLeftTerm(this.getTermFromValue(ang2));
             eq.addRightTerm(new Term(180));
             this.equations.push(eq);
         } else {
             let eq = new Equation();
-            eq.setCreation('Corresponding angles.');
+            eq.setCreation(Creations.CorrespondingAngles);
             eq.addLeftTerm(this.getTermFromValue(ang1));
             eq.addRightTerm(this.getTermFromValue(ang2));
             this.equations.push(eq);
@@ -342,7 +343,7 @@ Solve.prototype = {
             return;
         }
         let eq = new Equation();
-        eq.setCreation('Triangle angles equal to 180.');
+        eq.setCreation(Creations.Triangle180);
         eq.addRightTerm(new Term(180));
         for (let angSum of tri.getAngles()) {
             for (let ang of angSum.getAngles()) {
@@ -403,7 +404,7 @@ Solve.prototype = {
                     ang2.getLine1();
 
                 let eq = new Equation();
-                eq.setCreation('Isosceles triangle lines.');
+                eq.setCreation(Creations.IsoscelesLines);
                 eq.addLeftTerm(this.getTermFromValue(line1));
                 eq.addRightTerm(this.getTermFromValue(line2));
                 this.equations.push(eq);
@@ -433,7 +434,7 @@ Solve.prototype = {
                 let ang2 = otherAngs[1];
 
                 let eq = new Equation();
-                eq.setCreation('Isosceles triangle angles.');
+                eq.setCreation(Creations.IsoscelesAngles);
                 for (let ang of ang1.getAngles()) {
                     eq.addLeftTerm(this.getTermFromValue(ang));
                 }
@@ -456,7 +457,7 @@ Solve.prototype = {
             return;
         }
         let eq = new Equation();
-        eq.setCreation('Pythagorian Theorem.');
+        eq.setCreation(Creations.PythagorianTheorem);
         for (let i = 0; i < 2; i++) {
             eq.addLeftTerm(this.getTermFromValue(sideLines[i], 2));
         }
@@ -479,7 +480,7 @@ Solve.prototype = {
             if (line.getDot1() === angle90.getDot() && line.getDot2().isBaseLine(hypothenus) ||
                 line.getDot2() === angle90.getDot() && line.getDot1().isBaseLine(hypothenus)) {
                 let eq = new Equation();
-                eq.setCreation('Geometric Mean Theorem.');
+                eq.setCreation(Creations.GeometricMeanTheorem);
                 eq.addLeftTerm(this.getTermFromValue(line, 2));
 
                 //TODO update codes for multiple line segments
@@ -508,7 +509,8 @@ Solve.prototype = {
                     continue;
                 }
                 let eq = new Equation();
-                eq.setCreation('Similar triangle (' + sim.toString() + ') angles.');
+                eq.setCreation(Creations.SimilarAngles, true);
+                eq.setCreationText(Creations.SimilarAngles.getExplanation(sim));
                 for (let ang of angSum1.getAngles()) {
                     eq.addLeftTerm(this.getTermFromValue(ang));
                 }
@@ -526,8 +528,8 @@ Solve.prototype = {
                 let line2b = sim.getLines2()[(i + 1) % 3];
 
                 let eq = new Equation();
-                eq.setCreation('Similar triangle (' + sim.toString() + ') lines.');
-
+                eq.setCreation(Creations.SimilarLines, true);
+                eq.setCreationText(Creations.SimilarLines.getExplanation(sim));
                 let termLine1a = this.getTermFromValue(line1a);
                 let termLine2a = this.getTermFromValue(line2a, -1);
                 let termLine1b = this.getTermFromValue(line1b);
@@ -543,7 +545,7 @@ Solve.prototype = {
 
     checkRectangle360(rect) {
         let eq = new Equation();
-        eq.setCreation('Rectangle angles equal to 360.');
+        eq.setCreation(Creations.Rectangle360);
         eq.addRightTerm(new Term(360));
         for (let angSum of rect.getAngles()) {
             for (let ang of angSum.getAngles()) {

@@ -1,11 +1,13 @@
 'use strict';
 
 import Term from '../../models/equations/term.js';
+import Creations from '../../modules/equations/creations.js';
 
 window.equationCounter = 1;
 
 function Equation() {
     this._creation = null;
+    this._creationText = null;
     this._ancestors = [];
     this._ancestorIds = [];
     this._count = window.equationCounter++;
@@ -18,7 +20,7 @@ Equation.prototype = {
 
     subtract(eq) {
         let newEq = new Equation();
-        newEq.setCreation('Subtraction.');
+        newEq.setCreation(Creations.Subtraction);
         newEq.setAncestors(this, eq);
         newEq.setAncestorIds([this.getCount(), eq.getCount()]);
 
@@ -89,7 +91,7 @@ Equation.prototype = {
 
     multiplyTerm(term) {
         let newEquation = new Equation();
-        newEquation.setCreation('Term multiplied');
+        newEquation.setCreation(Creations.TermMultiplied);
         newEquation.setAncestors(this);
         newEquation.setAncestorIds([this.getCount()]);
         for (let el of this._right.map((x) => x.multiply(term))) {
@@ -113,9 +115,21 @@ Equation.prototype = {
         return this._creation;
     },
 
-    setCreation(creation) {
+    setCreation(creation, skipText) {
         this._creation = creation;
+        if (!skipText) {
+            console.log(creation);
+            this._creationText = this._creation.getExplanation();
+        }
         return this;
+    },
+
+    getCreationText() {
+        return this._creationText;
+    },
+
+    setCreationText(text) {
+        return this._creationText = text;
     },
 
     getAncestors() {

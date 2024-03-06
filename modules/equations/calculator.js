@@ -5,6 +5,7 @@ let trialLimit = 1000;
 import Term from '../../models/equations/term.js';
 import Value from '../../models/equations/value.js';
 import Equation from '../../models/equations/equation.js';
+import Creations from '../../modules/equations/creations.js'
 
 function Calculator(equations, searched, angleNames, variables) {
     this.equations = equations;
@@ -171,7 +172,7 @@ Calculator.prototype = {
 
         let secondMultiplied = eq2.multiplyTerm(remainder1);
         let newEq = firstMultiplied.subtract(secondMultiplied);
-        newEq.setCreation("Subtraction.");
+        newEq.setCreation(Creations.Subtraction);
         newEq.setAncestors([eq1, eq2]);
         newEq.setAncestorIds([eq1.getCount(), eq2.getCount()]);
 
@@ -183,7 +184,7 @@ Calculator.prototype = {
 
     simplifyValueExp(eq) {
         let newEq = new Equation();
-        newEq.setCreation('Value exponents simplified.');
+        newEq.setCreation(Creations.ValueExponentsSimplified);
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([eq.getCount()]);
         for (let term of eq.getLeft()) {
@@ -197,7 +198,7 @@ Calculator.prototype = {
 
     passRightVariablesToLeft(eq) {
         let newEq = new Equation();
-        newEq.setCreation('Left and right elements fixed.');
+        newEq.setCreation(Creations.LeftAndRightElementsFixed);
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([eq.getCount()]);
 
@@ -242,7 +243,7 @@ Calculator.prototype = {
         let newEqRight = term.subtract(sum);
 
         let newEq = new Equation();
-        newEq.setCreation('Left values simplified.');
+        newEq.setCreation(Creations.LeftValuesSimplified);
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([parsed.count]);
         newEq.addRightTerm(newEqRight);
@@ -267,7 +268,7 @@ Calculator.prototype = {
         newEq.addRightTerm(this.getSideRemains(parsed.rightValues).copy());
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([parsed.count]);
-        newEq.setCreation('Variable simplified.');
+        newEq.setCreation(Creations.VariableSimplified);
 
         let newTerm = new Term();
         for (let val of unknown.getValues()) {
@@ -289,7 +290,7 @@ Calculator.prototype = {
         let newEq = new Equation();
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([parsed.count]);
-        newEq.setCreation('Coefficients simplified.');
+        newEq.setCreation(Creations.CoefficientsSimplified);
 
         let oldVariableTerm = eq.getLeft()[0];
         let newTerm = eq.getRight()[0].copy();
@@ -310,7 +311,7 @@ Calculator.prototype = {
                 .exp(unknownVariable.getRoot())
                 .root(unknownVariable.getExponent());
             let newEq = new Equation();
-            newEq.setCreation('Exponentiaton removed.');
+            newEq.setCreation(Creations.ExponentiatonRemoved);
             newEq.setAncestors([eq]);
             newEq.setAncestorIds([parsed.count]);
             newEq.addLeftTerm(new Term(null, unknownVariable.getVariable()));
@@ -319,7 +320,7 @@ Calculator.prototype = {
             this.changed = true;
         } else {
             let newEq = new Equation();
-            newEq.setCreation('Coefficient removed.');
+            newEq.setCreation(Creations.CoefficientRemoved);
             newEq.setAncestors([eq]);
             newEq.setAncestorIds([parsed.count]);
 
@@ -359,7 +360,7 @@ Calculator.prototype = {
         let foundEquations = founds.map((x) => x.equation);
 
         let newEq = new Equation();
-        newEq.setCreation('Known values simplified.');
+        newEq.setCreation(Creations.KnownValuesSimplified);
         newEq.setAncestors(foundEquations.concat([eq]));
         newEq.setAncestorIds(foundEquations.map((x) => x.getCount()).concat([parsed.count]));
         if (newRight) {
