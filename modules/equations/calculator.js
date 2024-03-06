@@ -201,14 +201,14 @@ Calculator.prototype = {
         newEq.setAncestors([eq]);
         newEq.setAncestorIds([eq.getCount()]);
 
-        let rightNatural = null;
+        let right = null;
 
         for (let term of eq.getLeft()) {
             if (term.isNaturalNumber()) {
-                if (rightNatural === null) {
-                    rightNatural = term.copy().multiply(new Term(-1));
+                if (right === null) {
+                    right = term.copy().multiply(new Term(-1));
                 } else {
-                    rightNatural = rightNatural.add(term.copy().multiply(new Term(-1)));
+                    right = right.add(term.copy().multiply(new Term(-1)));
                 }
             } else if (term.isValue() || term.isVariable()) {
                 newEq.addLeftTerm(term.copy());
@@ -217,10 +217,10 @@ Calculator.prototype = {
 
         for (let term of eq.getRight()) {
             if (term.isNaturalNumber()) {
-                if (rightNatural === null) {
-                    rightNatural = term.copy();
+                if (right === null) {
+                    right = term.copy();
                 } else {
-                    rightNatural = rightNatural.add(term.copy());
+                    right = right.add(term.copy());
                 }
             } else if (term.isValue()) {
                 newEq.addRightTerm(term.copy());
@@ -229,11 +229,11 @@ Calculator.prototype = {
             }
         }
 
-        if (rightNatural) {
-            newEq.addRightTerm(rightNatural);
+        if (right) {
+            newEq.addRightTerm(right);
         }
 
-        this.addEquation(newEq);
+        this.addEquation(this.checkNegatives(newEq));
     },
 
     simplifyLeft(eq, parsed) {
@@ -255,7 +255,7 @@ Calculator.prototype = {
         if (newEq.getLeft().length === 0) {
             return;
         }
-        this.addEquation(newEq);
+        this.addEquation(this.checkNegatives(newEq));
     },
 
     simplifyTermVariable(eq, parsed, unknown) {
@@ -298,7 +298,7 @@ Calculator.prototype = {
         }
 
         newEq.addLeftTerm(new Term(null, oldVariableTerm.getVariables()[0].copy()));
-        newEq.addRightTerm(newTerm.simplify());
+        newEq.addRightTerm(newTerm);
 
         this.addEquation(newEq);
     },
@@ -393,6 +393,25 @@ Calculator.prototype = {
             eq.setAnswer(true);
         }
         this.changed = true;
+    },
+
+    checkNegatives(eq) {
+        let leftPositive = eq.getLeft().find((x) => x.isPositive());
+        let rightPositive = eq.getRight().find((x) => x.isPositive());
+        if (!leftPositive && !rightPositive) {
+            let newEq = new Equation();
+            newEq.setCreation(eq.getCreation());
+            newEq.setAncestors(eq.getAncestors());
+            newEq.setAncestorIds(eq.getAncestorIds());
+            for (let left of eq.getLeft()) {
+                newEq.addLeftTerm(left.multiply(new Term(-1)));
+            }
+            for (let right of eq.getRight()) {
+                newEq.addRightTerm(right.multiply(new Term(-1)));
+            }
+            return newEq;
+        }
+        return eq;
     },
 
     simplifyValueExponents(term) {

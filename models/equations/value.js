@@ -102,6 +102,10 @@ Value.prototype = {
         return this._exponent === 1 && this._root === 1;
     },
 
+    isPositive() {
+        return this._number >= 1;
+    },
+
     exp(pow) {
         let newValue = this.copy();
         if (pow < 0) {
