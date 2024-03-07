@@ -68,16 +68,20 @@ p {
     border: 0.5px solid black;
     stroke: black;
 }
+
 .canvasButton.fill {
     fill: black;
 }
+
 .canvasButton.selected {
     border: 1px solid red;
     stroke: red;
 }
+
 .canvasButton.fill.selected {
     fill: red;
 }
+
 .textDiv {
     margin-top: 10px;
     box-sizing: border-box;
@@ -100,18 +104,28 @@ p {
 }
 
 #questionHeader {
-    color: grey;
+    color: black;
     display: none;
 }
 
 #answerHeader {
-    color: grey;
+    color: brown;
     display: none;
+}
+
+#showAllDiv {
+    color: grey;
 }
 
 hr {
     height: 1px;
     background-color: grey;
+    border: none;
+}
+
+.hrAnswer {
+    height: 1px;
+    background-color: brown;
     border: none;
 }
 
@@ -151,7 +165,7 @@ hr {
 .equationExplanation {
     color: grey;
     font-style: italic;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .testsTable,
