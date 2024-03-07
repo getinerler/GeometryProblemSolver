@@ -43,6 +43,11 @@ App.prototype = {
             let question = self._drawing.getAll();
             self._solve = new Solve(question).solve();
             document.getElementById('answerHeader').style.display = 'block';
+            if (self._solve.solved) {
+                document.getElementById("answerHeader").style.color = "green";
+            } else {
+                document.getElementById("answerHeader").style.color = "gray";
+            }
             self.showAnswer(self._solve);
         });
 
@@ -76,7 +81,7 @@ App.prototype = {
     showAnswer(solve) {
         let showAll = document.getElementById('showAll').checked;
         if (!solve.solved) {
-            showAsAnswer(solve.message);
+            this.showAsAnswer(solve.message);
         }
         this.showAsAnswer(getEquationsText(solve, showAll));
     },

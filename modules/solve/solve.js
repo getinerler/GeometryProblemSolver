@@ -34,16 +34,16 @@ function Solve(question) {
 Solve.prototype = {
 
     solve() {
-        // try {
-        window.equationCounter = 1;
-        return this.solveProblem();
-        // } catch (e) {
-        //     return {
-        //         'solved': false,
-        //         'equations': this.equations,
-        //         'message': e
-        //     };
-        // }
+        try {
+            window.equationCounter = 1;
+            return this.solveProblem();
+        } catch (e) {
+            return {
+                'solved': false,
+                'equations': this.equations,
+                'message': e
+            };
+        }
     },
 
     solveProblem() {

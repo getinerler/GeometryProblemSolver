@@ -118,7 +118,6 @@ Equation.prototype = {
     setCreation(creation, skipText) {
         this._creation = creation;
         if (!skipText) {
-            console.log(creation);
             this._creationText = this._creation.getExplanation();
         }
         return this;
@@ -261,9 +260,7 @@ Equation.prototype = {
     },
 
     toString() {
-        let str = '</br>';
-
-        str += '<b>' + this._count + '</b>. ';
+        let str = '';
 
         if (this._left.length === 0) {
             str += '0';

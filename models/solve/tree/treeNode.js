@@ -22,7 +22,7 @@ TreeNode.prototype = {
     },
 
     isLeaf() {
-        return this.children.length === 0;
+        return this._children.length === 0;
     },
 
     addChild(node) {
@@ -31,6 +31,10 @@ TreeNode.prototype = {
 
     hasChildren() {
         return !this.isLeaf;
+    },
+
+    getChildren() {
+        return this._children;
     },
 
     getParent() {

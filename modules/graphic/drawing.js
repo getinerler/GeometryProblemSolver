@@ -398,7 +398,7 @@ Drawing.prototype = {
         header.style.display = text ? 'block' : 'none';
         document.getElementById('questionText').innerHTML = text;
     },
-
+    
     setButtonState(state) {
         switch (state) {
             case 'line':

@@ -104,29 +104,26 @@ p {
 }
 
 #questionHeader {
-    color: black;
+    color: red;
     display: none;
+    text-decoration: underline;
+    margin-bottom: 10px;
 }
 
 #answerHeader {
-    color: brown;
+    color: green;
     display: none;
+    text-decoration: underline;
 }
 
 #showAllDiv {
+    font-size: 9px;
     color: grey;
+    display:inline-block;
 }
 
-hr {
-    height: 1px;
-    background-color: grey;
-    border: none;
-}
-
-.hrAnswer {
-    height: 1px;
-    background-color: brown;
-    border: none;
+#showAll {
+    height: 9px;
 }
 
 #canvas {

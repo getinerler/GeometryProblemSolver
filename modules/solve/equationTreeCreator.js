@@ -15,23 +15,22 @@ EquationTreeCreator.prototype = {
 
         let nodes = [];
         for (let eq of equations) {
-            if (eq.isAnswer()) {
-                nodes.push(new TreeNode(eq.getCount(), eq));
-            } else {
-                let node = new TreeNode(eq.getCount(), eq);
-                let parentNode = nodes.find((x) => x.getKey() === eq.getCount());
-                if (parentNode) {
-                    node.setParent(parentNode);
-                    parentNode.addChild(node);
-                }
-                nodes.push(node);
+            let node = new TreeNode(eq.getCount(), eq);
+            let parentNode = nodes
+                .find((x) => eq.getAncestorIds().indexOf(x.getValue().getCount()) > -1);
+            if (parentNode) {
+                node.setParent(parentNode);
+                parentNode.addChild(node);
             }
+            nodes.push(node);
         }
 
         let tree = new Tree();
         for (let node of nodes) {
             tree.insertNode(node);
         }
+
+        //console.log(tree)
         return tree;
     },
 
