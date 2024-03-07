@@ -196,9 +196,58 @@ export function getEquationsText(solve, showAll) {
         res += '</br>';
     }
 
-    res += getOnlyEquationsText(eqs, showAll);
-
+    if (showAll) {
+        res += getOnlyEquationsText(eqs, showAll);
+    } else {
+        res += getOrderedNodeString(tree, eqs);
+    }
     return res;
+}
+
+function getOrderedNodeString(tree, eqs) {
+    let orderedNodes = [];
+    let tempNodes = tree.getAll().filter((x) => x.isLeaf());
+    while (tempNodes.length > 0) {
+        let newList = [];
+        while (tempNodes.length > 0) {
+            let node = tempNodes.pop();
+            if (!orderedNodes.find((x) => x.getKey() === node.getKey())) {
+                orderedNodes.push(node);
+            }
+            let nodes = getNodeStringWithSingleParents(node);
+            for (let i = 0; i < nodes.length; i++) {
+                let node = nodes[i];
+                if (!orderedNodes.find((x) => x.getKey() === node.getKey()) &&
+                    i !== nodes.length - 1) {
+                    orderedNodes.push(node);
+                }
+                if (i === nodes.length - 1) {
+                    newList.push(node);
+                }
+            }
+        }
+        tempNodes = newList;
+    }
+    return orderedNodes
+        .map((x) => getOnlyEquationText(eqs, x.getValue()))
+        .join("</br>");
+}
+
+function getNodeStringWithSingleParents(node) {
+    let list = [];
+    let nodeTemp = node.getParent();
+    let counter = 0;
+    while (counter++ < 300) {
+        if (!nodeTemp) {
+            break
+        }
+        list.push(nodeTemp);
+        if (nodeTemp.getChildren().length !== 1) {
+            break;
+        }
+        nodeTemp = nodeTemp.getParent();
+    }
+    return list;
 }
 
 export function getOnlyEquationsText(eqs, showAll) {
