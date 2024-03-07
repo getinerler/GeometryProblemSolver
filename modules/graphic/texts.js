@@ -102,9 +102,7 @@ function codeText(elements, parallels, question) {
     text += '];';
     text += '</br>';
 
-
     text += segText + '</br>';
-
 
     for (let dot of elements.dots) {
         if (dot.getBaseLine() !== null) {
@@ -153,10 +151,10 @@ function codeText(elements, parallels, question) {
     return text.replace('?', '"?"');
 }
 
-export function getEquationsText(solve) {
+export function getEquationsText(solve, showAll) {
     let eqs = solve.equations;
-    if (solve.solved) {
-        let tree = solve.tree;
+    let tree = solve.tree;
+    if (!showAll && solve.solved) {
         let ids = tree.getKeyList();
         eqs = solve.equations.filter((x) => ids.indexOf(x.getCount()) > -1);
     }
@@ -192,29 +190,39 @@ export function getEquationsText(solve) {
                         similar.getLines1()[i] + " ≅ " + similar.getLines2()[i] +
                         '</span>';
                 }
-                res += ".............";
+                res += '.............';
             }
         }
         res += '</br>';
     }
 
-    res += getOnlyEquationsText(eqs);
+    res += getOnlyEquationsText(eqs, showAll);
 
     return res;
 }
 
-export function getOnlyEquationsText(eqs) {
+export function getOnlyEquationsText(eqs, showAll) {
     return eqs.map(function (x) {
-        let str = `<span class="equationExplanation">${x.getCreation() || ''}</span>`;
+        return getOnlyEquationText(eqs, x, showAll);
+    }).join('</br>')
+}
+
+function getOnlyEquationText(eqs, x, showAll) {
+    let str = ''
+
+    if (showAll || x.getCreation().show) {
+        str +=
+            `</br><span class="equationExplanation">${x.getCreationText() || ''}</span></br>`
+
         let ancestorIds = x.getAncestorIds();
         if (ancestorIds.length > 0) {
             for (let ancestorId of ancestorIds) {
                 let ancestorEq = eqs.find((y) => y.getCount() === ancestorId);
                 str +=
-                    `<span class="equationExplanation">${ancestorEq.toString()}</span>`;
+                    `<span class="equationExplanation">${ancestorEq.toString()}</span></br>`;
             }
         }
-        str += x.toString();
-        return str;
-    }).join('</br>')
+    }
+    str += (showAll ? '<b>' + x.getCount() + '</b>. ' : '<b>∙</b>&nbsp;') + x.toString();
+    return str;
 }

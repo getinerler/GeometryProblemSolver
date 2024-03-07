@@ -17,21 +17,21 @@ const Creations = {
     },
 
     ValueExponentsSimplified: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Value exponents simplified.'
         }
     },
 
     LeftAndRightElementsFixed: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Left and right elements fixed.'
         }
     },
 
     LeftValuesSimplified: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Left values simplified.'
         }
@@ -45,21 +45,21 @@ const Creations = {
     },
 
     CoefficientsSimplified: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Coefficients simplified.'
         }
     },
 
     ExponentiatonRemoved: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Exponentiaton removed.'
         }
     },
 
     CoefficientRemoved: {
-        'show': true,
+        'show': false,
         getExplanation() {
             return 'Coefficient removed.'
         }

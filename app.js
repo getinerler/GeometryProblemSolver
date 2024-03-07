@@ -12,7 +12,7 @@ function App(params) {
     this._resetButton = params.resetButton;
     this._questionDiv = params.questionDiv;
     this._answerDiv = params.answerDiv;
-
+    this._solve = null;
     this._drawing = null;
 }
 
@@ -39,15 +39,16 @@ App.prototype = {
         });
 
         document.getElementById(this._solveButton).addEventListener('click', function () {
+            document.getElementById('showAll').checked = false;
             let question = self._drawing.getAll();
-            let solve = new Solve(question).solve();
+            self._solve = new Solve(question).solve();
             document.getElementById('answerHeader').style.display = 'block';
-            if (!solve.solved) {
-                showAsAnswer(solve.message);
-            }
-            showAsAnswer(getEquationsText(solve));
+            self.showAnswer(self._solve);
         });
 
+        document.getElementById("showAll").addEventListener('click', function () {
+            self.showAnswer(self._solve);
+        });
 
         let buttonNames = [
             'lineButton',
@@ -70,10 +71,18 @@ App.prototype = {
             document.getElementById('answerHeader').style.display = 'none';
             question = self._drawing.reset();
         });
+    },
 
-        function showAsAnswer(it) {
-            document.getElementById('answerText').innerHTML = it + '</br>';
+    showAnswer(solve) {
+        let showAll = document.getElementById('showAll').checked;
+        if (!solve.solved) {
+            showAsAnswer(solve.message);
         }
+        this.showAsAnswer(getEquationsText(solve, showAll));
+    },
+
+    showAsAnswer(it) {
+        document.getElementById('answerText').innerHTML = it + '</br>';
     },
 
     unselectCanvasButtons() {
