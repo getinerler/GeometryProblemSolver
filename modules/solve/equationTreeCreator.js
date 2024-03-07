@@ -16,21 +16,30 @@ EquationTreeCreator.prototype = {
         let nodes = [];
         for (let eq of equations) {
             let node = new TreeNode(eq.getCount(), eq);
-            let parentNode = nodes
-                .find((x) => eq.getAncestorIds().indexOf(x.getValue().getCount()) > -1);
-            if (parentNode) {
-                node.setParent(parentNode);
-                parentNode.addChild(node);
-            }
             nodes.push(node);
+        }
+
+        let root = null;
+
+        for (let node of nodes) {
+            if (node.getValue().isAnswer()) {
+                root = node;
+            }
+            let ancestorIds = node.getValue().getAncestorIds();
+            let ancestorNodes = nodes
+                .filter((x) => ancestorIds.indexOf(x.getValue().getCount()) > -1);
+            for (let ancestorNode of ancestorNodes) {
+                ancestorNode.setParent(node);
+                node.addChild(ancestorNode);
+            }
         }
 
         let tree = new Tree();
         for (let node of nodes) {
             tree.insertNode(node);
         }
+        tree.setRoot(root);
 
-        //console.log(tree)
         return tree;
     },
 
