@@ -165,7 +165,8 @@ Solve.prototype = {
             if (ang.getDot() !== dot) {
                 continue;
             }
-            if (ang.getCanvasAngle() === 180) {
+            //TODO check this again.
+            if (Math.floor(ang.getCanvasAngle()) === 180) {
                 continue;
             }
             eq.addLeftTerm(this.getTermFromValue(ang));
