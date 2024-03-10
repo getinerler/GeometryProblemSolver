@@ -14,6 +14,7 @@ import { getLineAngle, getAngleDegree } from '../graphic/geoHelper.js';
 import EquationTreeCreator from './equationTreeCreator.js';
 import Equivalence from '../../models/graphic/equivalence.js';
 import Creations from '../equations/creations.js';
+import LineSum from '../../models/solve/lineSum.js';
 
 function Solve(question) {
     this.question = question;
@@ -34,9 +35,9 @@ function Solve(question) {
 Solve.prototype = {
 
     solve() {
-   //     try {
-            window.equationCounter = 1;
-            return this.solveProblem();
+        //     try {
+        window.equationCounter = 1;
+        return this.solveProblem();
         // } catch (e) {
         //     return {
         //         'solved': false,
@@ -79,6 +80,10 @@ Solve.prototype = {
         this.similarTriangles = similarityFinder.find();
         this.checkTriangleSimilarities();
 
+
+        // for (let tri of this.triangles) {
+        //     console.log(tri);
+        // }
         let calc = new Calculator(
             this.equations,
             this.unknown,
@@ -385,6 +390,7 @@ Solve.prototype = {
 
     checkIsoscelesTriangle(tri) {
         let len = tri.getAngles().length;
+
         for (let i = 0; i < len; i++) {
             for (let j = i + 1; j < len + i; j++) {
                 let ang1 = tri.getAngles()[i];
@@ -394,15 +400,12 @@ Solve.prototype = {
                     continue;
                 }
 
+                //TODO Why lines should match angle lines?
                 let commonLine = ang1.getLine1() === ang2.getLine1() ?
                     ang1.getLine1() :
                     ang1.getLine2();
-                let line1 = ang1.getLine1() === commonLine ?
-                    ang1.getLine2() :
-                    ang1.getLine1();
-                let line2 = ang2.getLine1() === commonLine ?
-                    ang2.getLine2() :
-                    ang2.getLine1();
+                let line1 = ang1.getLine1() === commonLine ? ang1.getLine2() : ang1.getLine1();
+                let line2 = ang2.getLine1() === commonLine ? ang2.getLine2() : ang2.getLine1();
 
                 let eq = new Equation();
                 eq.setCreation(Creations.IsoscelesLines);
@@ -411,6 +414,8 @@ Solve.prototype = {
                 this.equations.push(eq);
             }
         }
+
+
 
         let len2 = tri.getLines().length;
         for (let i = 0; i < len2; i++) {
@@ -424,8 +429,10 @@ Solve.prototype = {
 
                 let commonAng;
                 for (let ang of tri.getAngles()) {
-                    if (ang.getLine1() === line1 && ang.getLine2() === line2 ||
-                        ang.getLine2() === line1 && ang.getLine1() === line2) {
+                    if (new LineSum(ang.getLine1()).equals(line1) &&
+                        new LineSum(ang.getLine2()).equals(line2) ||
+                        new LineSum(ang.getLine2()).equals(line1) &&
+                        new LineSum(ang.getLine1()).equals(line2)) {
                         commonAng = ang;
                     }
                 }
@@ -448,11 +455,17 @@ Solve.prototype = {
     },
 
     checkPythagoreanTheorem(tri) {
-        let angle90 = tri.getAngles().find((x) => x.valueEqual(90));
-        if (!angle90) {
+        let index90 = -1;
+        for (let i = 0; i < 3; i++) {
+            let ang = tri.getAngles()[i];
+            if (ang.valueEqual(90)) {
+                index90 = i;
+            }
+        }
+        if (index90 === -1) {
             return;
         }
-        let sideLines = [angle90.getLine1(), angle90.getLine2()];
+        let sideLines = [tri.getLines()[index90], tri.getLines()[(index90 + 1) % 3]];
         let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
         if (!hypothenus) {
             return;
@@ -554,21 +567,6 @@ Solve.prototype = {
             }
         }
         this.equations.push(eq);
-    },
-
-    getTriangleLine(tri, line) {
-        let base = line.getBaseOrSelf();
-        for (let line of tri.getLines()) {
-            if (line === base) {
-                return base;
-            }
-            for (let seg of line.getSegments()) {
-                if (seg === line) {
-                    return seg;
-                }
-            }
-        }
-        return null;
     },
 
     getNarrowAngle(line1, line2) {

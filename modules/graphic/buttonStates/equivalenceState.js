@@ -18,7 +18,7 @@ EquivalenceState.prototype = {
         }
 
         let hovered = this._elements.hoveredObject.obj;
-        if (!this._acceptedTypes.indexOf( hovered.getType()) === -1) {
+        if (!this._acceptedTypes.indexOf(hovered.getType()) === -1) {
             return;
         }
 
@@ -68,6 +68,8 @@ EquivalenceState.prototype = {
     fixObject(obj) {
         if (obj.getType() === 'Angle') {
             return new AngleSum(obj);
+        } else if (obj.getType() === "Line") {
+            return new LineSum(obj);
         }
         return obj;
     }

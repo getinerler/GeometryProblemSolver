@@ -133,19 +133,23 @@ SimilarityFinder.prototype = {
 
     getTriangleLine(tri, line) {
         let base = line.getBaseOrSelf();
-        for (let triLine of tri.getLines()) {
-            if (triLine === line) {
-                return triLine;
-            }
-            if (triLine === base) {
-                return base;
-            }
-            for (let seg of triLine.getSegments()) {
-                if (seg === triLine) {
-                    return seg;
+        for (let triLineSum of tri.getLines()) {
+            for (let triLine of triLineSum.getLines()) {
+                if (triLine === line) {
+                    return triLineSum;
+                }
+                if (triLine === base) {
+                    return triLineSum;
+                }
+                for (let seg of triLine.getSegments()) {
+                    if (seg === triLine) {
+                        return triLineSum;
+                    }
                 }
             }
         }
+        throw 'No line found for triangle. Line: ' + line.toString() + ", " +
+         ", triangle: " + tri.getString();
         return null;
     },
 
@@ -174,6 +178,8 @@ SimilarityFinder.prototype = {
                 return ang;
             }
         }
+        throw 'No angle found for triangle. Lines: ' + line1.toString() + ", " +
+        line2.toString() + " ";
         return null;
     },
 

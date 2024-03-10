@@ -4,6 +4,7 @@ import { getAllLines } from '../../modules/solve/solveCommon.js';
 import Triangle from '../../models/solve/triangle.js';
 import Rectangle from '../../models/solve/rectangle.js';
 import AngleSum from '../../models/solve/angleSum.js';
+import LineSum from '../../models/solve/lineSum.js';
 
 function PolygonFinder(question) {
     this.dots = question.dots;
@@ -93,16 +94,16 @@ PolygonFinder.prototype = {
         let ang3 = this.getAngleSum(line3, line1);
 
         let dots = [dot1, dot2, dot3];
-        let lines = [line1, line2, line3];
+        let lines = [new LineSum(line1), new LineSum(line2), new LineSum(line3)];
         let angles = [ang1, ang2, ang3];
         let tri = new Triangle(dots, lines, angles);
 
         let old = this.triangles.find(function (x) {
-            if (x.getLines().indexOf(line1) === -1) {
+            if (!x.getLines().find((x) => x.equals(new LineSum(line1)))) {
                 return false;
-            } else if (x.getLines().indexOf(line2) === -1) {
+            } else if (!x.getLines().find((x) => x.equals(new LineSum(line2)))) {
                 return false;
-            } else if (x.getLines().indexOf(line3) === -1) {
+            } else if (!x.getLines().find((x) => x.equals(new LineSum(line3)))) {
                 return false;
             }
             return true;
@@ -124,18 +125,23 @@ PolygonFinder.prototype = {
         let ang4 = this.getAngleSum(line4, line1);
 
         let dots = [dot1, dot2, dot3, dot4];
-        let lines = [line1, line2, line3, line4];
+        let lines = [
+            new LineSum(line1),
+            new LineSum(line2),
+            new LineSum(line3),
+            new LineSum(line4)
+        ];
         let angles = [ang1, ang2, ang3, ang4];
         let rect = new Rectangle(dots, lines, angles);
 
         let old = this.rectangles.find(function (x) {
-            if (x.getLines().indexOf(line1) === -1) {
+            if (!x.getLines().find((x) => x.equals(new LineSum(line1)))) {
                 return false;
-            } else if (x.getLines().indexOf(line2) === -1) {
+            } else if (!x.getLines().find((x) => x.equals(new LineSum(line2)))) {
                 return false;
-            } else if (x.getLines().indexOf(line3) === -1) {
+            } else if (!x.getLines().find((x) => x.equals(new LineSum(line3)))) {
                 return false;
-            } else if (x.getLines().indexOf(line4) === -1) {
+            } else if (!x.getLines().find((x) => x.equals(new LineSum(line4)))) {
                 return false;
             }
             return true;
