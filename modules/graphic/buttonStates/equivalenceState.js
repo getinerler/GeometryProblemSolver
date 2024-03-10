@@ -6,6 +6,8 @@ import AngleSum from '../../../models/solve/angleSum.js';
 function EquivalenceState(elements) {
     this._elements = elements;
     this._equivalentTemp = null;
+    this._acceptedTypes = ['Angle, Line'];
+    this._currentEquivalent = null;
 }
 
 EquivalenceState.prototype = {
@@ -14,26 +16,27 @@ EquivalenceState.prototype = {
         if (!this._elements.hoveredObject) {
             return;
         }
+
         let hovered = this._elements.hoveredObject.obj;
-        if (hovered.getType() === "Dot") {
+        if (!this._acceptedTypes.indexOf( hovered.getType()) === -1) {
             return;
         }
-        let found = false;
-        for (let equi of this._elements.equivalents) {
-            if (equi.getType() === hovered.getType()) {
-                found = true;
-                if (equi.contains(hovered)) {
-                    equi.remove(hovered);
-                } else {
-                    equi.add(hovered);
-                }
+
+        let fixedObj = this.fixObject(hovered);
+
+        if (!this._currentEquivalent) {
+            this._currentEquivalent = this.findEquivalentFromObject(fixedObj);
+            if (!this._currentEquivalent) {
+                let newEq = new Equivalence()
+                    .add(fixedObj)
+                    .setType(fixedObj.getType());
+                this._elements.equivalents.push(newEq);
+                this._currentEquivalent = newEq;
+            } else {
+                this.addToEquivalent(fixedObj);
             }
-        }
-        if (!found) {
-            let newEq = new Equivalence();
-            newEq.add(hovered.getType() === "Angle" ? new AngleSum([hovered]) : hovered);
-            newEq.setType(hovered.getType());
-            this._elements.equivalents.push(newEq);
+        } else {
+            this.addToEquivalent(fixedObj);
         }
     },
 
@@ -43,6 +46,30 @@ EquivalenceState.prototype = {
 
     mouseUpEvent() {
 
+    },
+
+    addToEquivalent(obj) {
+        if (this._currentEquivalent.contains(obj)) {
+            this._currentEquivalent.remove(obj);
+        } else {
+            this._currentEquivalent.add(obj);
+        }
+    },
+
+    findEquivalentFromObject(obj) {
+        for (let equi of this._elements.equivalents) {
+            if (equi.getType() === obj.getType()) {
+                return equi;
+            }
+        }
+        return null;
+    },
+
+    fixObject(obj) {
+        if (obj.getType() === 'Angle') {
+            return new AngleSum(obj);
+        }
+        return obj;
     }
 }
 

@@ -76,6 +76,10 @@ AngleSum.prototype = {
         return val === sum;
     },
 
+    contains(ang) {
+        return !!this._angles.find((x) => x === ang);
+    },
+
     getValueName() {
         return this._angles.map((x) => x.getName()).join(' + ');
     },

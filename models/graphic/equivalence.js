@@ -45,12 +45,31 @@ Equivalence.prototype = {
     },
 
     remove(element) {
-        this._elements = this._elements.filter((x) => x !== element);
+        if (element.getType() === 'AngleSum') {
+            for (let el of this._elements) {
+                if (el.getType() !== 'AngleSum') {
+                    continue;
+                }
+                if (element.equals(el)) {
+                    this._elements = this._elements.filter((x) => x !== el);
+                }
+            }
+        } else {
+            this._elements = this._elements.filter((x) => x !== element);
+        }
     },
 
     contains(element) {
         for (let el of this._elements) {
-            if (element === el) {
+            if (element.getType() === 'AngleSum') {
+                if (el.getType() !== 'AngleSum') {
+                    continue;
+                }
+                if (element.equals(el)) {
+                    return true;
+                }
+            }
+            if (element === el || element.getValue() && element.equals(el)) {
                 return true;
             }
         }

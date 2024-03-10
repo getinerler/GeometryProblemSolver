@@ -144,6 +144,10 @@ Angle.prototype = {
         return true;
     },
 
+    equals(ang) {
+        return ang === this;
+    },
+
     toString() {
         return this.getName();
     }

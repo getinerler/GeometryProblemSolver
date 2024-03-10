@@ -193,16 +193,10 @@ Canvas.prototype = {
             return;
         }
 
-        let equivalents = this._elements.equivalents
-            .filter((x) => x.getType() === 'Angle' || x.getType() === 'AngleSum');
+        let equivalents = this._elements.equivalents.filter((x) => x.getType() === 'AngleSum');
         if ((equivalents.length > 0 &&
-            equivalents[0].getType() === "AngleSum" &&
-            equivalents[0].getElements()
-                .some((x) => x.getAngles().length === 1 && x.getAngles()[0] === ang))
-            ||
-            equivalents.length > 0 &&
-            equivalents[0].getType() === "Angle" &&
-            equivalents[0].contains(ang)) {
+            equivalents[0].getElements().length > 1 &&
+            equivalents[0].getElements().some((x) => x.contains(ang)))) {
             let dotPoint = getAngleSimilarSymbolI(ang);
             this._ctx.beginPath();
             this._ctx.setLineDash([0]);
