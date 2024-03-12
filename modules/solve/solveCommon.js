@@ -78,8 +78,17 @@ function valuesAreEquivalent(equivalents, val1, val2) {
         }
         if (equi.getType() === "AngleSum") {
             let elements = equi.getElements();
-            let el1 = elements.find((x) => x.equals(new AngleSum([val1])));
-            let el2 = elements.find((x) => x.equals(new AngleSum([val2])));
+            let el1 = elements.find((x) => x.isEquivalent(new AngleSum([val1])));
+            let el2 = elements.find((x) => x.isEquivalent(new AngleSum([val2])));
+
+            if (el1 && el2) {
+                return true;
+            }
+        }
+        if (equi.getType() === "LineSum") {
+            let elements = equi.getElements();
+            let el1 = elements.find((x) => x.isEquivalent(new LineSum([val1])));
+            let el2 = elements.find((x) => x.isEquivalent(new LineSum([val2])));
 
             if (el1 && el2) {
                 return true;

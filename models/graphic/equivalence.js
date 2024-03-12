@@ -65,13 +65,15 @@ Equivalence.prototype = {
                 if (el.getType() !== 'AngleSum') {
                     continue;
                 }
-                if (element.equals(el)) {
+                if (element.isEquivalent(el)) {
+                    return true;
+                }
+            } else {
+                if (element === el || element.getValue() && element.equals(el)) {
                     return true;
                 }
             }
-            if (element === el || element.getValue() && element.equals(el)) {
-                return true;
-            }
+
         }
         return false;
     },

@@ -72,7 +72,7 @@ LineSum.prototype = {
         return this._lines.map((x) => x.getValueName()).join(' + ');
     },
 
-    equals(lineSum) {
+    isEquivalent(lineSum) {
         let lines1 = this._lines;
         let lines2 = lineSum.getLines();
         let lines1Unknown = lines1.filter((x) => !x.isKnown());
@@ -105,6 +105,17 @@ LineSum.prototype = {
         for (let line of lines1Unknown) {
             let line2 = lines2Unknown.find((x) => x.getName() === line.getName());
             if (!line2) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    equals(lineSum) {
+        for (let i = 0; i < this._lines.length; i++) {
+            let line1 = this._lines[i];
+            let line2 = lineSum.getLine(i);
+            if (line1 !== line2) {
                 return false;
             }
         }

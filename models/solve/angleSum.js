@@ -84,8 +84,7 @@ AngleSum.prototype = {
         return this._angles.map((x) => x.getValueName()).join(' + ');
     },
 
-    equals(angSum) {
-        try {
+    isEquivalent(angSum) {
             let angs1 = this._angles;
             let angs2 = angSum.getAngles();
             let angs1Unknown = angs1.filter((x) => !x.isKnown());
@@ -122,11 +121,6 @@ AngleSum.prototype = {
                 }
             }
             return true;
-        }
-      catch(e){
-        console.log(angSum)
-        throw e
-      }
     },
 
     toString() {
