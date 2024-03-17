@@ -294,6 +294,62 @@ const TestData = {
 
     getTriangleAngleQuestion2: {
         'name': 'Triangle angle 2',
+        'explanation': 'Question: Find triangle\'s missing angle.',
+        'result': [new Value(60)],
+        getQuestion() {
+            let dots = [
+                new Dot(296, 92, 'A'),
+                new Dot(96, 233, 'B'),
+                new Dot(457, 349, 'C'),
+                new Dot(238, 496, 'D'),
+                new Dot(267.97245966414226, 288.25984853473824, 'E')
+            ];
+
+            let seg1 = new Line(dots[2], dots[4]); // CE
+            let seg2 = new Line(dots[4], dots[1]); // EB
+            let seg3 = new Line(dots[4], dots[3]); // DE
+            let seg4 = new Line(dots[4], dots[0]); // EA
+
+            let lines = [
+                new Line(dots[0], dots[1]), // AB
+                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2), // CB          
+                new Line(dots[3], dots[0]).addSegment(seg3).addSegment(seg4), // DA
+                new Line(dots[2], dots[3]) // CD
+            ];
+
+            seg1.setBase(lines[1]);
+            seg2.setBase(lines[1]);
+            seg3.setBase(lines[2]);
+            seg4.setBase(lines[2]);
+
+            let angles = [
+                new Angle(dots[1], lines[0], seg2).setValue(40),
+                new Angle(dots[1], seg2, lines[0]),
+                new Angle(dots[0], lines[0], seg4),
+                new Angle(dots[0], seg4, lines[0]).setValue(95),
+                new Angle(dots[3], seg3, lines[3]).setValue("?"),
+                new Angle(dots[3], lines[3], seg3),
+                new Angle(dots[2], seg1, lines[3]),
+                new Angle(dots[2], lines[3], seg1).setValue(75),
+                new Angle(dots[4], seg1, seg3),
+                new Angle(dots[4], seg3, seg2),
+                new Angle(dots[4], seg2, seg4),
+                new Angle(dots[4], seg4, seg1)
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [],
+                question: angles[8]
+            }
+        }
+    },
+
+    getTriangleAngleQuestion3: {
+        'name': 'Triangle angle 3',
         'explanation': 'Question: Find segment triangle\'s missing angle (70 + 80 + x = 180).',
         'result': [new Value(90)],
         getQuestion() {
@@ -362,8 +418,8 @@ const TestData = {
         }
     },
 
-    getTriangleAngleQuestion3: {
-        'name': 'Triangle angle 3',
+    getTriangleAngleQuestion4: {
+        'name': 'Triangle angle 4',
         'explanation': 'Question: Find triangle\'s missing angle (50 + (180 - 70 - 40) + x = 180).',
         'result': [new Value(60)],
         getQuestion() {
@@ -424,8 +480,8 @@ const TestData = {
         }
     },
 
-    getTriangleAngleQuestion4: {
-        'name': 'Triangle angle 4',
+    getTriangleAngleQuestion5: {
+        'name': 'Triangle angle 5',
         'explanation': 'Question: Find triangle\'s missing angle (60 + 50 + (20 + x) = 180).',
         'result': [new Value(50)],
         getQuestion() {
