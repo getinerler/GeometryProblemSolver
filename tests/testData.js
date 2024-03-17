@@ -317,6 +317,8 @@ const TestData = {
                 new Line(dots[2], dots[3]) // CD
             ];
 
+            dots[4].setIntersectionLines([lines[1], lines[2]]);
+
             seg1.setBase(lines[1]);
             seg2.setBase(lines[1]);
             seg3.setBase(lines[2]);
@@ -343,7 +345,7 @@ const TestData = {
                 angles,
                 parallels: [],
                 equivalents: [],
-                question: angles[8]
+                question: angles[4]
             }
         }
     },
