@@ -34,12 +34,10 @@ const TestData = {
             seg1.setValue(4).setBase(lines[0]);
             seg2.setValue('?').setBase(lines[0]);
 
-            let angles = [];
-
             return {
                 dots,
                 lines,
-                angles,
+                angles: [],
                 parallels: [],
                 equivalents: [],
                 question: seg2
@@ -58,20 +56,20 @@ const TestData = {
                 new Dot(300, 46, 'C'),
                 new Dot(207.99508515987353, 197.45789799214836, 'D'),
             ];
+
             let seg1 = new Line(dots[0], dots[3]); // AD
             let seg2 = new Line(dots[3], dots[1]); // DB
+
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2)
-                ,
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
                 new Line(dots[2], dots[3]) // CD
-                ,
             ];
+
             seg1.setBase(lines[0]);
             seg2.setBase(lines[0]);
 
             dots[3].setBaseLine(lines[1]).setLineRatio(0.5140340026172164);
+
             let angles = [
                 new Angle(dots[3], seg1, seg2),
                 new Angle(dots[3], seg2, lines[1]).setValue(120),
@@ -108,12 +106,8 @@ const TestData = {
             let seg4 = new Line(dots[4], dots[3]); // ED
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2),
-                new Line(dots[2], dots[3]) // CD
-                    .addSegment(seg3)
-                    .addSegment(seg4)
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
+                new Line(dots[2], dots[3]).addSegment(seg3).addSegment(seg4) // CD
             ];
 
             seg1.setBase(lines[0]);
@@ -197,17 +191,20 @@ const TestData = {
                 new Dot(361, 300, 'D'),
                 new Dot(153, 299, 'C')
             ];
+
             let lines = [
                 new Line(dots[0], dots[1]),
                 new Line(dots[2], dots[3]),
                 new Line(dots[3], dots[1])
             ];
+
             let angles = [
                 new Angle(dots[1], lines[0], lines[2]).setValue(80),
                 new Angle(dots[1], lines[2], lines[0]),
                 new Angle(dots[3], lines[1], lines[2]),
                 new Angle(dots[3], lines[2], lines[1]).setValue('?')
             ];
+
             return {
                 dots,
                 lines,
@@ -374,16 +371,9 @@ const TestData = {
             let seg7 = new Line(dots[6], dots[5]); // GF
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2),
-                new Line(dots[2], dots[0]) // CA
-                    .addSegment(seg3)
-                    .addSegment(seg4),
-                new Line(dots[3], dots[4]) // DE
-                    .addSegment(seg5)
-                    .addSegment(seg6)
-                    .addSegment(seg7)
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
+                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4), // CA
+                new Line(dots[3], dots[4]).addSegment(seg5).addSegment(seg6).addSegment(seg7)// DE
             ]
 
             seg1.setBase(lines[0]);
@@ -393,8 +383,6 @@ const TestData = {
             seg5.setBase(lines[2]);
             seg6.setBase(lines[2]);
             seg7.setBase(lines[2]);
-
-            //  dots[6].setBaseLine(lines[3]).setLineRatio(null);
 
             let angles = [
                 new Angle(dots[0], seg1, seg4),
@@ -432,6 +420,7 @@ const TestData = {
                 new Dot(302.6668704409358, 143.50896499526118, 'E'),
                 new Dot(211.84199128313574, 247.9931300557885, 'F'),
             ];
+
             let seg1 = new Line(dots[2], dots[3]); // CE
             let seg2 = new Line(dots[3], dots[0]); // EA
             let seg3 = new Line(dots[2], dots[4]); // CF
@@ -439,13 +428,8 @@ const TestData = {
 
             let lines = [
                 new Line(dots[0], dots[1]), // AB
-                new Line(dots[2], dots[0]) // CA
-                    .addSegment(seg1)
-                    .addSegment(seg2),
-
-                new Line(dots[2], dots[1]) // CB
-                    .addSegment(seg3)
-                    .addSegment(seg4),
+                new Line(dots[2], dots[0]).addSegment(seg1).addSegment(seg2), // CA
+                new Line(dots[2], dots[1]).addSegment(seg3).addSegment(seg4), // CB
                 new Line(dots[3], dots[4]) // EF
             ];
 
@@ -471,6 +455,7 @@ const TestData = {
                 new Angle(dots[3], lines[3], seg2),
                 new Angle(dots[3], seg2, seg1),
             ];
+
             return {
                 dots,
                 lines,
@@ -498,9 +483,7 @@ const TestData = {
             let seg2 = new Line(dots[3], dots[1]); // FB
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2),
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
                 new Line(dots[2], dots[0]), // CA
                 new Line(dots[2], dots[1]), // CB
                 new Line(dots[2], dots[3]) // CF
@@ -534,6 +517,80 @@ const TestData = {
         }
     },
 
+    getIsoscelesTriangleLineQuestion6: {
+        'name': 'Triangle angle 6',
+        'explanation': 'Question: Find triangle\'s missing angle (60 + 50 + (20 + x) = 180).',
+        'result': [new Value(70)],
+        getQuestion() {
+            let dots = [
+                new Dot(268, 103, 'A'),
+                new Dot(57, 371, 'B'),
+                new Dot(450, 389, 'C'),
+                new Dot(396.9253023615606, 305.5969037110238, 'E'),
+                new Dot(135.01866927895344, 271.9051973139359, 'F'),
+                new Dot(326.0348575222761, 194.19763324929102, 'G'),
+                new Dot(193.1930957661409, 198.01540442973567, 'H'),
+            ];
+
+            let seg1 = new Line(dots[1], dots[4]); // FB
+            let seg2 = new Line(dots[0], dots[6]); // AH
+            let seg3 = new Line(dots[4], dots[6]); // HF
+            let seg4 = new Line(dots[2], dots[3]); // CE
+            let seg5 = new Line(dots[5], dots[3]); // EG
+            let seg6 = new Line(dots[5], dots[0]); // GA
+
+            let lines = [
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).addSegment(seg3), // AB
+                new Line(dots[2], dots[0]).addSegment(seg4).addSegment(seg5).addSegment(seg6), // CA
+                new Line(dots[2], dots[1]), // CB
+                new Line(dots[3], dots[4]), // EF
+                new Line(dots[5], dots[6]) // GH
+            ];
+
+            seg1.setBase(lines[0]);
+            seg2.setBase(lines[0]);
+            seg3.setBase(lines[0]);
+            seg4.setBase(lines[1]);
+            seg5.setBase(lines[1]);
+            seg6.setBase(lines[1]);
+
+            dots[3].setBaseLine(lines[2]).setLineRatio(0.2916192177936231);
+            dots[4].setBaseLine(lines[1]).setLineRatio(0.6302432735594624);
+            dots[5].setBaseLine(lines[2]).setLineRatio(0.5498567274287088);
+            dots[6].setBaseLine(lines[1]).setLineRatio(0.562536890165287);
+
+            let angles = [
+                new Angle(dots[0], seg2, seg6),
+                new Angle(dots[0], seg6, seg2).setValue("?"),
+                new Angle(dots[1], seg1, lines[2]),
+                new Angle(dots[1], lines[2], seg1),
+                new Angle(dots[2], seg4, lines[2]),
+                new Angle(dots[2], lines[2], seg4),
+                new Angle(dots[4], lines[3], seg1),
+                new Angle(dots[4], seg1, seg3).setValue(180),
+                new Angle(dots[4], seg3, lines[3]).setValue(50),
+                new Angle(dots[3], seg4, lines[3]),
+                new Angle(dots[3], lines[3], seg5).setValue(60),
+                new Angle(dots[3], seg5, seg4).setValue(180),
+                new Angle(dots[6], lines[4], seg3),
+                new Angle(dots[6], seg3, seg2).setValue(180),
+                new Angle(dots[6], seg2, lines[4]),
+                new Angle(dots[5], seg5, lines[4]),
+                new Angle(dots[5], lines[4], seg6),
+                new Angle(dots[5], seg6, seg5).setValue(180),
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [],
+                question: angles[1]
+            }
+        }
+    },
+
     getIsoscelesTriangleLineQuestion: {
         'name': 'Isc. triangle line',
         'explanation': 'Question: Find isosceles triangle line.',
@@ -544,11 +601,13 @@ const TestData = {
                 new Dot(69, 244, 'B'),
                 new Dot(364, 255, 'C')
             ];
+
             let lines = [
                 new Line(dots[0], dots[1]).setValue(10), // AB
                 new Line(dots[2], dots[0]).setValue('?'), // CA
                 new Line(dots[2], dots[1]) // CB
             ];
+
             let angles = [
                 new Angle(dots[0], lines[0], lines[1]),
                 new Angle(dots[0], lines[1], lines[0]),
@@ -557,6 +616,7 @@ const TestData = {
                 new Angle(dots[2], lines[1], lines[2]),
                 new Angle(dots[2], lines[2], lines[1])
             ];
+
             return {
                 dots,
                 lines,
@@ -578,11 +638,13 @@ const TestData = {
                 new Dot(69, 244, 'B'),
                 new Dot(364, 255, 'C')
             ];
+
             let lines = [
                 new Line(dots[0], dots[1]), // AB
                 new Line(dots[2], dots[0]), // CA
                 new Line(dots[2], dots[1]) // CB
             ];
+
             let angles = [
                 new Angle(dots[0], lines[0], lines[1]),
                 new Angle(dots[0], lines[1], lines[0]),
@@ -591,6 +653,7 @@ const TestData = {
                 new Angle(dots[2], lines[1], lines[2]),
                 new Angle(dots[2], lines[2], lines[1]).setValue('?')
             ];
+
             return {
                 dots,
                 lines,
@@ -612,11 +675,13 @@ const TestData = {
                 new Dot(137, 263),
                 new Dot(284, 263)
             ];
+
             let lines = [
                 new Line(dots[0], dots[1], 3),
                 new Line(dots[1], dots[2], 4),
                 new Line(dots[2], dots[0], '?')
             ];
+
             let angles = [
                 new Angle(dots[0], lines[0], lines[2]),
                 new Angle(dots[0], lines[2], lines[0]),
@@ -625,6 +690,7 @@ const TestData = {
                 new Angle(dots[1], lines[0], lines[1]).setValue(90),
                 new Angle(dots[1], lines[1], lines[0])
             ];
+
             return {
                 dots,
                 lines,
@@ -647,12 +713,14 @@ const TestData = {
                 new Dot(325, 238),
                 new Dot(325, 100)
             ];
+
             let lines = [
                 new Line(dots[0], dots[1]),
                 new Line(dots[1], dots[2]),
                 new Line(dots[2], dots[3]),
                 new Line(dots[3], dots[0])
             ];
+
             let angles = [
                 new Angle(dots[0], lines[0], lines[3]),
                 new Angle(dots[0], lines[3], lines[0]).setValue(50),
@@ -663,6 +731,7 @@ const TestData = {
                 new Angle(dots[3], lines[3], lines[2]),
                 new Angle(dots[3], lines[2], lines[3]).setValue('?')
             ];
+
             return {
                 dots,
                 lines,
@@ -697,50 +766,32 @@ const TestData = {
             let seg1 = new Line(dots[0], dots[6]); // AG
             let seg2 = new Line(dots[6], dots[10]); // GK
             let seg3 = new Line(dots[10], dots[1]); // KB
-
             let seg4 = new Line(dots[2], dots[7]); // CH
             let seg5 = new Line(dots[7], dots[11]); // HL
             let seg6 = new Line(dots[11], dots[3]); // LD
-
             let seg7 = new Line(dots[6], dots[5]); // GF
             let seg8 = new Line(dots[6], dots[7]); // GH
             let seg9 = new Line(dots[4], dots[7]); // HE
-
             let seg10 = new Line(dots[10], dots[9]); // KJ
             let seg11 = new Line(dots[11], dots[10]); // KL
             let seg12 = new Line(dots[8], dots[11]); // IL
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2)
-                    .addSegment(seg3),
-                new Line(dots[2], dots[3]) // CD
-                    .addSegment(seg4)
-                    .addSegment(seg5)
-                    .addSegment(seg6),
-                new Line(dots[4], dots[5]) // EF
-                    .addSegment(seg7)
-                    .addSegment(seg8)
-                    .addSegment(seg9),
-                new Line(dots[8], dots[9]) // IJ
-                    .addSegment(seg10)
-                    .addSegment(seg11)
-                    .addSegment(seg12)
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).addSegment(seg3),
+                new Line(dots[2], dots[3]).addSegment(seg4).addSegment(seg5).addSegment(seg6),
+                new Line(dots[4], dots[5]).addSegment(seg7).addSegment(seg8).addSegment(seg9),
+                new Line(dots[8], dots[9]).addSegment(seg10).addSegment(seg11).addSegment(seg12)
             ];
 
             seg1.setBase(lines[0]);
             seg2.setBase(lines[0]);
             seg3.setBase(lines[0]);
-
             seg4.setBase(lines[1]);
             seg5.setBase(lines[1]);
             seg6.setBase(lines[1]);
-
             seg7.setBase(lines[2]);
             seg8.setBase(lines[2]);
             seg9.setBase(lines[2]);
-
             seg10.setBase(lines[3]);
             seg11.setBase(lines[3]);
             seg12.setBase(lines[3]);
@@ -750,17 +801,14 @@ const TestData = {
                 new Angle(dots[6], seg2, seg7),
                 new Angle(dots[6], seg7, seg1),
                 new Angle(dots[6], seg1, seg8),
-
                 new Angle(dots[7], seg4, seg9),
                 new Angle(dots[7], seg9, seg5),
                 new Angle(dots[7], seg5, seg8).setValue(80),
                 new Angle(dots[7], seg8, seg4),
-
                 new Angle(dots[11], seg5, seg12),
                 new Angle(dots[11], seg12, seg6),
                 new Angle(dots[11], seg6, seg11),
                 new Angle(dots[11], seg11, seg5).setValue(70),
-
                 new Angle(dots[10], seg2, seg11).setValue('?'),
                 new Angle(dots[10], seg11, seg3),
                 new Angle(dots[10], seg3, seg10),
@@ -792,6 +840,7 @@ const TestData = {
                 new Dot(221, 204),
                 new Dot(429, 222)
             ];
+
             let lines = [
                 new Line(dots[0], dots[1], 6),
                 new Line(dots[1], dots[2]),
@@ -801,22 +850,22 @@ const TestData = {
                 new Line(dots[4], dots[5]),
                 new Line(dots[5], dots[3], 8)
             ];
+
             let angles = [
                 new Angle(dots[0], lines[2], lines[0]).setValue(70),
                 new Angle(dots[0], lines[0], lines[2]),
                 new Angle(dots[1], lines[0], lines[1]),
                 new Angle(dots[1], lines[1], lines[0]),
                 new Angle(dots[2], lines[1], lines[2]).setValue(80),
-
                 new Angle(dots[2], lines[2], lines[1]),
                 new Angle(dots[3], lines[5], lines[3]).setValue(70),
                 new Angle(dots[3], lines[3], lines[5]),
                 new Angle(dots[4], lines[3], lines[4]),
                 new Angle(dots[4], lines[4], lines[3]),
-
                 new Angle(dots[5], lines[4], lines[5]).setValue('?'),
                 new Angle(dots[5], lines[5], lines[4])
             ];
+
             return {
                 dots,
                 lines,
@@ -847,12 +896,8 @@ const TestData = {
             let seg4 = new Line(dots[3], dots[0]).setValue(8); // EA
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2),
-                new Line(dots[2], dots[0]) // CA
-                    .addSegment(seg3)
-                    .addSegment(seg4),
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
+                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4),// CA
                 new Line(dots[2], dots[1]), // CB
                 new Line(dots[3], dots[4])  // EF
             ];
@@ -871,13 +916,11 @@ const TestData = {
                 new Angle(dots[1], seg2, lines[2]),
                 new Angle(dots[1], lines[2], seg2),
                 new Angle(dots[2], seg3, lines[2]),
-
                 new Angle(dots[2], lines[2], seg3),
                 new Angle(dots[4], lines[3], seg2),
                 new Angle(dots[4], seg2, seg1).setValue(180),
                 new Angle(dots[4], seg1, lines[3]),
                 new Angle(dots[3], seg3, lines[3]),
-
                 new Angle(dots[3], lines[3], seg4),
                 new Angle(dots[3], seg4, seg3).setValue(180)
             ];
