@@ -96,6 +96,15 @@ PolygonFinder.prototype = {
         let ang2 = this.getAngleSum(line2, line3);
         let ang3 = this.getAngleSum(line3, line1);
 
+        // if (!ang1) {
+        //     throw 'No ang for ' + line1.toString() + "-" + line2.toString();
+        // }
+        // if (!ang2) {
+        //     throw 'No ang for ' + line2.toString() + "-" + line3.toString();
+        // }
+        // if (!ang3) {
+        //     throw 'No ang for ' + line3.toString() + "-" + line1.toString();
+        // }
         let dots = [dot1, dot2, dot3];
         let lines = [line1, line2, line3];
         let angles = [ang1, ang2, ang3];
@@ -175,6 +184,10 @@ PolygonFinder.prototype = {
         let anglesList2 = this.getOrderedAngleSum(line2, line1);
         let canvasAngleSum1 = anglesList.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
         let angleSum = new AngleSum(canvasAngleSum1 > 180 ? anglesList2 : anglesList);
+        if (angleSum.getAngles().length === 0) {
+            console.log( this.getLinesCommonDot(line1, line2))
+            throw 'No angle for ' + line1.toString() + "-" + line2.toString();
+        }
         return angleSum;
     },
 
@@ -185,6 +198,15 @@ PolygonFinder.prototype = {
         let anglesList = [];
         let tempAng = null;
         let tempLine = null;
+
+        if (line1.getLines().length > 1) {
+            let mainLine = line1.getLines().find((x) => x.isLineEnd(commonDot));
+            line1 = new LineSum(mainLine);
+        }
+        if (line2.getLines().length > 1) {
+            let mainLine = line2.getLines().find((x) => x.isLineEnd(commonDot));
+            line2 = new LineSum(mainLine);
+        }
 
         tempLine = line1;
         let count = 0;
