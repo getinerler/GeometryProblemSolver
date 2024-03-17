@@ -5,6 +5,8 @@ import Triangle from '../../models/solve/triangle.js';
 import Rectangle from '../../models/solve/rectangle.js';
 import AngleSum from '../../models/solve/angleSum.js';
 import LineSum from '../../models/solve/lineSum.js';
+import { lineIntersect } from '../../modules/graphic/geoHelper.js';
+import Line from '../../models/graphic/line.js';
 
 function PolygonFinder(question) {
     this.dots = question.dots;
@@ -115,6 +117,17 @@ PolygonFinder.prototype = {
     },
 
     createRectangle(line1, line2, line3, line4) {
+        let intersection13 = lineIntersect(
+            new Line(line1.getDot1(), line1.getDot2()),
+            new Line(line3.getDot1(), line3.getDot2()));
+        let intersection24 = lineIntersect(
+            new Line(line2.getDot1(), line2.getDot2()),
+            new Line(line4.getDot1(), line4.getDot2()));
+
+        if (intersection13 || intersection24) {
+            return;
+        }
+
         let dot1 = this.getLinesCommonDot(line1, line2);
         let dot2 = this.getLinesCommonDot(line2, line3);
         let dot3 = this.getLinesCommonDot(line3, line4);
@@ -159,7 +172,7 @@ PolygonFinder.prototype = {
 
     getAngleSum(line1, line2) {
         let anglesList = this.getOrderedAngleSum(line1, line2);
-        let anglesList2 = this.getOrderedAngleSum(line2, line1);  
+        let anglesList2 = this.getOrderedAngleSum(line2, line1);
         let canvasAngleSum1 = anglesList.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
         let angleSum = new AngleSum(canvasAngleSum1 > 180 ? anglesList2 : anglesList);
         return angleSum;
@@ -190,11 +203,11 @@ PolygonFinder.prototype = {
                 }
                 return false;
             });
-           
+
             if (ang) {
                 tempAng = ang;
                 anglesList.push(ang);
-                tempLine = new LineSum(ang.getLine2());     
+                tempLine = new LineSum(ang.getLine2());
             }
             count++;
         } while (
