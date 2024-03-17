@@ -21,14 +21,11 @@ const TestData = {
                 new Dot(202.5997146785354, 161.06437719596673, 'C'),
             ];
 
-            let seg1 = new Line(dots[0], dots[2]); // AD
-            let seg2 = new Line(dots[2], dots[1]); // DB
+            let seg1 = new Line(dots[0], dots[2]);
+            let seg2 = new Line(dots[2], dots[1]);
 
             let lines = [
-                new Line(dots[0], dots[1]) // AB
-                    .addSegment(seg1)
-                    .addSegment(seg2)
-                    .setValue(10)
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).setValue(10)
             ];
 
             seg1.setValue(4).setBase(lines[0]);
@@ -57,12 +54,12 @@ const TestData = {
                 new Dot(207.99508515987353, 197.45789799214836, 'D'),
             ];
 
-            let seg1 = new Line(dots[0], dots[3]); // AD
-            let seg2 = new Line(dots[3], dots[1]); // DB
+            let seg1 = new Line(dots[0], dots[3]);
+            let seg2 = new Line(dots[3], dots[1]);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
-                new Line(dots[2], dots[3]) // CD
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[3])
             ];
 
             seg1.setBase(lines[0]);
@@ -100,14 +97,14 @@ const TestData = {
                 new Dot(209.38057277826985, 160.3664009447889, 'E')
             ];
 
-            let seg1 = new Line(dots[0], dots[4]); // AE
-            let seg2 = new Line(dots[4], dots[1]); // EB
-            let seg3 = new Line(dots[2], dots[4]); // CE
-            let seg4 = new Line(dots[4], dots[3]); // ED
+            let seg1 = new Line(dots[0], dots[4]);
+            let seg2 = new Line(dots[4], dots[1]);
+            let seg3 = new Line(dots[2], dots[4]);
+            let seg4 = new Line(dots[4], dots[3]);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
-                new Line(dots[2], dots[3]).addSegment(seg3).addSegment(seg4) // CD
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[3]).addSegment(seg3).addSegment(seg4)
             ];
 
             seg1.setBase(lines[0]);
@@ -227,17 +224,20 @@ const TestData = {
                 new Dot(350, 316, 'D'),
                 new Dot(47, 317, 'C')
             ];
+
             let lines = [
                 new Line(dots[0], dots[1]),
                 new Line(dots[3], dots[1]),
                 new Line(dots[2], dots[3])
             ];
+
             let angles = [
                 new Angle(dots[1], lines[0], lines[1]),
                 new Angle(dots[1], lines[1], lines[0]).setValue(70),
                 new Angle(dots[3], lines[1], lines[2]).setValue('?'),
                 new Angle(dots[3], lines[2], lines[1])
             ];
+            
             return {
                 dots,
                 lines,
@@ -267,17 +267,16 @@ const TestData = {
                 new Line(dots[1], dots[2]),
                 new Line(dots[2], dots[0])
             ];
+
             let angles = [
-                //AC-AB(70), AB-AC
                 new Angle(dots[0], lines[2], lines[0]).setValue(70),
                 new Angle(dots[0], lines[0], lines[2]),
-                //BC-AB(80), AB-BC
                 new Angle(dots[1], lines[0], lines[1]).setValue(80),
                 new Angle(dots[1], lines[1], lines[0]),
-                //BC-AC(?), AC-BC
                 new Angle(dots[2], lines[1], lines[2]).setValue('?'),
                 new Angle(dots[2], lines[2], lines[1])
             ];
+
             return {
                 dots,
                 lines,
@@ -302,16 +301,16 @@ const TestData = {
                 new Dot(267.97245966414226, 288.25984853473824, 'E')
             ];
 
-            let seg1 = new Line(dots[2], dots[4]); // CE
-            let seg2 = new Line(dots[4], dots[1]); // EB
-            let seg3 = new Line(dots[4], dots[3]); // DE
-            let seg4 = new Line(dots[4], dots[0]); // EA
+            let seg1 = new Line(dots[2], dots[4]);
+            let seg2 = new Line(dots[4], dots[1]);
+            let seg3 = new Line(dots[4], dots[3]);
+            let seg4 = new Line(dots[4], dots[0]);
 
             let lines = [
-                new Line(dots[0], dots[1]), // AB
-                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2), // CB          
-                new Line(dots[3], dots[0]).addSegment(seg3).addSegment(seg4), // DA
-                new Line(dots[2], dots[3]) // CD
+                new Line(dots[0], dots[1]),
+                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[3], dots[0]).addSegment(seg3).addSegment(seg4),
+                new Line(dots[2], dots[3])
             ];
 
             dots[4].setIntersectionLines([lines[1], lines[2]]);
@@ -362,18 +361,18 @@ const TestData = {
                 new Dot(323.5563719680809, 184.29398751678912, 'G'),
             ];
 
-            let seg1 = new Line(dots[0], dots[5]); // AF
-            let seg2 = new Line(dots[5], dots[1]); // FB
-            let seg3 = new Line(dots[2], dots[6]); // CG
-            let seg4 = new Line(dots[6], dots[0]); // GA
-            let seg5 = new Line(dots[5], dots[4]); // FE
-            let seg6 = new Line(dots[3], dots[6]); // DG
-            let seg7 = new Line(dots[6], dots[5]); // GF
+            let seg1 = new Line(dots[0], dots[5]);
+            let seg2 = new Line(dots[5], dots[1]);
+            let seg3 = new Line(dots[2], dots[6]);
+            let seg4 = new Line(dots[6], dots[0]);
+            let seg5 = new Line(dots[5], dots[4]);
+            let seg6 = new Line(dots[3], dots[6]);
+            let seg7 = new Line(dots[6], dots[5]);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
-                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4), // CA
-                new Line(dots[3], dots[4]).addSegment(seg5).addSegment(seg6).addSegment(seg7)// DE
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4),
+                new Line(dots[3], dots[4]).addSegment(seg5).addSegment(seg6).addSegment(seg7)
             ]
 
             seg1.setBase(lines[0]);
@@ -421,16 +420,16 @@ const TestData = {
                 new Dot(211.84199128313574, 247.9931300557885, 'F'),
             ];
 
-            let seg1 = new Line(dots[2], dots[3]); // CE
-            let seg2 = new Line(dots[3], dots[0]); // EA
-            let seg3 = new Line(dots[2], dots[4]); // CF
-            let seg4 = new Line(dots[4], dots[1]); // FB
+            let seg1 = new Line(dots[2], dots[3]);
+            let seg2 = new Line(dots[3], dots[0]);
+            let seg3 = new Line(dots[2], dots[4]);
+            let seg4 = new Line(dots[4], dots[1]);
 
             let lines = [
-                new Line(dots[0], dots[1]), // AB
-                new Line(dots[2], dots[0]).addSegment(seg1).addSegment(seg2), // CA
-                new Line(dots[2], dots[1]).addSegment(seg3).addSegment(seg4), // CB
-                new Line(dots[3], dots[4]) // EF
+                new Line(dots[0], dots[1]),
+                new Line(dots[2], dots[0]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[1]).addSegment(seg3).addSegment(seg4),
+                new Line(dots[3], dots[4])
             ];
 
             seg1.setBase(lines[1]);
@@ -479,14 +478,14 @@ const TestData = {
                 new Dot(167.01466694753722, 136.78920260852135, 'F'),
             ];
 
-            let seg1 = new Line(dots[0], dots[3]); // AF
-            let seg2 = new Line(dots[3], dots[1]); // FB
+            let seg1 = new Line(dots[0], dots[3]);
+            let seg2 = new Line(dots[3], dots[1]);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
-                new Line(dots[2], dots[0]), // CA
-                new Line(dots[2], dots[1]), // CB
-                new Line(dots[2], dots[3]) // CF
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[0]),
+                new Line(dots[2], dots[1]),
+                new Line(dots[2], dots[3])
             ];
 
             seg1.setBase(lines[0]);
@@ -532,19 +531,19 @@ const TestData = {
                 new Dot(193.1930957661409, 198.01540442973567, 'H'),
             ];
 
-            let seg1 = new Line(dots[1], dots[4]); // FB
-            let seg2 = new Line(dots[0], dots[6]); // AH
-            let seg3 = new Line(dots[4], dots[6]); // HF
-            let seg4 = new Line(dots[2], dots[3]); // CE
-            let seg5 = new Line(dots[5], dots[3]); // EG
-            let seg6 = new Line(dots[5], dots[0]); // GA
+            let seg1 = new Line(dots[1], dots[4]);
+            let seg2 = new Line(dots[0], dots[6]);
+            let seg3 = new Line(dots[4], dots[6]);
+            let seg4 = new Line(dots[2], dots[3]);
+            let seg5 = new Line(dots[5], dots[3]);
+            let seg6 = new Line(dots[5], dots[0]);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).addSegment(seg3), // AB
-                new Line(dots[2], dots[0]).addSegment(seg4).addSegment(seg5).addSegment(seg6), // CA
-                new Line(dots[2], dots[1]), // CB
-                new Line(dots[3], dots[4]), // EF
-                new Line(dots[5], dots[6]) // GH
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).addSegment(seg3),
+                new Line(dots[2], dots[0]).addSegment(seg4).addSegment(seg5).addSegment(seg6),
+                new Line(dots[2], dots[1]),
+                new Line(dots[3], dots[4]),
+                new Line(dots[5], dots[6])
             ];
 
             seg1.setBase(lines[0]);
@@ -603,9 +602,9 @@ const TestData = {
             ];
 
             let lines = [
-                new Line(dots[0], dots[1]).setValue(10), // AB
-                new Line(dots[2], dots[0]).setValue('?'), // CA
-                new Line(dots[2], dots[1]) // CB
+                new Line(dots[0], dots[1]).setValue(10),
+                new Line(dots[2], dots[0]).setValue('?'),
+                new Line(dots[2], dots[1])
             ];
 
             let angles = [
@@ -640,9 +639,9 @@ const TestData = {
             ];
 
             let lines = [
-                new Line(dots[0], dots[1]), // AB
-                new Line(dots[2], dots[0]), // CA
-                new Line(dots[2], dots[1]) // CB
+                new Line(dots[0], dots[1]),
+                new Line(dots[2], dots[0]),
+                new Line(dots[2], dots[1])
             ];
 
             let angles = [
@@ -763,18 +762,18 @@ const TestData = {
                 new Dot(347.17611191387334, 277.343299934897, 'L'), //11
             ];
 
-            let seg1 = new Line(dots[0], dots[6]); // AG
-            let seg2 = new Line(dots[6], dots[10]); // GK
-            let seg3 = new Line(dots[10], dots[1]); // KB
-            let seg4 = new Line(dots[2], dots[7]); // CH
-            let seg5 = new Line(dots[7], dots[11]); // HL
-            let seg6 = new Line(dots[11], dots[3]); // LD
-            let seg7 = new Line(dots[6], dots[5]); // GF
-            let seg8 = new Line(dots[6], dots[7]); // GH
-            let seg9 = new Line(dots[4], dots[7]); // HE
-            let seg10 = new Line(dots[10], dots[9]); // KJ
-            let seg11 = new Line(dots[11], dots[10]); // KL
-            let seg12 = new Line(dots[8], dots[11]); // IL
+            let seg1 = new Line(dots[0], dots[6]);
+            let seg2 = new Line(dots[6], dots[10]);
+            let seg3 = new Line(dots[10], dots[1]);
+            let seg4 = new Line(dots[2], dots[7]);
+            let seg5 = new Line(dots[7], dots[11]);
+            let seg6 = new Line(dots[11], dots[3]);
+            let seg7 = new Line(dots[6], dots[5]);
+            let seg8 = new Line(dots[6], dots[7]);
+            let seg9 = new Line(dots[4], dots[7]);
+            let seg10 = new Line(dots[10], dots[9]);
+            let seg11 = new Line(dots[11], dots[10]);
+            let seg12 = new Line(dots[8], dots[11]);
 
             let lines = [
                 new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2).addSegment(seg3),
@@ -890,16 +889,16 @@ const TestData = {
                 new Dot(147.50887891147832, 175.35074069914836, 'F'),
             ];
 
-            let seg1 = new Line(dots[0], dots[4]).setValue(6); // AF
-            let seg2 = new Line(dots[4], dots[1]).setValue(6); // FB
-            let seg3 = new Line(dots[2], dots[3]).setValue("?"); // CE
-            let seg4 = new Line(dots[3], dots[0]).setValue(8); // EA
+            let seg1 = new Line(dots[0], dots[4]).setValue(6);
+            let seg2 = new Line(dots[4], dots[1]).setValue(6);
+            let seg3 = new Line(dots[2], dots[3]).setValue("?");
+            let seg4 = new Line(dots[3], dots[0]).setValue(8);
 
             let lines = [
-                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2), // AB
-                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4),// CA
-                new Line(dots[2], dots[1]), // CB
-                new Line(dots[3], dots[4])  // EF
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[0]).addSegment(seg3).addSegment(seg4),
+                new Line(dots[2], dots[1]),
+                new Line(dots[3], dots[4])
             ];
 
             seg1.setBase(lines[0]);
