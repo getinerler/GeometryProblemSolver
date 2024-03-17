@@ -177,14 +177,42 @@ export function linesMatchAngle(ang, line1, line2) {
     return false;
 }
 
-
 export function getAllLines(lines) {
     let allLines = [];
     for (let line of lines) {
-        allLines.push(new LineSum(line));
-        for (let seg of line.getSegments()) {
-            allLines.push(new LineSum(seg));
+        let lineList = getAllLineCombinations(line);
+        for (let l of lineList) {
+            allLines.push(l);
         }
     }
     return allLines;
+}
+
+function getAllLineCombinations(line) {
+    let list = [];
+    list.push(new LineSum(line));
+    let orderedSegments = getOrderedSegments(line);
+    for (let i = 0; i < orderedSegments.length; i++) {
+        for (let j = i; j < orderedSegments.length; j++) {
+            if (i === 0 && j === orderedSegments.length - 1) {
+                continue;
+            }
+            list.push(new LineSum(orderedSegments.slice(i, j + 1)));
+        }
+    }
+    return list;
+}
+
+function getOrderedSegments(line) {
+    let seg = line.getSegments().find((x) => x.isLineEnd(line.getDot1()));
+    let list = [];
+    while (seg) {
+        list.push(seg);
+        seg = line.getSegments().find((x) => list.indexOf(x) === -1 && seg.isConnected(x));
+        if (seg.isLineEnd(line.getDot2())) {
+            list.push(seg);
+            break;
+        }
+    }
+    return list;
 }

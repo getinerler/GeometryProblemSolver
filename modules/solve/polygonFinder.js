@@ -159,15 +159,9 @@ PolygonFinder.prototype = {
 
     getAngleSum(line1, line2) {
         let anglesList = this.getOrderedAngleSum(line1, line2);
-        let anglesList2 = this.getOrderedAngleSum(line2, line1);
-
+        let anglesList2 = this.getOrderedAngleSum(line2, line1);  
         let canvasAngleSum1 = anglesList.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
         let angleSum = new AngleSum(canvasAngleSum1 > 180 ? anglesList2 : anglesList);
-
-        if (angleSum.getAngles().length > 2) {
-            debugger;
-        }
-
         return angleSum;
     },
 
