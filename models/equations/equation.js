@@ -193,12 +193,24 @@ Equation.prototype = {
         return true;
     },
 
+    addLeftTerms(terms) {
+        for (let term of terms) {
+            this.addLeftTerm(term);
+        }
+    },
+
     addLeftTerm(term) {
         if (!term instanceof Term) {
             throw 'Equation.addLeftTerm error: wrong term type.';
         }
         this._left.push(term);
         this._left = this._left.sort(this.sortTerms);
+    },
+
+    addRightTerms(terms) {
+        for (let term of terms) {
+            this.addRightTerm(term);
+        }
     },
 
     addRightTerm(term) {

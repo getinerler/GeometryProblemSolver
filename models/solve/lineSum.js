@@ -1,13 +1,17 @@
 'use strict';
 
+import Line from '../../models/graphic/line.js';
+
 function LineSum(lines) {
     this._lines = [];
+    this._dot1 = null;
+    this._dot2 = null;
     if (Array.isArray(lines)) {
         for (let line of lines) {
-            this.addline(line);
+            this.addLine(line);
         }
     } else if (lines) {
-        this._lines = [lines];
+        this.addLine(lines);
     }
 }
 
@@ -26,15 +30,19 @@ LineSum.prototype = {
     },
 
     addLine(line) {
+        if (!(line instanceof Line)) {
+            throw 'LineSum.addLine: Wrong type: ' + line.getType();
+        }
         this._lines.push(line);
+        this.findStartAndEndDots();
     },
 
     getDot1() {
-        return this._lines[0].getDot1();
+        return this._dot1;
     },
 
     getDot2() {
-        return this._lines[this._lines.length - 1].getDot2();
+        return this._dot2;
     },
 
     getValue() {
@@ -70,6 +78,28 @@ LineSum.prototype = {
 
     getValueName() {
         return this._lines.map((x) => x.getValueName()).join(' + ');
+    },
+
+    findStartAndEndDots() {
+        let dotList = [];
+        for (let line of this._lines) {
+            let oldDot1 = dotList.find((x) => x.dot === line.getDot1());
+            if (oldDot1) {
+                oldDot1.count++;
+            } else {
+                dotList.push({ 'dot': line.getDot1(), 'count': 1 });
+            }
+
+            let oldDot2 = dotList.find((x) => x.dot === line.getDot2());
+            if (oldDot2) {
+                oldDot2.count++;
+            } else {
+                dotList.push({ 'dot': line.getDot2(), 'count': 1 });
+            }
+        }
+        let lineEnds = dotList.filter((x) => x.count === 1);
+        this._dot1 = lineEnds[0].dot;
+        this._dot2 = lineEnds[1].dot;
     },
 
     isEquivalent(lineSum) {
@@ -109,6 +139,34 @@ LineSum.prototype = {
             }
         }
         return true;
+    },
+
+    isConnected(lineSum) {
+        return this.getDot1() === lineSum.getDot1() ||
+            this.getDot1() === lineSum.getDot2() ||
+            this.getDot2() === lineSum.getDot1() ||
+            this.getDot2() === lineSum.getDot2();
+    },
+
+    isLineEnd(dot) {
+        return this._dot1 === dot || this._dot2 === dot;
+    },
+
+    getBase() {
+        return this._lines[0].getBase();
+    },
+
+    getBaseOrSelf() {
+        return this._lines[0].getBaseOrSelf();
+    },
+
+    getSegments() {
+        return this._lines.reduce(function (acc, x) {
+            for (let seg of x.getSegments()) {
+                acc.push(seg);
+            }
+            return acc;
+        }, [])
     },
 
     equals(lineSum) {

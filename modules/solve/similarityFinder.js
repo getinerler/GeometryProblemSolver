@@ -148,9 +148,8 @@ SimilarityFinder.prototype = {
                 }
             }
         }
-        throw 'No line found for triangle. Line: ' + line.toString() + ", " +
-         ", triangle: " + tri.getString();
-        return null;
+        throw 'SimilarityFinder.getTriangleLine: No line found for triangle (Line: ' +
+        line.toString() + ", " + "triangle: " + tri.toString() + ").";
     },
 
     getAnglesLine(tri, ang1, ang2) {
@@ -180,7 +179,6 @@ SimilarityFinder.prototype = {
         }
         throw 'No angle found for triangle. Lines: ' + line1.toString() + ", " +
         line2.toString() + " ";
-        return null;
     },
 
     areEquivalent(val1, val2) {

@@ -29,7 +29,7 @@ PolygonFinder.prototype = {
 
     findPolygons2(line1) {
         for (let line2 of this.allLines) {
-            if (line1 === line2) {
+            if (line1.equals(line2)) {
                 continue;
             }
             if (!line1.isConnected(line2)) {
@@ -44,12 +44,13 @@ PolygonFinder.prototype = {
 
     findPolygons3(line1, line2) {
         for (let line3 of this.allLines) {
-            if (line1 === line3 || line2 === line3) {
+            if (line1.equals(line3) || line2.equals(line3)) {
                 continue;
             }
             if (!line2.isConnected(line3)) {
                 continue;
             }
+
             if (line1.getBaseOrSelf() === line3.getBaseOrSelf() ||
                 line2.getBaseOrSelf() === line3.getBaseOrSelf()) {
                 continue;
@@ -63,7 +64,7 @@ PolygonFinder.prototype = {
 
     findPolygons4(line1, line2, line3) {
         for (let line4 of this.allLines) {
-            if (line1 === line4 || line2 === line4 || line3 === line4) {
+            if (line1.equals(line4) || line2.equals(line4) || line3.equals(line4)) {
                 continue;
             }
             if (line1.getBaseOrSelf() === line4.getBaseOrSelf() ||
@@ -94,16 +95,16 @@ PolygonFinder.prototype = {
         let ang3 = this.getAngleSum(line3, line1);
 
         let dots = [dot1, dot2, dot3];
-        let lines = [new LineSum(line1), new LineSum(line2), new LineSum(line3)];
+        let lines = [line1, line2, line3];
         let angles = [ang1, ang2, ang3];
         let tri = new Triangle(dots, lines, angles);
 
         let old = this.triangles.find(function (x) {
-            if (!x.getLines().find((x) => x.equals(new LineSum(line1)))) {
+            if (!x.getLines().find((x) => x.equals(line1))) {
                 return false;
-            } else if (!x.getLines().find((x) => x.equals(new LineSum(line2)))) {
+            } else if (!x.getLines().find((x) => x.equals(line2))) {
                 return false;
-            } else if (!x.getLines().find((x) => x.equals(new LineSum(line3)))) {
+            } else if (!x.getLines().find((x) => x.equals(line3))) {
                 return false;
             }
             return true;
@@ -125,23 +126,18 @@ PolygonFinder.prototype = {
         let ang4 = this.getAngleSum(line4, line1);
 
         let dots = [dot1, dot2, dot3, dot4];
-        let lines = [
-            new LineSum(line1),
-            new LineSum(line2),
-            new LineSum(line3),
-            new LineSum(line4)
-        ];
+        let lines = [line1, line2, line3, line4];
         let angles = [ang1, ang2, ang3, ang4];
         let rect = new Rectangle(dots, lines, angles);
 
         let old = this.rectangles.find(function (x) {
-            if (!x.getLines().find((x) => x.equals(new LineSum(line1)))) {
+            if (!x.getLines().find((x) => x.equals(line1))) {
                 return false;
-            } else if (!x.getLines().find((x) => x.equals(new LineSum(line2)))) {
+            } else if (!x.getLines().find((x) => x.equals(line2))) {
                 return false;
-            } else if (!x.getLines().find((x) => x.equals(new LineSum(line3)))) {
+            } else if (!x.getLines().find((x) => x.equals(line3))) {
                 return false;
-            } else if (!x.getLines().find((x) => x.equals(new LineSum(line4)))) {
+            } else if (!x.getLines().find((x) => x.equals(line4))) {
                 return false;
             }
             return true;
@@ -162,12 +158,24 @@ PolygonFinder.prototype = {
     },
 
     getAngleSum(line1, line2) {
+        let anglesList = this.getOrderedAngleSum(line1, line2);
+        let anglesList2 = this.getOrderedAngleSum(line2, line1);
+
+        let canvasAngleSum1 = anglesList.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
+        let angleSum = new AngleSum(canvasAngleSum1 > 180 ? anglesList2 : anglesList);
+
+        if (angleSum.getAngles().length > 2) {
+            debugger;
+        }
+
+        return angleSum;
+    },
+
+    getOrderedAngleSum(line1, line2) {
         let commonDot = this.getLinesCommonDot(line1, line2);
 
         let angles = this.angles.filter((x) => x.getDot() === commonDot);
-        let angles1 = [];
-        let angles2 = [];
-
+        let anglesList = [];
         let tempAng = null;
         let tempLine = null;
 
@@ -178,7 +186,7 @@ PolygonFinder.prototype = {
                 if (x === tempAng) {
                     return false;
                 }
-                if (x.getLine1() === tempLine) {
+                if (new LineSum(x.getLine1()).equals(tempLine)) {
                     return true;
                 }
                 for (let seg of tempLine.getSegments()) {
@@ -188,83 +196,42 @@ PolygonFinder.prototype = {
                 }
                 return false;
             });
+           
             if (ang) {
                 tempAng = ang;
-                angles1.push(ang);
-                tempLine = ang.getLine2();
+                anglesList.push(ang);
+                tempLine = new LineSum(ang.getLine2());     
             }
             count++;
         } while (
-            tempLine !== line2 &&
-            tempLine.getBase() !== line2 &&
+            !tempLine.equals(line2) &&
+            !new LineSum(tempLine.getBaseOrSelf()).equals(line2) &&
             count < this.angles.length);
 
-        tempLine = line2;
-        tempAng = null;
-        count = 0;
-        do {
-            let ang = angles.find(function (x) {
-                if (x === tempAng) {
-                    return false;
-                }
-                if (x.getLine1() === tempLine) {
-                    return true;
-                }
-                for (let seg of tempLine.getSegments()) {
-                    if (seg.isLineEnd(commonDot) && x.getLine1() === seg) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-            if (ang) {
-                tempAng = ang;
-                angles2.push(ang);
-                tempLine = ang.getLine2();
-            }
-            count++;
-        } while (
-            tempLine !== line1 &&
-            tempLine.getBase() !== line1 &&
-            count < this.angles.length);
-
-        let canvasAngleSum1 = angles1.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
-        let angleSum = new AngleSum(canvasAngleSum1 > 180 ? angles2 : angles1);
-        return angleSum;
-    },
-
-    getAngleSumWithLines(line1, line2) {
-        for (let ang of this.angles) {
-            if (this.linesMatchAngle(ang, line1, line2)) {
-                if (ang.getCanvasAngle() < 180) {
-                    return ang;
-                }
-            }
-        }
-        return null;
+        return anglesList;
     },
 
     linesMatch(line1, line2) {
-        if (line1 === line2) {
+        if (line1.equals(line2)) {
             return true;
         }
         if (line1.getBase() === line2) {
             return true;
         }
-        if (line1 === line2.getBase()) {
+        if (line1.equals(line2.getBase())) {
             return true;
         }
         return line1.getBaseOrSelf() === line2.getBaseOrSelf();
     },
 
     linesMatchAngle(ang, line1, line2) {
-        if (ang.getLine1() === line1 && ang.getLine2() === line2) {
+        if (ang.getLine1().equals(line1) && ang.getLine2().equals(line2)) {
             return true;
         }
-        if (ang.getLine1().getBase() === line1 && ang.getLine2() === line2) {
+        if (ang.getLine1().getBase() === line1 && ang.getLine2().equals(line2)) {
             return true;
         }
-        if (ang.getLine1() === line1 && ang.getLine2().getBase() === line2) {
+        if (ang.getLine1().equals(line1) && ang.getLine2().getBase() === line2) {
             return true;
         }
         if (ang.getLine1().getBase() === line1 &&

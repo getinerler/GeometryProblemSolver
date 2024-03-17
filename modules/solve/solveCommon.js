@@ -69,6 +69,9 @@ function valuesAreEquivalent(equivalents, val1, val2) {
     if (val1 === val2) {
         return true;
     }
+    if (val1.getType() !== val2.getType()) {
+        return false;
+    }
     if (val1.getValue() && val1.getValue() === val2.getValue()) {
         return true;
     }
@@ -76,7 +79,7 @@ function valuesAreEquivalent(equivalents, val1, val2) {
         if (equi.contains(val1) && equi.contains(val2)) {
             return true;
         }
-        if (equi.getType() === "AngleSum") {
+        if (equi.getType() === "AngleSum" && val1.getType() === "Angle") {
             let elements = equi.getElements();
             let el1 = elements.find((x) => x.isEquivalent(new AngleSum([val1])));
             let el2 = elements.find((x) => x.isEquivalent(new AngleSum([val2])));
@@ -85,10 +88,10 @@ function valuesAreEquivalent(equivalents, val1, val2) {
                 return true;
             }
         }
-        if (equi.getType() === "LineSum") {
+        if (equi.getType() === "Line" && val1.getType() === "Line") {
             let elements = equi.getElements();
-            let el1 = elements.find((x) => x.isEquivalent(new LineSum([val1])));
-            let el2 = elements.find((x) => x.isEquivalent(new LineSum([val2])));
+            let el1 = elements.find((x) => x === val1);
+            let el2 = elements.find((x) => x === val2);
 
             if (el1 && el2) {
                 return true;
@@ -112,12 +115,14 @@ export function getNarrowAngle(angles, line1, line2) {
 
 export function getNarrowAngleWithLines(angles, line1, line2) {
     for (let ang of angles) {
-        if (ang.getLine1() === line1 && ang.getLine2() === line2) {
+        if (new LineSum(ang.getLine1()).equals(line1) &&
+            new LineSum(ang.getLine2()).equals(line2)) {
             if (ang.getCanvasAngle() < 180) {
                 return ang;
             }
         }
-        if (ang.getLine1() === line2 && ang.getLine2() === line1) {
+        if (new LineSum(ang.getLine1()).equals(line2) &&
+            new LineSum(ang.getLine2()).equals(line1)) {
             if (ang.getCanvasAngle() < 180) {
                 return ang;
             }
@@ -174,10 +179,12 @@ export function linesMatchAngle(ang, line1, line2) {
 
 
 export function getAllLines(lines) {
-    return lines.reduce(function (acc, x) {
-        for (let seg of x.getSegments()) {
-            acc.push(seg);
+    let allLines = [];
+    for (let line of lines) {
+        allLines.push(new LineSum(line));
+        for (let seg of line.getSegments()) {
+            allLines.push(new LineSum(seg));
         }
-        return acc;
-    }, lines);
+    }
+    return allLines;
 }

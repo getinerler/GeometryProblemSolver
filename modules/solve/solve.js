@@ -80,10 +80,6 @@ Solve.prototype = {
         this.similarTriangles = similarityFinder.find();
         this.checkTriangleSimilarities();
 
-
-        // for (let tri of this.triangles) {
-        //     console.log(tri);
-        // }
         let calc = new Calculator(
             this.equations,
             this.unknown,
