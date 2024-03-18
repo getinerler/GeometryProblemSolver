@@ -18,7 +18,7 @@ const TestData = {
             let dots = [
                 new Dot(345, 253, 'A'),
                 new Dot(60, 69, 'B'),
-                new Dot(202.5997146785354, 161.06437719596673, 'C'),
+                new Dot(202.5997146785354, 161.06437719596673, 'C')
             ];
 
             let seg1 = new Line(dots[0], dots[2]);
@@ -51,7 +51,7 @@ const TestData = {
                 new Dot(373, 199, 'A'),
                 new Dot(52, 196, 'B'),
                 new Dot(300, 46, 'C'),
-                new Dot(207.99508515987353, 197.45789799214836, 'D'),
+                new Dot(207.99508515987353, 197.45789799214836, 'D')
             ];
 
             let seg1 = new Line(dots[0], dots[3]);
@@ -70,7 +70,7 @@ const TestData = {
             let angles = [
                 new Angle(dots[3], seg1, seg2),
                 new Angle(dots[3], seg2, lines[1]).setValue(120),
-                new Angle(dots[3], lines[1], seg1).setValue('?'),
+                new Angle(dots[3], lines[1], seg1).setValue('?')
             ];
 
             return {
@@ -80,7 +80,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[2]
-            }
+            };
         }
     },
 
@@ -128,7 +128,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[3]
-            }
+            };
         }
     },
 
@@ -173,11 +173,11 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[2]
-            }
+            };
         }
     },
 
-    getCorrespAngleQuestion: {
+    getInteriorAnglesQuestion: {
         'name': 'Interior angles',
         'explanation': 'Question: Find interior angle (80 + x).',
         'result': [new Value(100)],
@@ -209,8 +209,68 @@ const TestData = {
                 parallels: [new Parallel([lines[0], lines[1]])],
                 equivalents: [],
                 question: angles[3]
-            }
+            };
         },
+    },
+
+    getInteriorAngles2Question: {
+        'name': 'Interior angles 2',
+        'explanation': 'Question: Find interior angle (50 + x = 180).',
+        'result': [new Value(130)],
+        getQuestion() {
+            let dots = [
+                new Dot(476, 219, 'A'),
+                new Dot(56, 221, 'B'),
+                new Dot(483, 437, 'C'),
+                new Dot(51, 437, 'D'),
+                new Dot(392, 87, 'E'),
+                new Dot(182, 567, 'F'),
+                new Dot(333.95407098121086, 219.67640918580378, 'G'),
+                new Dot(238.875, 437, 'H')
+            ];
+
+            let seg1 = new Line(dots[0], dots[6]);
+            let seg2 = new Line(dots[6], dots[1]);
+            let seg3 = new Line(dots[2], dots[7]);
+            let seg4 = new Line(dots[7], dots[3]);
+            let seg5 = new Line(dots[4], dots[6]);
+            let seg6 = new Line(dots[6], dots[7]);
+            let seg7 = new Line(dots[7], dots[5]);
+
+            let lines = [
+                new Line(dots[0], dots[1]).addSegment(seg1).addSegment(seg2),
+                new Line(dots[2], dots[3]).addSegment(seg3).addSegment(seg4),
+                new Line(dots[4], dots[5]).addSegment(seg5).addSegment(seg6).addSegment(seg7)
+            ];
+
+            seg1.setBase(lines[0]);
+            seg2.setBase(lines[0]);
+            seg3.setBase(lines[1]);
+            seg4.setBase(lines[1]);
+            seg5.setBase(lines[2]);
+            seg6.setBase(lines[2]);
+            seg7.setBase(lines[2]);
+
+            let angles = [
+                new Angle(dots[6], seg6, seg2),
+                new Angle(dots[6], seg2, seg5),
+                new Angle(dots[6], seg5, seg1).setValue(50),
+                new Angle(dots[6], seg1, seg6),
+                new Angle(dots[7], seg3, seg7).setValue("?"),
+                new Angle(dots[7], seg7, seg4),
+                new Angle(dots[7], seg4, seg6),
+                new Angle(dots[7], seg6, seg3)
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [new Parallel([lines[0], lines[1]])],
+                equivalents: [],
+                question: angles[4]
+            };
+        }
     },
 
     getCorrespAngle2Question: {
@@ -237,7 +297,7 @@ const TestData = {
                 new Angle(dots[3], lines[1], lines[2]).setValue('?'),
                 new Angle(dots[3], lines[2], lines[1])
             ];
-            
+
             return {
                 dots,
                 lines,
@@ -245,7 +305,7 @@ const TestData = {
                 parallels: [new Parallel([lines[0], lines[2]])],
                 equivalents: [],
                 question: angles[2]
-            }
+            };
         }
     },
 
@@ -284,7 +344,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[4]
-            }
+            };
         }
     },
 
@@ -342,7 +402,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[4]
-            }
+            };
         }
     },
 
@@ -358,7 +418,7 @@ const TestData = {
                 new Dot(401, 191, 'D'),
                 new Dot(43, 160, 'E'),
                 new Dot(122.25577226535378, 166.8629300006312, 'F'),
-                new Dot(323.5563719680809, 184.29398751678912, 'G'),
+                new Dot(323.5563719680809, 184.29398751678912, 'G')
             ];
 
             let seg1 = new Line(dots[0], dots[5]);
@@ -393,7 +453,7 @@ const TestData = {
                 new Angle(dots[6], seg6, seg3),
                 new Angle(dots[6], seg3, seg7),
                 new Angle(dots[6], seg7, seg4).setValue(40),
-                new Angle(dots[6], seg4, seg6),
+                new Angle(dots[6], seg4, seg6)
             ];
 
             return {
@@ -403,7 +463,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[1]
-            }
+            };
         }
     },
 
@@ -417,7 +477,7 @@ const TestData = {
                 new Dot(51, 241, 'B'),
                 new Dot(373, 255, 'C'),
                 new Dot(302.6668704409358, 143.50896499526118, 'E'),
-                new Dot(211.84199128313574, 247.9931300557885, 'F'),
+                new Dot(211.84199128313574, 247.9931300557885, 'F')
             ];
 
             let seg1 = new Line(dots[2], dots[3]);
@@ -452,7 +512,7 @@ const TestData = {
                 new Angle(dots[4], lines[3], seg3).setValue(40),
                 new Angle(dots[3], seg1, lines[3]).setValue(70),
                 new Angle(dots[3], lines[3], seg2),
-                new Angle(dots[3], seg2, seg1),
+                new Angle(dots[3], seg2, seg1)
             ];
 
             return {
@@ -462,7 +522,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[2]
-            }
+            };
         }
     },
 
@@ -475,7 +535,7 @@ const TestData = {
                 new Dot(253, 48, 'A'),
                 new Dot(69, 238, 'B'),
                 new Dot(363, 259, 'C'),
-                new Dot(167.01466694753722, 136.78920260852135, 'F'),
+                new Dot(167.01466694753722, 136.78920260852135, 'F')
             ];
 
             let seg1 = new Line(dots[0], dots[3]);
@@ -502,7 +562,7 @@ const TestData = {
                 new Angle(dots[3], seg1, lines[3]),
                 new Angle(dots[2], lines[1], lines[2]),
                 new Angle(dots[2], lines[2], lines[3]).setValue("?"),
-                new Angle(dots[2], lines[3], lines[1]).setValue(20),
+                new Angle(dots[2], lines[3], lines[1]).setValue(20)
             ];
 
             return {
@@ -512,7 +572,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[8]
-            }
+            };
         }
     },
 
@@ -528,7 +588,7 @@ const TestData = {
                 new Dot(396.9253023615606, 305.5969037110238, 'E'),
                 new Dot(135.01866927895344, 271.9051973139359, 'F'),
                 new Dot(326.0348575222761, 194.19763324929102, 'G'),
-                new Dot(193.1930957661409, 198.01540442973567, 'H'),
+                new Dot(193.1930957661409, 198.01540442973567, 'H')
             ];
 
             let seg1 = new Line(dots[1], dots[4]);
@@ -576,7 +636,7 @@ const TestData = {
                 new Angle(dots[6], seg2, lines[4]),
                 new Angle(dots[5], seg5, lines[4]),
                 new Angle(dots[5], lines[4], seg6),
-                new Angle(dots[5], seg6, seg5).setValue(180),
+                new Angle(dots[5], seg6, seg5).setValue(180)
             ];
 
             return {
@@ -586,7 +646,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[1]
-            }
+            };
         }
     },
 
@@ -623,7 +683,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [new Equivalence([angles[2], angles[5]])],
                 question: lines[1]
-            }
+            };
         }
     },
 
@@ -660,7 +720,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [new Equivalence([lines[0], lines[1]])],
                 question: angles[5]
-            }
+            };
         }
     },
 
@@ -697,7 +757,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: lines[2]
-            }
+            };
         }
     },
 
@@ -738,7 +798,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[7]
-            }
+            };
         }
     },
 
@@ -821,7 +881,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[12]
-            }
+            };
         }
     },
 
@@ -872,7 +932,7 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: angles[10]
-            }
+            };
         }
     },
 
@@ -886,7 +946,7 @@ const TestData = {
                 new Dot(60, 287, 'B'),
                 new Dot(393, 291, 'C'),
                 new Dot(334.13419858201996, 207.32911244991516, 'E'),
-                new Dot(147.50887891147832, 175.35074069914836, 'F'),
+                new Dot(147.50887891147832, 175.35074069914836, 'F')
             ];
 
             let seg1 = new Line(dots[0], dots[4]).setValue(6);
@@ -933,7 +993,7 @@ const TestData = {
                     new Equivalence([new AngleSum([angles[2]]), new AngleSum([angles[10]])])
                 ],
                 question: seg3
-            }
+            };
         }
     }
 }

@@ -599,11 +599,7 @@ Solve.prototype = {
         let base1 = line1.getBaseOrSelf();
         let base2 = line2.getBaseOrSelf();
         let par = this.parallels.find((x) => x.contains(base1) && x.contains(base2));
-        if (par) {
-            return true;
-        } else {
-            return false;
-        }
+        return !!par;
     },
 
     getAngleAlternativeNames() {
