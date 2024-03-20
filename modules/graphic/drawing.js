@@ -69,21 +69,13 @@ Drawing.prototype = {
     },
 
     createNewLine(dot1, dot2) {
-        let line;
-        if (!this._elements.hoveredObject) {
-            line = new Line(dot1, dot2);
-            this.saveTempParallels(line);
-            this._elements.addLine(line);
-        } else {
+        let line = new Line(dot1, dot2);
+        this.saveTempParallels(line);
+        this._elements.addLine(line);
+
+        if (this._elements.hoveredObject) {
             let hovered = this._elements.hoveredObject;
-            if (hovered.type === 'dot') {
-                line = new Line(dot1, dot2);
-                this.saveTempParallels(line);
-                this._elements.addLine(line);
-            } else if (hovered.type === 'line') {
-                line = new Line(dot1, dot2);
-                this.saveTempParallels(line);
-                this._elements.addLine(line);
+            if (hovered.type === 'line') {       
                 this.handleDotOnLine(hovered.obj, dot2);
             }
         }
