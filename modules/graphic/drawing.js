@@ -264,7 +264,6 @@ Drawing.prototype = {
         }
 
         this.createSegmentLines(targetLine, dot);
-        this.arrangeAngles(dot);
     },
 
     updateHovered() {
