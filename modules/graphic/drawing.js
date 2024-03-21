@@ -200,9 +200,7 @@ Drawing.prototype = {
 
     saveTempParallels(newLine) {
         if (newLine) {
-            if (this._elements.parallelsTemp.length === 0) {
-                this._elements.parallelsTemp.push([newLine]);
-            } else {
+            if (this._elements.parallelsTemp.length !== 0) {
                 this._elements.parallelsTemp[0].push(newLine);
             }
         }

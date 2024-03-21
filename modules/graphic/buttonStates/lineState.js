@@ -38,7 +38,6 @@ LineState.prototype = {
     },
 
     mouseUpEvent(x, y) {
-        this._drawing.saveTempParallels();
         if (!this._elements.dragDot) {
             this.createNewLine(x, y);
         } else {
@@ -189,19 +188,9 @@ LineState.prototype = {
             let dot1 = this._elements.dragStartPoint.copy();
             let dot2 = this._elements.currentDot.copy();
             let imaginaryLine = new Line(dot1, dot2);
-
             for (let line of this._elements.lines) {
                 if (linesParallel(line, imaginaryLine)) {
-                    let found;
-                    for (let parallel of this._elements.parallelsTemp) {
-                        found = parallel.find((x) => x === line);
-                        if (found) {
-                            if (parallel.indexOf(line) === -1) {
-                                parallel.push(line);
-                            }
-                        }
-                    }
-                    if (!found) {
+                    if (!this._elements.parallelsTemp.some((x) => x.indexOf(line) > -1)) {
                         this._elements.parallelsTemp.push([line]);
                     }
                 }
