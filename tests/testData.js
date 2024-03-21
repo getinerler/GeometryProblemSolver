@@ -764,6 +764,57 @@ const TestData = {
         }
     },
 
+    getGeometricMeanTheoremQuestion: {
+        'name': 'Mean Theorem',
+        'explanation': 'Question: Geometric Mean Theorem, find height (x² = 8 x 2).',
+        'result': [new Value(4)],
+        getQuestion() {
+            let dots = [
+                new Dot(389, 134, 'A'),
+                new Dot(59, 373, 'B'),
+                new Dot(536, 377, 'C'),
+                new Dot(390.9499380005037, 375.78364727883024, 'E')
+            ];
+
+            let seg1 = new Line(dots[2], dots[3]).setValue(8); // CE
+            let seg2 = new Line(dots[3], dots[1]).setValue(2); // EB
+
+            let lines = [
+                new Line(dots[0], dots[1]), // AB
+                new Line(dots[2], dots[0]), // CA
+                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2),// CB
+                new Line(dots[3], dots[0]).setValue('?') // EA
+            ];
+
+            seg1.setBase(lines[2]);
+            seg2.setBase(lines[2]);
+
+            dots[3].setBaseLine(lines[3]).setLineRatio(0.30408818029244494);
+
+            let angles = [
+                new Angle(dots[1], lines[0], seg2),
+                new Angle(dots[1], seg2, lines[0]),
+                new Angle(dots[2], lines[1], seg1),
+                new Angle(dots[2], seg1, lines[1]),
+                new Angle(dots[0], lines[0], lines[1]),
+                new Angle(dots[0], lines[1], lines[3]).setValue(40),
+                new Angle(dots[0], lines[3], lines[0]).setValue(50),
+                new Angle(dots[3], seg1, seg2).setValue(180),
+                new Angle(dots[3], seg2, lines[3]),
+                new Angle(dots[3], lines[3], seg1).setValue(90),
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [],
+                question: lines[3]
+            };
+        }
+    },
+
     getRectangleAngleQuestion: {
         'name': 'Find rect. angle',
         'explanation': 'Question: Find rectangle missing angle (50 + 100 + 120 + x = 360).',
