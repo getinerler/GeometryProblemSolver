@@ -75,7 +75,7 @@ Drawing.prototype = {
 
         if (this._elements.hoveredObject) {
             let hovered = this._elements.hoveredObject;
-            if (hovered.type === 'dot') {
+            if (hovered.type === 'dot' && hovered.obj.isOnLine()) {
                 hovered.obj.addIntersectionLine(line);
             }
             if (hovered.type === 'line') {
