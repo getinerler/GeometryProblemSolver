@@ -38,6 +38,7 @@ LineState.prototype = {
     },
 
     mouseUpEvent(x, y) {
+        this._drawing.saveTempParallels();
         if (!this._elements.dragDot) {
             this.createNewLine(x, y);
         } else {
