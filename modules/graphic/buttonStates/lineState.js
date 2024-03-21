@@ -38,7 +38,6 @@ LineState.prototype = {
     },
 
     mouseUpEvent(x, y) {
-        this._drawing.saveTempParallels();
         if (!this._elements.dragDot) {
             this.createNewLine(x, y);
         } else {
@@ -50,6 +49,7 @@ LineState.prototype = {
                 }
             }
         }
+        this._drawing.saveTempParallels();
         this.removeUnnecessaryParallels();
         this._elements.dragDot = null;
         this._elements.dragStartPoint = null;
