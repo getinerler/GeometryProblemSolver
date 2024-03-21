@@ -45,6 +45,10 @@ LineSum.prototype = {
         return this._dot2;
     },
 
+    getOtherDot(dot) {
+        return dot === this._dot1 ? this._dot2 : this._dot1;
+    },
+
     getValue() {
         let unknowns = this._lines.filter((x) => !x.isKnown());
         if (unknowns.length > 0) {

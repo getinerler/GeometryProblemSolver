@@ -789,7 +789,7 @@ const TestData = {
             seg1.setBase(lines[2]);
             seg2.setBase(lines[2]);
 
-            dots[3].setBaseLine(lines[3]).setLineRatio(0.30408818029244494);
+            dots[3].setBaseLine(lines[2]).setLineRatio(0.30408818029244494);
 
             let angles = [
                 new Angle(dots[1], lines[0], seg2),

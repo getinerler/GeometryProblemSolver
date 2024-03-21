@@ -107,7 +107,7 @@ Dot.prototype = {
     },
 
     isBaseLine(line) {
-        return this._baseLine == line;
+        return this._baseLine === line;
     },
 
     getBaseLine() {

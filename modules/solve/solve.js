@@ -415,8 +415,6 @@ Solve.prototype = {
             }
         }
 
-
-
         let len2 = tri.getLines().length;
         for (let i = 0; i < len2; i++) {
             for (let j = i + 1; j < len2 + i; j++) {
@@ -484,20 +482,28 @@ Solve.prototype = {
         if (!angle90) {
             return;
         }
-        let sideLines = [angle90.getLine1(), angle90.getLine2()];
+
+        let index = tri.getAngles().indexOf(angle90);
+
+        let sideLines = [tri.getLine(index % 3), tri.getLine((index + 1) % 3)];
         let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
         if (!hypothenus) {
             return;
         }
 
         for (let line of this.lines) {
-            if (line.getDot1() === angle90.getDot() && line.getDot2().isBaseLine(hypothenus) ||
-                line.getDot2() === angle90.getDot() && line.getDot1().isBaseLine(hypothenus)) {
+            if (
+                (line.getDot1() === angle90.getDot() &&
+                    line.getDot2().getBaseLine() &&
+                    new LineSum(line.getDot2().getBaseLine()).equals(hypothenus)) ||
+                (line.getDot2() === angle90.getDot() &&
+                    line.getDot1().getBaseLine() &&
+                    new LineSum(line.getDot1().getBaseLine()).equals(hypothenus))) {
+
                 let eq = new Equation();
                 eq.setCreation(Creations.GeometricMeanTheorem);
                 eq.addLeftTerm(this.getTermFromValue(line, 2));
 
-                //TODO update codes for multiple line segments
                 let otherDot = line.getOtherDot(angle90.getDot());
                 let l1 = this.lines
                     .find((x) => x.isLineEnd(otherDot) && x.isLineEnd(hypothenus.getDot1()));
@@ -506,8 +512,7 @@ Solve.prototype = {
 
                 let term1 = this.getTermFromValue(l1);
                 let term2 = this.getTermFromValue(l2);
-                let newTerm = term1.addVariables(term2.getVariables());
-                eq.addRightTerm(newTerm);
+                eq.addRightTerm(term1.multiply(term2));
                 this.equations.push(eq);
             }
         }
