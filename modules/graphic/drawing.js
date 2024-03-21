@@ -75,7 +75,7 @@ Drawing.prototype = {
 
         if (this._elements.hoveredObject) {
             let hovered = this._elements.hoveredObject;
-            if (hovered.type === 'line') {       
+            if (hovered.type === 'line') {
                 this.handleDotOnLine(hovered.obj, dot2);
             }
         }
@@ -113,6 +113,7 @@ Drawing.prototype = {
             dot.addIntersectionLine(seg1);
             dot.addIntersectionLine(seg2);
             base.removeSegment(seg);
+            this.replaceIntersectionLines(seg, seg1, seg2);
             this.updateAnglesAfterSegmentation(seg, seg1, seg2);
             return;
         }
@@ -126,6 +127,7 @@ Drawing.prototype = {
             dot.removeIntersection(targetLine);
             dot.addIntersectionLine(seg1);
             dot.addIntersectionLine(seg2);
+            this.replaceIntersectionLines(targetLine, seg1, seg2);
             this.updateAnglesAfterSegmentation(targetLine, seg1, seg2);
             base.removeSegment(targetLine);
         } else {
@@ -137,6 +139,18 @@ Drawing.prototype = {
             dot.removeIntersection(targetLine);
             dot.addIntersectionLine(line1);
             dot.addIntersectionLine(line2);
+            this.replaceIntersectionLines(targetLine, line1, line2);
+        }
+    },
+
+    replaceIntersectionLines(line, seg1, seg2) {
+        for (let dot of this._elements.dots) {
+            for (let int of dot.getIntersectionLines()) {
+                if (int === line) {
+                    let lineToReplace = seg1.isLineEnd(dot) ? seg1 : seg2;
+                    dot.replaceIntersectionLine(int, lineToReplace);
+                }
+            }
         }
     },
 
@@ -390,7 +404,7 @@ Drawing.prototype = {
         header.style.display = text ? 'block' : 'none';
         document.getElementById('questionText').innerHTML = text;
     },
-    
+
     setButtonState(state) {
         switch (state) {
             case 'line':

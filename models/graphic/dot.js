@@ -97,6 +97,11 @@ Dot.prototype = {
         return this._intersectionLines.length > 0;
     },
 
+    replaceIntersectionLine(line, line2) {
+        let index = this._intersectionLines.indexOf(line);
+        this._intersectionLines.splice(index, index, line2);
+    },
+
     isOnLine() {
         return this._baseLine !== null;
     },
