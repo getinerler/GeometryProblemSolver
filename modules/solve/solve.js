@@ -140,7 +140,8 @@ Solve.prototype = {
         for (let dot of this.dots) {
             if (dot.isOnLine()) {
                 this.checkSupplementaryAngleOnLine(dot);
-            } else if (dot.isIntersectionDot()) {
+            }
+            if (dot.isIntersectionDot()) {
                 this.checkSupplementaryAngleOnIntersection(dot);
             }
         }
@@ -319,6 +320,9 @@ Solve.prototype = {
     },
 
     checkCorrespondingAngle(line1, line2, line3) {
+        if (line1.toString() === "AG" && line2.toString() === "CH" && line3.toString() === "GH") {
+            console.log("bulduk")
+        }
         let ang1 = this.getNarrowAngle(line1, line3);
         let ang2 = this.getNarrowAngle(line2, line3);
         let deg1 = getAngleDegree(ang1);

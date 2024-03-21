@@ -251,6 +251,9 @@ const TestData = {
             seg6.setBase(lines[2]);
             seg7.setBase(lines[2]);
 
+            dots[6].setIntersectionLines([seg1, seg5, seg6, seg2]);
+            dots[7].setIntersectionLines([seg7, seg3, seg6, seg4]);
+
             let angles = [
                 new Angle(dots[6], seg6, seg2),
                 new Angle(dots[6], seg2, seg5),
@@ -818,8 +821,8 @@ const TestData = {
                 new Dot(336.189802860773, 126.17168736423628, 'H'), //7
                 new Dot(410, 277, 'I'), //8
                 new Dot(44, 279, 'J'), //9
-                new Dot(103.58855700462769, 278.67437946992004, 'K'), //10
-                new Dot(347.17611191387334, 277.343299934897, 'L'), //11
+                new Dot(103.58855700462769, 278.67437946992004, 'K'),
+                new Dot(347.17611191387334, 277.343299934897, 'L'),
             ];
 
             let seg1 = new Line(dots[0], dots[6]);
