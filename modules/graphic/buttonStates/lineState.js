@@ -53,6 +53,7 @@ LineState.prototype = {
         this.removeUnnecessaryParallels();
         this._elements.dragDot = null;
         this._elements.dragStartPoint = null;
+        this._drawing.updateCanvasAngles();
     },
 
     prepareInput(x, y) {
@@ -233,6 +234,11 @@ LineState.prototype = {
             }
             if (line.getDot2() === dot2) {
                 line.setDot2(dot1);
+            }
+        }
+        for (let ang of this._elements.angles) {
+            if (ang.getDot() === dot2) {
+                ang.setDot(dot1);
             }
         }
         this._elements.dots = this._elements.dots.filter((x) => x !== dot2);

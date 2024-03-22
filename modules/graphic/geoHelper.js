@@ -186,25 +186,25 @@ export function getDotOnLineWithRatio(dot) {
 }
 
 export function getAngleSimilarSymbolI(ang) {
-    let dist = new Point(ang.getDot().getX() + angleTextDistance / 2, ang.getDot().getY());
+    let dot = new Point(ang.getDot().getX() + angleTextDistance / 2, ang.getDot().getY());
     let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
     let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
     let middle = greater > smaller ?
         (greater - smaller) / 2 + smaller :
         (360 - smaller + greater) / 2 + smaller;
-    return rotate(ang.getDot(), dist, middle);
+    return rotate(ang.getDot(), dot, middle);
 }
 
 export function getAngleTextPoint(ang, textWidth) {
-    let dist = new Point(
-        ang.getDot().getX() + angleTextDistance - (textWidth / 2),
+    let dot = new Point(
+        ang.getDot().getX() + 20,
         ang.getDot().getY());
     let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
     let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
     let middle = greater > smaller ?
         (greater - smaller) / 2 + smaller :
         (360 - smaller + greater) / 2 + smaller;
-    return rotate(ang.getDot(), dist, middle);
+    return rotate(ang.getDot(), dot, middle);
 }
 
 export function getLineTextPoint(line) {
@@ -258,6 +258,20 @@ export function getLineSimilarSymbolLine2(line) {
     let y4 = middleY2 + 5 * Math.sin(ang);
 
     return [new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), new Point(x4, y4)];
+}
+
+export function getDotNamePoint(dot, ang, line) {
+    if (!ang) {
+        let p1 = new Point(dot.getX() + 20, dot.getY());
+        let p2 = new Point(dot.getX() - 20, dot.getY());
+        return dotBetweenLineSegment(p1, line) ? p2 : p1;
+    }
+    let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
+    let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
+    let middle = greater > smaller ?
+        (greater - smaller) / 2 + smaller :
+        (360 - smaller + greater) / 2 + smaller;
+    return rotate(ang.getDot(), new Point(dot.getX() + 15, dot.getY()), middle);
 }
 
 function rotate(ref, dot, ang) {

@@ -4,6 +4,7 @@ import Line from '../../models/graphic/line.js';
 import { getLineAngleRadian, getAngleTextPoint, getLineTextPoint } from './geoHelper.js';
 import { getLongLine, get90DegreeSymbolPoints, getAngleSimilarSymbolI } from './geoHelper.js';
 import { getLineSimilarSymbolLine1, getLineSimilarSymbolLine2 } from './geoHelper.js';
+import { getDotNamePoint } from './geoHelper.js';
 
 function Canvas(canvas, canvasObjects) {
     if (!canvas) {
@@ -89,7 +90,17 @@ Canvas.prototype = {
 
         if (dot.getName()) {
             this._ctx.font = this._dotNameFont;
-            this._ctx.fillText(dot.getName(), dot.getX() + 5, dot.getY() - 7);
+            let line = this._elements.lines.find((x) => x.isLineEnd(dot));
+            let ang = this._elements.angles
+                .filter((x) => x.getDot() === dot)
+                .reduce(function (acc, x) {
+                    if (acc === null || acc.getCanvasAngle() < x.getCanvasAngle()) {
+                        acc = x;
+                    }
+                    return acc;
+                }, null);
+            let point = getDotNamePoint(dot, ang, line);
+            this._ctx.fillText(dot.getName(), point.getX(), point.getY());
         }
     },
 

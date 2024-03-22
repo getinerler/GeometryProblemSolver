@@ -4,7 +4,7 @@ import Canvas from '../graphic/canvas.js';
 import CanvasElements from '../../models/graphic/canvasElements.js';
 import { dotOnLine, dotsCloser, anglesCloser, dotBetweenAngle } from './geoHelper.js';
 import { dotOnLineSegment, getLineAngle, lineIntersect } from './geoHelper.js';
-import { getDotsLineRatio, getDotOnLineWithRatio } from './geoHelper.js';
+import { getDotsLineRatio, getDotOnLineWithRatio, getAngleDegree } from './geoHelper.js';
 import { getQuestionText } from './texts.js';
 import LineState from './buttonStates/lineState.js';
 import EquivalenceState from './buttonStates/equivalenceState.js';
@@ -269,6 +269,12 @@ Drawing.prototype = {
         this.createSegmentLines(targetLine, dot);
     },
 
+    updateCanvasAngles() {
+        for (let ang of this._elements.angles) {
+            ang.setCanvasAngle(getAngleDegree(ang));
+        }
+    },
+
     updateHovered() {
         let hoveredObject;
         let found = false;
@@ -374,6 +380,10 @@ Drawing.prototype = {
         document.getElementById('questionHeader').style.display = 'none';
         document.getElementById('answerHeader').style.display = 'none';
 
+        for (let ang of info.angles) {
+            ang.setCanvasAngle((getAngleDegree(ang)));
+        }
+        
         this._elements.lines = info.lines;
         this._elements.dots = info.dots;
         this._elements.angles = info.angles;
