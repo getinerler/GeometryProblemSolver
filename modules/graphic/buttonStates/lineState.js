@@ -279,6 +279,18 @@ LineState.prototype = {
                 }
                 this._elements.angles.push(new Angle(dot).setLine1(line1).setLine2(line2));
             }
+            let filtered = connectedLines.filter((x) => x.getBase() === null);
+            for (let i = 0; i < filtered.length; i++) {
+                let line1 = filtered[i];
+                let line2 = filtered[(i + 1) % filtered.length];
+                if (line1 === line2) {
+                    continue;
+                }
+                if (!this._elements.angles
+                    .some((x) => x.getLine1() === line1 && x.getLine2() === line2)) {
+                    this._elements.angles.push(new Angle(dot).setLine1(line1).setLine2(line2));
+                }
+            }
         }
     },
 

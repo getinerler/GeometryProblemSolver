@@ -19,8 +19,16 @@ function Canvas(canvas, canvasObjects) {
 
     this._hoveredColor = '#FFC0CB';
     this._blackColor = '#000000';
+    this._dotColor = "grey";
     this._intersectionColor = 'grey';
-    this._dotSize = 2;
+    this._questionColor = "red";
+
+    this._dotNameFont = "15px Arial";
+    this._valueFont = " 15px Arial";
+    this._ordinaryFont = "10px Arial";
+
+    this._dotDiameter = 2;
+    this._dotHoveredDiameter = 4;
 
     this._elements = canvasObjects;
 }
@@ -30,9 +38,7 @@ Canvas.prototype = {
     drawObjects() {
         this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         if (this._elements.dragStartPoint && this._elements.dragDot === null) {
-            let lineToDraw =
-                new Line(this._elements.dragStartPoint, this._elements.currentDot)
-            this.drawLine(lineToDraw);
+            this.drawLine(new Line(this._elements.dragStartPoint, this._elements.currentDot));
         }
         for (let ang of this._elements.angles) {
             this.drawAngle(ang);
@@ -46,8 +52,8 @@ Canvas.prototype = {
         for (let dot of this._elements.dots) {
             this.drawDot(dot);
         }
-        for (let int of this._elements.intersectionDots) {
-            this.drawDot(int, this._intersectionColor);
+        for (let intr of this._elements.intersectionDots) {
+            this.drawDot(intr, this._intersectionColor);
         }
         for (let parallel of this._elements.parallelsTemp) {
             this.drawParallel(parallel);
@@ -56,31 +62,40 @@ Canvas.prototype = {
 
     drawDot(dot, color) {
         if (color) {
+            this._ctx.strokeStyle = color;
             this._ctx.fillStyle = color;
-        } else if (dot.isHovered()) {
-            this._ctx.fillStyle = this._hoveredColor;
         } else {
+            this._ctx.strokeStyle = this._blackColor;
             this._ctx.fillStyle = this._blackColor;
         }
 
+        let dotColor = dot.isHovered() ? this._dotHoveredDiameter : this._dotDiameter;
+
         this._ctx.beginPath();
         this._ctx.setLineDash([0]);
-        this._ctx.arc(dot.getX(), dot.getY(), this._dotSize, 0, 2 * Math.PI);
+        this._ctx.arc(dot.getX(), dot.getY(), dotColor, 0, 2 * Math.PI);
         this._ctx.closePath();
         this._ctx.fill();
+        this._ctx.stroke();
 
-        if (dot.getName()) {
-            this._ctx.fillText(dot.getName(), dot.getX() + 5, dot.getY() - 7);
+        this._ctx.font = this._valueFont;
+        if (color) {
+            this._ctx.strokeStyle = color;
+            this._ctx.fillStyle = color;
+        } else {
+            this._ctx.strokeStyle = this._dotColor;
+            this._ctx.fillStyle = this._dotColor;
         }
 
-        this._ctx.beginPath();
-        this._ctx.setLineDash([0]);
-        this._ctx.arc(dot.getX(), dot.getY(), this._dotSize, 0, 2 * Math.PI);
-        this._ctx.closePath();
-        this._ctx.stroke();
+        if (dot.getName()) {
+            this._ctx.font = this._dotNameFont;
+            this._ctx.fillText(dot.getName(), dot.getX() + 5, dot.getY() - 7);
+        }
     },
 
     drawLine(line) {
+        this._ctx.font = this._ordinaryFont;
+        this._ctx.fillStyle = this._blackColor;
         if (line.isHovered()) {
             this._ctx.strokeStyle = this._hoveredColor;
         } else {
@@ -88,10 +103,16 @@ Canvas.prototype = {
         }
 
         if (line.getValue()) {
+            if (line.getValue() === '?') {
+                this._ctx.fillStyle = this._questionColor;
+            }
+            this._ctx.font = this._valueFont;
             let point = getLineTextPoint(line);
             this._ctx.fillText(`${line.getValue()} cm`, point.getX(), point.getY());
+            this._ctx.fill();
         }
 
+        this._ctx.fillStyle = this._blackColor;
         this._ctx.beginPath();
         this._ctx.setLineDash([0]);
         this._ctx.moveTo(line.getX1(), line.getY1());
@@ -128,8 +149,12 @@ Canvas.prototype = {
     },
 
     drawLineSegments(line) {
+        this._ctx.font = this._ordinaryFont;
+        this._ctx.fillStyle = this._blackColor;
+
         for (let seg of line.getSegments()) {
             if (seg.getValue()) {
+                this._ctx.font = this._valueFont;
                 let point = getLineTextPoint(seg);
                 this._ctx.fillText(`${seg.getValue()} cm`, point.getX(), point.getY());
             }
@@ -147,7 +172,11 @@ Canvas.prototype = {
     },
 
     drawAngle(ang) {
+        this._ctx.font = this._ordinaryFont;
+        this._ctx.fillStyle = this._blackColor;
+
         if (ang.getValue()) {
+            this._ctx.font = this._valueFont;
             if (ang.getValue() === 90) {
                 let points90 = get90DegreeSymbolPoints(ang);
                 this._ctx.beginPath();
@@ -165,9 +194,12 @@ Canvas.prototype = {
                 this._ctx.closePath();
 
                 this._ctx.beginPath();
-                this._ctx.arc(middleX, middleY, this._dotSize / 2, 0, 2 * Math.PI);
+                this._ctx.arc(middleX, middleY, this._dotDiameter / 2, 0, 2 * Math.PI);
                 this._ctx.fill();
             } else if (ang.getValue() !== 180) {
+                if (ang.getValue() === '?') {
+                    this._ctx.fillStyle = this._questionColor;
+                }
                 let textWidth = this._ctx.measureText(ang.getValue()).width;
                 let point = getAngleTextPoint(ang, textWidth);
                 this._ctx.fillText(ang.getValue(), point.getX(), point.getY());
@@ -175,6 +207,7 @@ Canvas.prototype = {
         }
 
         if (ang.isHovered()) {
+            this._ctx.strokeStyle = this._blackColor;
             this._ctx.fillStyle = this._hoveredColor;
             let ang1 = getLineAngleRadian(ang.getLine1(), ang.getDot());
             let ang2 = getLineAngleRadian(ang.getLine2(), ang.getDot());
@@ -200,7 +233,7 @@ Canvas.prototype = {
             let dotPoint = getAngleSimilarSymbolI(ang);
             this._ctx.beginPath();
             this._ctx.setLineDash([0]);
-            this._ctx.arc(dotPoint.getX(), dotPoint.getY(), this._dotSize, 0, 2 * Math.PI);
+            this._ctx.arc(dotPoint.getX(), dotPoint.getY(), this._dotDiameter, 0, 2 * Math.PI);
             this._ctx.closePath();
             this._ctx.fill();
 

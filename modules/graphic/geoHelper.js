@@ -44,16 +44,8 @@ export function getAngleDegree(ang) {
     if (!ang) {
         return NaN;
     }
-    let degree1 = getAngle(
-        ang.getDot(),
-        ang.getLine1().getDot1() === ang.getDot() ?
-            ang.getLine1().getDot2() :
-            ang.getLine1().getDot1());
-    let degree2 = getAngle(
-        ang.getDot(),
-        ang.getLine2().getDot1() === ang.getDot() ?
-            ang.getLine2().getDot2() :
-            ang.getLine2().getDot1());
+    let degree1 = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
+    let degree2 = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
     if (degree1 < degree2) {
         return degree2 - degree1;
     } else {
@@ -194,43 +186,25 @@ export function getDotOnLineWithRatio(dot) {
 }
 
 export function getAngleSimilarSymbolI(ang) {
-    let d = new Point(
-        ang.getDot().getX() + angleTextDistance  / 2,
-        ang.getDot().getY());
-    let smaller = getAngle(
-        ang.getDot(),
-        ang.getLine1().getDot1() === ang.getDot() ?
-            ang.getLine1().getDot2() :
-            ang.getLine1().getDot1());
-    let greater = getAngle(
-        ang.getDot(),
-        ang.getLine2().getDot1() === ang.getDot() ?
-            ang.getLine2().getDot2() :
-            ang.getLine2().getDot1());
+    let dist = new Point(ang.getDot().getX() + angleTextDistance / 2, ang.getDot().getY());
+    let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
+    let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
     let middle = greater > smaller ?
         (greater - smaller) / 2 + smaller :
         (360 - smaller + greater) / 2 + smaller;
-    return rotate(ang.getDot(), d, middle);
+    return rotate(ang.getDot(), dist, middle);
 }
 
 export function getAngleTextPoint(ang, textWidth) {
-    let d = new Point(
+    let dist = new Point(
         ang.getDot().getX() + angleTextDistance - (textWidth / 2),
         ang.getDot().getY());
-    let smaller = getAngle(
-        ang.getDot(),
-        ang.getLine1().getDot1() === ang.getDot() ?
-            ang.getLine1().getDot2() :
-            ang.getLine1().getDot1());
-    let greater = getAngle(
-        ang.getDot(),
-        ang.getLine2().getDot1() === ang.getDot() ?
-            ang.getLine2().getDot2() :
-            ang.getLine2().getDot1());
+    let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
+    let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));
     let middle = greater > smaller ?
         (greater - smaller) / 2 + smaller :
         (360 - smaller + greater) / 2 + smaller;
-    return rotate(ang.getDot(), d, middle);
+    return rotate(ang.getDot(), dist, middle);
 }
 
 export function getLineTextPoint(line) {
@@ -240,11 +214,11 @@ export function getLineTextPoint(line) {
 }
 
 export function get90DegreeSymbolPoints(ang) {
-    let dot1 = new Point(ang.getDot().getX(), ang.getDot().getY() + 10);
-    let dot2 = new Point(ang.getDot().getX() + 10, ang.getDot().getY() + 10);
-    let dot3 = new Point(ang.getDot().getX() + 10, ang.getDot().getY());
-    let rotationAngle =
-        (getAngle(ang.getLine1().getDot1(), ang.getLine1().getDot2()) + 180);
+    let line90 = 13;
+    let dot1 = new Point(ang.getDot().getX(), ang.getDot().getY() + line90);
+    let dot2 = new Point(ang.getDot().getX() + line90, ang.getDot().getY() + line90);
+    let dot3 = new Point(ang.getDot().getX() + line90, ang.getDot().getY());
+    let rotationAngle = getAngle(ang.getLine1().getDot1(), ang.getLine1().getDot2()) + 180;
     dot1 = rotate(ang.getDot(), dot1, rotationAngle);
     dot2 = rotate(ang.getDot(), dot2, rotationAngle);
     dot3 = rotate(ang.getDot(), dot3, rotationAngle);
@@ -282,6 +256,7 @@ export function getLineSimilarSymbolLine2(line) {
     let y3 = middleY2 - 5 * Math.sin(ang);
     let x4 = middleX2 + 5 * Math.cos(ang);
     let y4 = middleY2 + 5 * Math.sin(ang);
+
     return [new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), new Point(x4, y4)];
 }
 
@@ -303,12 +278,7 @@ function lineDotDistance(line, dot) {
     // √(A² + B²)
     let sqrt = Math.sqrt(1 + Math.pow(slope, 2));
     // ∣Am + Bn + C∣
-    let sumAbs = Math.abs(
-        dot.getY()
-        - slope * dot.getX()
-        + slope * line.getX2()
-        - line.getY2());
-
+    let sumAbs = Math.abs(dot.getY() - slope * dot.getX() + slope * line.getX2() - line.getY2());
     // ∣Am + Bn + C∣ / √(A²+B²)
     return sumAbs / sqrt;
 }
