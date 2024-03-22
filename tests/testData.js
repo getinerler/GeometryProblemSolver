@@ -815,6 +815,59 @@ const TestData = {
         }
     },
 
+    getAngleBisectorQuestion: {
+        'name': 'Angle bisector',
+        'explanation': 'Question: Angle bisector line (10/5 = 12/x).',
+        'result': [new Value(6)],
+        getQuestion() {
+            let dots = [
+                new Dot(346, 151, 'A'),
+                new Dot(72, 474, 'B'),
+                new Dot(568, 472, 'C'),
+                new Dot(319.9939517849948, 473.0000243879637, 'F'),
+            ];
+
+            let seg1 = new Line(dots[2], dots[3]); // CF
+            let seg2 = new Line(dots[3], dots[1]); // FB
+
+            let lines = [
+                new Line(dots[0], dots[1]).setValue(10), // AB
+                new Line(dots[2], dots[0]).setValue(12), // CA
+                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2), //CB
+                new Line(dots[0], dots[3]) // AF
+            ];
+
+            seg1.setBase(lines[2]).setValue(6);
+            seg2.setBase(lines[2]).setValue('?');
+
+            dots[3].setBaseLine(lines[3]).setLineRatio(0.5000121939818654);
+
+            let angles = [
+                new Angle(dots[1], lines[0], seg2),
+                new Angle(dots[1], seg2, lines[0]),
+                new Angle(dots[2], lines[1], seg1),
+                new Angle(dots[2], seg1, lines[1]),
+                new Angle(dots[3], seg2, lines[3]),
+                new Angle(dots[3], lines[3], seg1),
+                new Angle(dots[3], seg1, seg2).setValue(180),
+                new Angle(dots[0], lines[0], lines[1]),
+                new Angle(dots[0], lines[1], lines[3]),
+                new Angle(dots[0], lines[3], lines[0])
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [
+                    new Equivalence([new AngleSum(angles[8]), new AngleSum(angles[9])])
+                ],
+                question: seg2
+            }
+        }
+    },
+
     getRectangleAngleQuestion: {
         'name': 'Find rect. angle',
         'explanation': 'Question: Find rectangle missing angle (50 + 100 + 120 + x = 360).',
