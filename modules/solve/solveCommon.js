@@ -188,6 +188,66 @@ export function getAllLines(lines) {
     return allLines;
 }
 
+
+export function getLinesCommonDot(line1, line2) {
+    if (line1.isLineEnd(line2.getDot1())) {
+        return line2.getDot1();
+    }
+    if (line1.isLineEnd(line2.getDot2())) {
+        return line2.getDot2();
+    }
+    return null;
+}
+
+export function getOrderedAngleSum(angs, line1, line2) {
+    let commonDot = getLinesCommonDot(line1, line2);
+
+    let angles = angs.filter((x) => x.getDot() === commonDot);
+    let anglesList = [];
+    let tempAng = null;
+    let tempLine = null;
+
+    if (line1.getLines().length > 1) {
+        let mainLine = line1.getLines().find((x) => x.isLineEnd(commonDot));
+        line1 = new LineSum(mainLine);
+    }
+    if (line2.getLines().length > 1) {
+        let mainLine = line2.getLines().find((x) => x.isLineEnd(commonDot));
+        line2 = new LineSum(mainLine);
+    }
+
+    tempLine = line1;
+    let count = 0;
+    do {
+        let ang = angles.find(function (x) {
+            if (x === tempAng) {
+                return false;
+            }
+            if (new LineSum(x.getLine1()).equals(tempLine)) {
+                return true;
+            }
+            for (let seg of tempLine.getSegments()) {
+                if (seg.isLineEnd(commonDot) && x.getLine1() === seg) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (ang) {
+            tempAng = ang;
+            anglesList.push(ang);
+            tempLine = new LineSum(ang.getLine2());
+        }
+        count++;
+    } while (
+        !tempLine.equals(line2) &&
+        !new LineSum(tempLine.getBaseOrSelf()).equals(line2) &&
+        count < angs.length);
+
+    return anglesList;
+}
+
 function getAllLineCombinations(line) {
     let list = [];
     list.push(new LineSum(line));

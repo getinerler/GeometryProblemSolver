@@ -6,15 +6,17 @@ import Variable from '../../models/equations/variable.js';
 import VariableValue from '../../models/equations/variableValue.js';
 import Term from '../../models/equations/term.js';
 import { getAllLines, getNarrowAngle, areEquivalent } from '../../modules/solve/solveCommon.js';
-import { linesMatchAngle } from '../../modules/solve/solveCommon.js';
+import { linesMatchAngle, getOrderedAngleSum } from '../../modules/solve/solveCommon.js';
 import PolygonFinder from '../../modules/solve/polygonFinder.js';
 import SimilarityFinder from '../../modules/solve/similarityFinder.js';
 import Calculator from '../../modules/equations/calculator.js';
-import { getLineAngle, getAngleDegree } from '../graphic/geoHelper.js';
+import { getLineAngle, getAngleDegree, dotBetweenLineSegment } from '../graphic/geoHelper.js';
 import EquationTreeCreator from './equationTreeCreator.js';
 import Equivalence from '../../models/graphic/equivalence.js';
 import Creations from '../equations/creations.js';
+import Line from '../../models/graphic/line.js';
 import LineSum from '../../models/solve/lineSum.js';
+import AngleSum from '../../models/solve/angleSum.js';
 
 function Solve(question) {
     this.question = question;
@@ -74,6 +76,7 @@ Solve.prototype = {
         this.checkIsoscelesTriangles();
         this.checkPythagoreanTheorems();
         this.checkGeometricMeanTheorems();
+        this.checkAngleBisectorTheorems();
         this.checkRectangles360();
 
         let similarityFinder = new SimilarityFinder(this.triangles, this.equivalents);
@@ -273,6 +276,12 @@ Solve.prototype = {
     checkGeometricMeanTheorems() {
         for (let triangle of this.triangles) {
             this.checkGeometricMeanTheorem(triangle);
+        }
+    },
+
+    checkAngleBisectorTheorems() {
+        for (let triangle of this.triangles) {
+            this.checkAngleBisectorTheorem(triangle);
         }
     },
 
@@ -515,6 +524,57 @@ Solve.prototype = {
         }
     },
 
+    checkAngleBisectorTheorem(tri) {
+        for (let i = 0; i < tri.getAngles().length; i++) {
+            let ang = tri.getAngle(i);
+            let otherTriangleLine = tri.getLine((i + 2) % 3);
+            let otherLines = this.lines
+                .filter((x) =>
+                    x.isLineEnd(ang.getDot()) &&
+                    x.getBaseOrSelf() !== ang.getLine1().getBaseOrSelf() &&
+                    x.getBaseOrSelf() !== ang.getLine2().getBaseOrSelf() &&
+                    otherTriangleLine
+                        .equals(new LineSum(x.getOtherDot(ang.getDot()).getBaseLine())));
+            if (otherLines.length === 0) {
+                continue;
+            }
+
+            let line1 = new LineSum(ang.getLine1());
+            let line2 = new LineSum(ang.getLine2());
+            for (let otherLine of otherLines) {
+                let ang1A = new AngleSum(getOrderedAngleSum(this.angles, line1, otherLine));
+                let ang1B = new AngleSum(getOrderedAngleSum(this.angles, otherLine, line1));
+                let ang2A = new AngleSum(getOrderedAngleSum(this.angles, line2, otherLine));
+                let ang2B = new AngleSum(getOrderedAngleSum(this.angles, otherLine, line2));
+                let ang1 = getAngleDegree(ang1A) > getAngleDegree(ang1B) ? ang1B : ang1A;
+                let ang2 = getAngleDegree(ang2A) > getAngleDegree(ang2B) ? ang2B : ang2A;
+                if (!this.areEquivalent(ang1, ang2)) {
+                    continue;
+                }
+
+                let otherDot = otherLine.getOtherDot(ang.getDot());
+                let seg1 = this.getSegmentChains(otherDot, otherTriangleLine.getDot1());
+                let seg2 = this.getSegmentChains(otherDot, otherTriangleLine.getDot2())
+
+                let triangleLine2 = tri.getLine(i % 3);
+                let triangleLine1 = tri.getLine((i + 1) % 3);
+
+                let eq = new Equation();
+                eq.setCreation(Creations.AngleBisector, true);
+                eq.setCreationText(Creations.AngleBisector.getExplanation());
+
+                let termLine1a = this.getTermFromValue(triangleLine1);
+                //TODO several segmented scenarios
+                let termLine2a = this.getTermFromValue(new LineSum(seg1[0]), -1);
+                let termLine1b = this.getTermFromValue(triangleLine2);
+                let termLine2b = this.getTermFromValue(new LineSum(seg2[0]), -1);
+                eq.addLeftTerm(termLine1a.multiply(termLine2a));
+                eq.addRightTerm(termLine1b.multiply(termLine2b));
+                this.equations.push(eq);
+            }
+        }
+    },
+
     checkTriangleSimilarities() {
         for (let sim of this.similarTriangles) {
             for (let i = 0; i < 3; i++) {
@@ -638,6 +698,41 @@ Solve.prototype = {
             }
         }
         return namesArray;
+    },
+
+    getSegmentChains(dot1, dot2) {
+        let lastDot = null;
+        let tempDot = dot1;
+        let tempLine = null;
+        let lines = [];
+        let safeCounter = 0;
+        while (tempDot !== dot2 && tempDot !== lastDot && safeCounter++ < 100) {
+            lastDot = tempDot;
+            if (tempLine === null) {
+                let l1 = this.lines
+                    .filter((x) => x.isLineEnd(dot1) && x.getLines().length === 1)
+                    .map((x) => x.getLines()[0]);
+                for (let l of l1) {
+                    if (!dotBetweenLineSegment(l.getOtherDot(dot1), new Line(dot1, dot2))) {
+                        continue;
+                    }
+                    tempLine = l;
+                    tempDot = l.getOtherDot(dot1);
+                    lines.push(l);
+                }
+                if (tempLine === null) {
+                    throw 'Solve.getSegmentChains: Can\'t find first segment';
+                }
+            } else {
+                let l1 = this.lines
+                    .find((x) => x.isLineEnd(tempDot) && x !== tempLine && x.getLines().length === 1)
+                    .getLines()[0];
+                tempLine = l1;
+                lines.push(l1);
+                tempDot = l1.getOtherDot(tempDot);
+            }
+        }
+        return lines;
     },
 
     calculateAngleDegrees() {

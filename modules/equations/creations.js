@@ -150,6 +150,13 @@ const Creations = {
         }
     },
 
+    AngleBisector: {
+        'show': true,
+        getExplanation() {
+            return 'Angle Bisector Theorem.'
+        }
+    },
+
     SimilarAngles: {
         'show': true,
         getExplanation(sim) {

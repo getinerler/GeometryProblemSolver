@@ -274,6 +274,22 @@ export function getDotNamePoint(dot, ang, line) {
     return rotate(ang.getDot(), new Point(dot.getX() + 15, dot.getY()), middle);
 }
 
+export function dotBetweenLineSegment(dot, line) {
+    if (dot.getX() > Math.max(line.getX1(), line.getX2())) {
+        return false;
+    }
+    if (dot.getX() < Math.min(line.getX1(), line.getX2())) {
+        return false;
+    }
+    if (dot.getY() > Math.max(line.getY1(), line.getY2())) {
+        return false;
+    }
+    if (dot.getY() < Math.min(line.getY1(), line.getY2())) {
+        return false;
+    }
+    return true;
+}
+
 function rotate(ref, dot, ang) {
     ang = getAngle(ref, dot) + ang;
     let dist = getDistance(dot, ref);
@@ -295,22 +311,6 @@ function lineDotDistance(line, dot) {
     let sumAbs = Math.abs(dot.getY() - slope * dot.getX() + slope * line.getX2() - line.getY2());
     // ∣Am + Bn + C∣ / √(A²+B²)
     return sumAbs / sqrt;
-}
-
-function dotBetweenLineSegment(dot, line) {
-    if (dot.getX() > Math.max(line.getX1(), line.getX2())) {
-        return false;
-    }
-    if (dot.getX() < Math.min(line.getX1(), line.getX2())) {
-        return false;
-    }
-    if (dot.getY() > Math.max(line.getY1(), line.getY2())) {
-        return false;
-    }
-    if (dot.getY() < Math.min(line.getY1(), line.getY2())) {
-        return false;
-    }
-    return true;
 }
 
 function getSlopeRatio(dot1, dot2) {

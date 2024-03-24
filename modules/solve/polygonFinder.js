@@ -1,6 +1,7 @@
 'use strict';
 
-import { getAllLines } from '../../modules/solve/solveCommon.js';
+import { getAllLines, getOrderedAngleSum } from '../../modules/solve/solveCommon.js';
+import { getLinesCommonDot } from '../../modules/solve/solveCommon.js';
 import Triangle from '../../models/solve/triangle.js';
 import Rectangle from '../../models/solve/rectangle.js';
 import AngleSum from '../../models/solve/angleSum.js';
@@ -84,9 +85,9 @@ PolygonFinder.prototype = {
     },
 
     checkTriangle(line1, line2, line3) {
-        let dot1 = this.getLinesCommonDot(line1, line2);
-        let dot2 = this.getLinesCommonDot(line2, line3);
-        let dot3 = this.getLinesCommonDot(line3, line1);
+        let dot1 =  getLinesCommonDot(line1, line2);
+        let dot2 =  getLinesCommonDot(line2, line3);
+        let dot3 =  getLinesCommonDot(line3, line1);
 
         if (dot1 === dot2 || dot2 === dot3 || dot1 === dot3) {
             return;
@@ -128,15 +129,15 @@ PolygonFinder.prototype = {
             return;
         }
 
-        let dot1 = this.getLinesCommonDot(line1, line2);
-        let dot2 = this.getLinesCommonDot(line2, line3);
-        let dot3 = this.getLinesCommonDot(line3, line4);
-        let dot4 = this.getLinesCommonDot(line4, line1);
+        let dot1 =  getLinesCommonDot(line1, line2);
+        let dot2 =  getLinesCommonDot(line2, line3);
+        let dot3 =  getLinesCommonDot(line3, line4);
+        let dot4 =  getLinesCommonDot(line4, line1);
 
         if (dot1 === dot2 || dot2 === dot3 || dot3 === dot4 || dot1 === dot4) {
             return;
         }
-        
+
         let ang1 = this.getAngleSum(line1, line2);
         let ang2 = this.getAngleSum(line2, line3);
         let ang3 = this.getAngleSum(line3, line4);
@@ -164,75 +165,15 @@ PolygonFinder.prototype = {
         }
     },
 
-    getLinesCommonDot(line1, line2) {
-        if (line1.isLineEnd(line2.getDot1())) {
-            return line2.getDot1();
-        }
-        if (line1.isLineEnd(line2.getDot2())) {
-            return line2.getDot2();
-        }
-        return null;
-    },
-
     getAngleSum(line1, line2) {
-        let anglesList = this.getOrderedAngleSum(line1, line2);
-        let anglesList2 = this.getOrderedAngleSum(line2, line1);
+        let anglesList = getOrderedAngleSum(this.angles, line1, line2);
+        let anglesList2 = getOrderedAngleSum(this.angles, line2, line1);
         let canvasAngleSum1 = anglesList.reduce((acc, x) => acc + x.getCanvasAngle(), 0);
         let angleSum = new AngleSum(canvasAngleSum1 > 180 ? anglesList2 : anglesList);
         if (angleSum.getAngles().length === 0) {
-            console.log(this.getLinesCommonDot(line1, line2))
             throw 'No angle for ' + line1.toString() + "-" + line2.toString();
         }
         return angleSum;
-    },
-
-    getOrderedAngleSum(line1, line2) {
-        let commonDot = this.getLinesCommonDot(line1, line2);
-
-        let angles = this.angles.filter((x) => x.getDot() === commonDot);
-        let anglesList = [];
-        let tempAng = null;
-        let tempLine = null;
-
-        if (line1.getLines().length > 1) {
-            let mainLine = line1.getLines().find((x) => x.isLineEnd(commonDot));
-            line1 = new LineSum(mainLine);
-        }
-        if (line2.getLines().length > 1) {
-            let mainLine = line2.getLines().find((x) => x.isLineEnd(commonDot));
-            line2 = new LineSum(mainLine);
-        }
-
-        tempLine = line1;
-        let count = 0;
-        do {
-            let ang = angles.find(function (x) {
-                if (x === tempAng) {
-                    return false;
-                }
-                if (new LineSum(x.getLine1()).equals(tempLine)) {
-                    return true;
-                }
-                for (let seg of tempLine.getSegments()) {
-                    if (seg.isLineEnd(commonDot) && x.getLine1() === seg) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-
-            if (ang) {
-                tempAng = ang;
-                anglesList.push(ang);
-                tempLine = new LineSum(ang.getLine2());
-            }
-            count++;
-        } while (
-            !tempLine.equals(line2) &&
-            !new LineSum(tempLine.getBaseOrSelf()).equals(line2) &&
-            count < this.angles.length);
-
-        return anglesList;
     },
 
     linesMatch(line1, line2) {
