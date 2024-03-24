@@ -783,7 +783,7 @@ const TestData = {
                 new Line(dots[0], dots[1]), // AB
                 new Line(dots[2], dots[0]), // CA
                 new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2),// CB
-                new Line(dots[3], dots[0]).setValue('?') // EA
+                new Line(dots[0], dots[3]).setValue('?') // EA
             ];
 
             seg1.setBase(lines[2]);
