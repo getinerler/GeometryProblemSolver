@@ -669,6 +669,12 @@ Term.prototype = {
                 denomVariables.map((x) => x.toString()).join('') :
                 '');
 
+        if (numVariables.length === 0 &&
+            numValues.length === 0 &&
+            (denomValues.length > 0 || denomVariables.length > 0)) {
+            numStr += "1";
+        }
+
         return `<span class="frac">
             <sup>${numStr}</sup>
             <span>&frasl;</span>
