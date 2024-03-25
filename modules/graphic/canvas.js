@@ -94,11 +94,17 @@ Canvas.prototype = {
             let ang = this._elements.angles
                 .filter((x) => x.getDot() === dot)
                 .reduce(function (acc, x) {
-                    if (acc === null || acc.getCanvasAngle() < x.getCanvasAngle()) {
-                        acc = x;
+                    if (x.isKnown() && x.getValue() !== 180 || x.getValue() === '?') {
+                        return acc;
+                    } else if (acc === null) {
+                        return x;
+                    } else if (acc.getCanvasAngle() < x.getCanvasAngle()) {
+                        return x;
+                    } else {
+                        return acc;
                     }
-                    return acc;
                 }, null);
+
             let point = getDotNamePoint(dot, ang, line);
             this._ctx.fillText(dot.getName(), point.getX(), point.getY());
         }
