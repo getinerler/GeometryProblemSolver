@@ -219,7 +219,7 @@ Canvas.prototype = {
                 }
                 let textWidth = this._ctx.measureText(ang.getValue()).width;
                 let point = getAngleTextPoint(ang, textWidth);
-                this._ctx.fillText(ang.getValue(), point.getX(), point.getY());
+                this._ctx.fillText(ang.getValueString(), point.getX(), point.getY());
             }
         }
 
