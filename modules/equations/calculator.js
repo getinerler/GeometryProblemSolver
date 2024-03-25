@@ -287,10 +287,10 @@ Calculator.prototype = {
     },
 
     simplifyCoefficients(eq, parsed) {
-        let newEq = new Equation();
-        newEq.setAncestors([eq]);
-        newEq.setAncestorIds([parsed.count]);
-        newEq.setCreation(Creations.CoefficientsSimplified);
+        let newEq = new Equation()
+            .setAncestors([eq])
+            .setAncestorIds([parsed.count])
+            .setCreation(Creations.CoefficientsSimplified);
 
         let oldVariableTerm = eq.getLeft()[0];
         let newTerm = eq.getRight()[0].copy();
@@ -306,24 +306,36 @@ Calculator.prototype = {
 
     simplifyExponent(eq, parsed, unknown) {
         let unknownVariable = unknown.getVariables()[0];
-        if (unknown.getValues().length === 0) {
+        if (unknownVariable.getExponent() < 1) {
+            let newEq = new Equation()
+            .setCreation(Creations.VariableMovedToTop)
+            .setAncestors([eq])
+            .setAncestorIds([parsed.count]);
+            for (let el of eq.getLeft()) {
+                newEq.addLeftTerm(el.reverse());
+            }
+            for (let el of eq.getRight()) {
+                newEq.addRightTerm(el.reverse());
+            }
+            this.addEquation(newEq);
+            this.changed = true;
+        } else if (unknown.getValues().length === 0) {
             let newRightValue = this.getSideRemains(parsed.rightValues)
                 .exp(unknownVariable.getRoot())
                 .root(unknownVariable.getExponent());
-            let newEq = new Equation();
-            newEq.setCreation(Creations.ExponentiatonRemoved);
-            newEq.setAncestors([eq]);
-            newEq.setAncestorIds([parsed.count]);
-            newEq.addLeftTerm(new Term(null, unknownVariable.getVariable()));
-            newEq.addRightTerm(new Term(newRightValue));
+            let newEq = new Equation()
+                .setCreation(Creations.ExponentiatonRemoved)
+                .setAncestors([eq])
+                .setAncestorIds([parsed.count])
+                .addLeftTerm(new Term(null, unknownVariable.getVariable()))
+                .addRightTerm(new Term(newRightValue));
             this.addEquation(newEq);
             this.changed = true;
         } else {
-            let newEq = new Equation();
-            newEq.setCreation(Creations.CoefficientRemoved);
-            newEq.setAncestors([eq]);
-            newEq.setAncestorIds([parsed.count]);
-
+            let newEq = new Equation()
+                .setCreation(Creations.CoefficientRemoved)
+                .setAncestors([eq])
+                .setAncestorIds([parsed.count]);
             for (let val of unknown.getValues()) {
                 newEq.addRightTerm(this.getSideRemains(parsed.rightValues).divide(new Term(val)));
             }

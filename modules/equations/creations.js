@@ -51,6 +51,13 @@ const Creations = {
         }
     },
 
+    VariableMovedToTop: {
+        'show': false,
+        getExplanation() {
+            return 'Variable moved to top.'
+        }
+    },
+
     ExponentiatonRemoved: {
         'show': false,
         getExplanation() {

@@ -5,6 +5,7 @@ import Value from '../../models/equations/value.js';
 import Variable from '../../models/equations/variable.js';
 import VariableValue from '../../models/equations/variableValue.js';
 import TermSum from '../../models/equations/termSum.js';
+import Equation from './equation.js';
 
 function Term(values, variables) {
     this._values = [];
@@ -225,6 +226,17 @@ Term.prototype = {
         return newTerm;
     },
 
+    reverse() {
+        let newTerm = this.copy();
+        for (let var1 of newTerm.getVariables()) {
+            var1.setExponent(var1.getExponent() * -1);
+        }
+        for (let val of newTerm.getValues()) {
+            val.setExponent(val.getExponent() * -1);
+        }
+        return newTerm.simplify();
+    },
+
     simplify() {
         let newTerm = new Term();
 
@@ -248,6 +260,9 @@ Term.prototype = {
                 return new Term();
             }
             if (val.getExponent() === 0) {
+                continue;
+            }
+            if (val.getNumber() === 1 && val.getExponent() < 0) {
                 continue;
             }
             if (val.getNumber() === 1 && newTerm.getVariables().length > 0) {
@@ -282,8 +297,7 @@ Term.prototype = {
                     }
                 }
             } else {
-                newTerm.addValue(new Value(
-                    calculated,
+                newTerm.addValue(new Value(calculated,
                     val.getExponent() > 0 ? 1 : -1,
                     val.getRoot()));
             }

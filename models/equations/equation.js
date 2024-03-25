@@ -197,6 +197,7 @@ Equation.prototype = {
         for (let term of terms) {
             this.addLeftTerm(term);
         }
+        return this;
     },
 
     addLeftTerm(term) {
@@ -205,11 +206,13 @@ Equation.prototype = {
         }
         this._left.push(term);
         this._left = this._left.sort(this.sortTerms);
+        return this;
     },
 
     addRightTerms(terms) {
         for (let term of terms) {
             this.addRightTerm(term);
+            return this;
         }
     },
 
@@ -218,6 +221,7 @@ Equation.prototype = {
             throw 'Equation.addRightTerm error: wrong term type.';
         }
         this._right.push(term);
+        return this;
     },
 
     removeLeftTerm(term) {

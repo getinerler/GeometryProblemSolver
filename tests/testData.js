@@ -818,7 +818,7 @@ const TestData = {
     getAngleBisectorQuestion: {
         'name': 'Angle bisector',
         'explanation': 'Question: Angle bisector line (10/5 = 12/x).',
-        'result': [new Value(6)],
+        'result': [new Value(5)],
         getQuestion() {
             let dots = [
                 new Dot(346, 151, 'A'),
