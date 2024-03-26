@@ -62,9 +62,14 @@ Drawing.prototype = {
     },
 
     createDot(x, y) {
+        let dot;
         let hovered = this._elements.hoveredObject;
-        let dot = hovered && hovered.type === 'dot' ? hovered.obj : new Dot(x, y);
-        this._elements.addDot(dot);
+        if (hovered && hovered.type === 'dot') {
+            dot = hovered.obj;
+        } else {
+            dot = new Dot(x, y);
+            this._elements.addDot(dot);
+        }
         return dot;
     },
 
@@ -383,7 +388,7 @@ Drawing.prototype = {
         for (let ang of info.angles) {
             ang.setCanvasAngle((getAngleDegree(ang)));
         }
-        
+
         this._elements.lines = info.lines;
         this._elements.dots = info.dots;
         this._elements.angles = info.angles;
