@@ -22,6 +22,7 @@ LineState.prototype = {
             this._elements.dragDot = this._elements.hoveredObject.obj;
         }
         if (this._elements.dragDot) {
+            this.removeIntersectionDots();
             this.removeDotParallels();
         }
     },
@@ -49,6 +50,7 @@ LineState.prototype = {
                 }
             }
         }
+        this._drawing.handleIntersectionDots();
         this._drawing.saveTempParallels();
         this.removeUnnecessaryParallels();
         this._elements.dragDot = null;
@@ -87,6 +89,37 @@ LineState.prototype = {
             this._drawing.handleDotOnLine(hoveredObj.obj, dragDot);
             this.arrangeAngles(dragDot);
         }
+    },
+
+    removeIntersectionDots() {
+        let dot = this._elements.dragDot;
+        let lines = this._elements.lines.filter((x) => x.isLineEnd(dot));
+
+        let dotsToDelete = this._elements.dots.filter(function (x) {
+            if (!x.isIntersectionDot()) {
+                return false;
+            }
+            for (let l1 of lines) {
+                for (let seg of l1.getSegments()) {
+                    if (seg.isLineEnd(x)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+
+        for (let line of this._elements.lines) {
+            for (let seg of line.getSegments()) {
+                if (dotsToDelete.indexOf(seg.getDot1()) > -1 ||
+                    dotsToDelete.indexOf(seg.getDot2()) > -1)
+                    line.removeSegment(seg);
+            }
+        }
+        this._elements.angles = this._elements.angles
+            .filter((x) => dotsToDelete.indexOf(x.getDot()) === -1);
+        this._elements.dots = this._elements.dots
+            .filter((x) => dotsToDelete.indexOf(x) === -1);
     },
 
     updateDotsOnLine() {

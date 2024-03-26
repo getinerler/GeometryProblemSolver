@@ -254,8 +254,10 @@ Drawing.prototype = {
     },
 
     handleLineIntersection(movingLine, intDot) {
-        intDot.addIntersectionLine(movingLine);
-        let newDot = intDot.createDot();
+        if (movingLine) {
+            intDot.addIntersectionLine(movingLine);
+        }
+        let newDot = intDot.getType() === 'Point' ? intDot.createDot() : intDot;
         this._elements.addDot(newDot);
         for (let line of newDot.getIntersectionLines()) {
             this.createSegmentLines(line, newDot);

@@ -11,6 +11,10 @@ function Point(x, y) {
 
 Point.prototype = {
 
+    getType() {
+        return 'Point';
+    },
+
     getName() {
         return this._name;
     },
@@ -54,6 +58,10 @@ Point.prototype = {
 
     isIntersectionLine(line) {
         return this._intersectLines.indexOf(line) > -1;
+    },
+
+    isHovered() {
+        return false;
     },
 
     update(x, y) {

@@ -18,10 +18,10 @@ function Canvas(canvas, canvasObjects) {
     this._top = this._canvas.getBoundingClientRect().top;
     this._ctx = this._canvas.getContext('2d');
 
-    this._hoveredColor = '#FFC0CB';
+    this._hoveredColor = 'red';
     this._blackColor = '#000000';
     this._dotColor = "grey";
-    this._intersectionColor = 'grey';
+    this._intersectionColor = 'red';
     this._questionColor = "red";
 
     this._dotNameFont = "15px Arial";
@@ -37,6 +37,7 @@ function Canvas(canvas, canvasObjects) {
 Canvas.prototype = {
 
     drawObjects() {
+        //console.log(this._elements.dots.map((x)=> x.toString()).join(", "))
         this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         if (this._elements.dragStartPoint && this._elements.dragDot === null) {
             this.drawLine(new Line(this._elements.dragStartPoint, this._elements.currentDot));
@@ -70,11 +71,11 @@ Canvas.prototype = {
             this._ctx.fillStyle = this._blackColor;
         }
 
-        let dotColor = dot.isHovered() ? this._dotHoveredDiameter : this._dotDiameter;
+        let dotDiameter = dot.isHovered() ? this._dotHoveredDiameter : this._dotDiameter;
 
         this._ctx.beginPath();
         this._ctx.setLineDash([0]);
-        this._ctx.arc(dot.getX(), dot.getY(), dotColor, 0, 2 * Math.PI);
+        this._ctx.arc(dot.getX(), dot.getY(), dotDiameter, 0, 2 * Math.PI);
         this._ctx.closePath();
         this._ctx.fill();
         this._ctx.stroke();
