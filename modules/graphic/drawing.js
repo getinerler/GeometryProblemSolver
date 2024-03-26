@@ -191,7 +191,22 @@ Drawing.prototype = {
                 this._elements.angles.push(newAngle);
             }
         } else {
-            let connectedLines = this._elements.lines.filter((x) => x.isLineEnd(dot));
+            let connectedLines = this._elements.lines
+                .filter((x) => x.isLineEnd(dot))
+                .map(function (line) {
+                    line.setAngle(getLineAngle(line, dot));
+                    return line;
+                })
+                .sort(function (line1, line2) {
+                    if (line1.getAngle() > line2.getAngle()) {
+                        return 1;
+                    } else if (line1.getAngle() < line2.getAngle()) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+
             if (connectedLines.length === 0) {
                 return;
             }
