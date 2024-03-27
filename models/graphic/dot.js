@@ -69,6 +69,11 @@ Dot.prototype = {
         return this;
     },
 
+    setSelected(selected) {
+        this._selected = selected;
+        return this;
+    },
+
     getIntersectionLines() {
         return this._intersectionLines;
     },

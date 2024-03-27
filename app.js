@@ -25,13 +25,13 @@ App.prototype = {
 
         document.getElementById(this._inputElement).addEventListener('keydown', function (event) {
             if (event.keyCode === 13) {
-                let hoveredObj = self._drawing.getValueObject();
-                if (hoveredObj !== null) {
-                    hoveredObj.obj.setValue(this.value);
+                let hovered = self._drawing.getValueObject();
+                if (hovered !== null) {
+                    hovered.obj.setValue(this.value);
                     self._drawing.updateDrawing();
                 }
                 if (this.value === '?') {
-                    self._drawing.setQuestion(hoveredObj.obj);
+                    self._drawing.setQuestion(hovered.obj);
                 }
                 self._drawing.updateQuestionText();
                 this.style.display = 'none';

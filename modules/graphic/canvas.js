@@ -18,7 +18,8 @@ function Canvas(canvas, canvasObjects) {
     this._top = this._canvas.getBoundingClientRect().top;
     this._ctx = this._canvas.getContext('2d');
 
-    this._hoveredColor = 'red';
+    this._hoveredColor = '#FFC0CB';
+    this._selectedColor = "red";
     this._blackColor = '#000000';
     this._dotColor = "grey";
     this._intersectionColor = 'red';
@@ -37,7 +38,6 @@ function Canvas(canvas, canvasObjects) {
 Canvas.prototype = {
 
     drawObjects() {
-        //console.log(this._elements.dots.map((x)=> x.toString()).join(", "))
         this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         if (this._elements.dragStartPoint && this._elements.dragDot === null) {
             this.drawLine(new Line(this._elements.dragStartPoint, this._elements.currentDot));
@@ -114,11 +114,8 @@ Canvas.prototype = {
     drawLine(line) {
         this._ctx.font = this._ordinaryFont;
         this._ctx.fillStyle = this._blackColor;
-        if (line.isHovered()) {
-            this._ctx.strokeStyle = this._hoveredColor;
-        } else {
-            this._ctx.strokeStyle = this._blackColor;
-        }
+
+        this._ctx.strokeStyle = this.getColor(line);
 
         if (line.getValue()) {
             if (line.getValue() === '?') {
@@ -179,7 +176,7 @@ Canvas.prototype = {
 
             if (seg.isHovered()) {
                 this._ctx.beginPath();
-                this._ctx.strokeStyle = this._hoveredColor;
+                this._ctx.strokeStyle = this.getColor(seg);
                 this._ctx.setLineDash([0]);
                 this._ctx.moveTo(seg.getX1(), seg.getY1());
                 this._ctx.lineTo(seg.getX2(), seg.getY2());
@@ -224,9 +221,10 @@ Canvas.prototype = {
             }
         }
 
-        if (ang.isHovered()) {
-            this._ctx.strokeStyle = this._blackColor;
-            this._ctx.fillStyle = this._hoveredColor;
+        this._ctx.fillStyle = this.getColor(ang);
+        this._ctx.strokeStyle = this._blackColor;
+
+        if (ang.isHovered() || ang.isSelected()) {
             let ang1 = getLineAngleRadian(ang.getLine1(), ang.getDot());
             let ang2 = getLineAngleRadian(ang.getLine2(), ang.getDot());
             this._ctx.beginPath();
@@ -237,7 +235,6 @@ Canvas.prototype = {
             this._ctx.stroke();
         } else {
             this._ctx.setLineDash([0]);
-            this._ctx.strokeStyle = this._blackColor;
         }
 
         if (ang.getValue()) {
@@ -290,6 +287,16 @@ Canvas.prototype = {
         let obj = this.valueObject;
         this.valueObject = null;
         return obj;
+    },
+
+    getColor(obj) {
+        if (obj.isHovered()) {
+            return this._hoveredColor;
+        } else if (obj.isSelected()) {
+            return this._selectedColor;
+        } else {
+            return this._blackColor;
+        }
     },
 
     update() {

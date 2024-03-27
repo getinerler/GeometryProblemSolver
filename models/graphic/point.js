@@ -64,6 +64,10 @@ Point.prototype = {
         return false;
     },
 
+    isSelected() {
+        return false;
+    },
+
     update(x, y) {
         this._x = x;
         this._y = y;

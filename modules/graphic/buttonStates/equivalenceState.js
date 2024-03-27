@@ -13,11 +13,11 @@ function EquivalenceState(elements) {
 EquivalenceState.prototype = {
 
     mouseDownEvent() {
-        if (!this._elements.hoveredObject) {
+        if (!this._elements.hovered) {
             return;
         }
 
-        let hovered = this._elements.hoveredObject.obj;
+        let hovered = this._elements.hovered.obj;
         if (!this._acceptedTypes.indexOf(hovered.getType()) === -1) {
             return;
         }

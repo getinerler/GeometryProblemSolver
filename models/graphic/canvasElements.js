@@ -13,7 +13,8 @@ function CanvasElements() {
     this.dragStartPoint = null;
     this.dragDot = null;
     this.currentDot = new Point(0, 0);
-    this.hoveredObject = null
+    this.hovered = null
+    this.selected = null;
 }
 
 CanvasElements.prototype = {
@@ -55,7 +56,7 @@ CanvasElements.prototype = {
         this.dragStartPoint = null;
         this.dragDot = null;
         this.currentDot = new Point(0, 0);
-        this.hoveredObject = null
+        this.hovered = null
     },
 
     showDetailed() {

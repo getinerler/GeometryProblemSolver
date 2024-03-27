@@ -45,7 +45,6 @@ Drawing.prototype = {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
             self._elements.currentDot.update(x, y);
-            self.updateHovered();
             self._buttonState.mouseDownEvent(x, y);
             self._canvas.update();
         });
@@ -53,6 +52,7 @@ Drawing.prototype = {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
             self._elements.currentDot.update(x, y);
+            self.updateSelected();
             self.updateHovered();
             self._buttonState.mouseUpEvent(x, y);
             self._canvas.update();
@@ -63,7 +63,7 @@ Drawing.prototype = {
 
     createDot(x, y) {
         let dot;
-        let hovered = this._elements.hoveredObject;
+        let hovered = this._elements.hovered;
         if (hovered && hovered.type === 'dot') {
             dot = hovered.obj;
         } else {
@@ -78,8 +78,8 @@ Drawing.prototype = {
         this.saveTempParallels(line);
         this._elements.addLine(line);
 
-        if (this._elements.hoveredObject) {
-            let hovered = this._elements.hoveredObject;
+        if (this._elements.hovered) {
+            let hovered = this._elements.hovered;
             if (hovered.type === 'dot' && hovered.obj.isOnLine()) {
                 hovered.obj.addIntersectionLine(line);
             }
@@ -298,14 +298,14 @@ Drawing.prototype = {
     },
 
     updateHovered() {
-        let hoveredObject;
+        let hovered;
         let found = false;
         for (let dot of this._elements.dots) {
             dot.setHovered(false);
             if (!found && dotsCloser(dot, this._elements.currentDot) &&
                 this._elements.dragDot !== dot) {
                 dot.setHovered(true);
-                hoveredObject = { 'type': 'dot', 'obj': dot };
+                hovered = { 'type': 'dot', 'obj': dot };
                 found = true;
             }
         }
@@ -313,7 +313,7 @@ Drawing.prototype = {
             angle.setHovered(false);
             if (anglesCloser(this._elements.currentDot, angle.getDot())) {
                 if (!found && dotBetweenAngle(angle, this._elements.currentDot)) {
-                    hoveredObject = { 'type': 'angle', 'obj': angle };
+                    hovered = { 'type': 'angle', 'obj': angle };
                     angle.setHovered(true);
                     found = true;
                 }
@@ -328,7 +328,7 @@ Drawing.prototype = {
                 }
                 if (!found && dotOnLineSegment(seg, this._elements.currentDot)) {
                     seg.setHovered(true);
-                    hoveredObject = { 'type': 'line', 'obj': seg };
+                    hovered = { 'type': 'line', 'obj': seg };
                     found = true;
                 }
             }
@@ -341,11 +341,45 @@ Drawing.prototype = {
             }
             if (!found && dotOnLine(line, this._elements.currentDot)) {
                 line.setHovered(true);
-                hoveredObject = { 'type': 'line', 'obj': line };
+                hovered = { 'type': 'line', 'obj': line };
                 found = true;
             }
         }
-        this._elements.hoveredObject = hoveredObject;
+        this._elements.hovered = hovered;
+    },
+
+    updateSelected() {
+        this.deselectAll();
+        if (!this._elements.hovered) {
+            this._elements.selected = [];
+            return;
+        }
+        let hovered = this._elements.hovered.obj;
+        if (this._elements.selected.length > 0 &&
+            this._elements.selected[0].getType() !== hovered.getType()) {
+            this._elements.selected = [];
+        }
+        this._elements.selected.push(hovered);
+        for (let el of this._elements.selected) {
+            el.setSelected(true);
+        }
+    },
+
+    deselectAll() {
+        for (let dot of this._elements.dots) {
+            dot.setSelected(false);
+        }
+        for (let angle of this._elements.angles) {
+            angle.setSelected(false);
+        }
+        for (let line of this._elements.lines) {
+            for (let seg of line.getSegments()) {
+                seg.setSelected(false);
+            }
+        }
+        for (let line of this._elements.lines) {
+            line.setSelected(false);
+        }
     },
 
     updateDrawing() {
