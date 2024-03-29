@@ -22,7 +22,8 @@ function Canvas(canvas, canvasObjects) {
     this._selectedColor = "red";
     this._blackColor = '#000000';
     this._dotColor = "grey";
-    this._intersectionColor = 'red';
+    this._imaginaryColor = "grey";
+    this._intersectionColor = 'black';
     this._questionColor = "red";
 
     this._dotNameFont = "15px Arial";
@@ -40,7 +41,9 @@ Canvas.prototype = {
     drawObjects() {
         this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
         if (this._elements.dragStartPoint && this._elements.dragDot === null) {
-            this.drawLine(new Line(this._elements.dragStartPoint, this._elements.currentDot));
+            this.drawLine(
+                new Line(this._elements.dragStartPoint, this._elements.currentDot),
+                this._imaginaryColor);
         }
         for (let ang of this._elements.angles) {
             this.drawAngle(ang);
@@ -55,14 +58,14 @@ Canvas.prototype = {
             this.drawDot(dot);
         }
         for (let intr of this._elements.intersectionDots) {
-            this.drawDot(intr, this._intersectionColor);
+            this.drawDot(intr, this._intersectionColor, this._dotHoveredDiameter);
         }
         for (let parallel of this._elements.parallelsTemp) {
             this.drawParallel(parallel);
         }
     },
 
-    drawDot(dot, color) {
+    drawDot(dot, color, diameter) {
         if (color) {
             this._ctx.strokeStyle = color;
             this._ctx.fillStyle = color;
@@ -71,7 +74,8 @@ Canvas.prototype = {
             this._ctx.fillStyle = this._blackColor;
         }
 
-        let dotDiameter = dot.isHovered() ? this._dotHoveredDiameter : this._dotDiameter;
+        let dotDiameter = diameter ||
+            (dot.isHovered() ? this._dotHoveredDiameter : this._dotDiameter);
 
         this._ctx.beginPath();
         this._ctx.setLineDash([0]);
@@ -111,11 +115,11 @@ Canvas.prototype = {
         }
     },
 
-    drawLine(line) {
+    drawLine(line, color) {
         this._ctx.font = this._ordinaryFont;
         this._ctx.fillStyle = this._blackColor;
 
-        this._ctx.strokeStyle = this.getColor(line);
+        this._ctx.strokeStyle = color || this.getColor(line);
 
         if (line.getValue()) {
             if (line.getValue() === '?') {
