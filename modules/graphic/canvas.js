@@ -283,17 +283,11 @@ Canvas.prototype = {
         return this._top;
     },
 
-    getValueObject() {
-        let obj = this.valueObject;
-        this.valueObject = null;
-        return obj;
-    },
-
     getColor(obj) {
-        if (obj.isHovered()) {
-            return this._hoveredColor;
-        } else if (obj.isSelected()) {
+        if (obj.isSelected()) {
             return this._selectedColor;
+        } else if (obj.isHovered()) {
+            return this._hoveredColor;
         } else {
             return this._blackColor;
         }

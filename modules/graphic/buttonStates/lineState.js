@@ -16,9 +16,11 @@ function LineState(drawing, canvasElements, canvas) {
 LineState.prototype = {
 
     mouseDownEvent(x, y) {
-        this._elements.dragStartPoint = new Point(x, y);
+        if (!this._elements.hovered) {
+            this._elements.dragStartPoint = new Point(x, y);
+        }
         this._elements.dragDot = null;
-        if (this._elements.hovered) {
+        if (this._elements.hovered && this._elements.hovered.type === "dot") {
             this._elements.dragDot = this._elements.hovered.obj;
         }
         if (this._elements.dragDot) {
@@ -28,7 +30,7 @@ LineState.prototype = {
     },
 
     mouseMoveEvent(x, y) {
-        if (this._elements.dragStartPoint !== null && this._elements.dragDot) {
+        if (this._elements.dragDot !== null) {
             this._elements.dragDot.update(x, y);
             this.updateDotsOnLine();
         }
@@ -39,16 +41,13 @@ LineState.prototype = {
     },
 
     mouseUpEvent(x, y) {
-        if (!this._elements.dragDot) {
+        if (!this._elements.dragDot && this._elements.dragStartPoint) {
             this.createNewLine(x, y);
-        } else {
-            if (this._elements.dragStartPoint.same(this._elements.currentDot)) {
-                this.prepareInput(x, y);
-            } else if (this._elements.hovered) {
-                if (this._elements.hovered.obj !== this._elements.dragDot) {
-                    this.handleDraggedDot();
-                }
-            }
+        } else if (this._elements.hovered &&
+            this._elements.dragDot &&
+            this._elements.hovered.obj !== this._elements.dragDot) {
+            this.handleDraggedDot();
+
         }
         this._drawing.handleIntersectionDots();
         this._drawing.saveTempParallels();
@@ -56,17 +55,6 @@ LineState.prototype = {
         this._elements.dragDot = null;
         this._elements.dragStartPoint = null;
         this._drawing.updateCanvasAngles();
-    },
-
-    prepareInput(x, y) {
-        if (['angle', 'line'].indexOf(this._elements.hovered.type) === -1) {
-            return;
-        }
-        this._drawing.activateInput(x, y, this._elements.hovered.obj.getValue());
-        this._valueObject = {
-            'type': this._elements.hovered.type,
-            'obj': this._elements.dragDot
-        };
     },
 
     createNewLine(x, y) {
@@ -261,6 +249,7 @@ LineState.prototype = {
     },
 
     makeTwoDotsSame(dot1, dot2) {
+        console.log("make same")
         for (let line of this._elements.lines) {
             if (line.getDot1() === dot2) {
                 line.setDot1(dot1);
@@ -331,12 +320,6 @@ LineState.prototype = {
                 }
             }
         }
-    },
-
-    getValueObject() {
-        let obj = this._valueObject;
-        this._valueObject = null;
-        return obj;
     }
 }
 

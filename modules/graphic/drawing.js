@@ -24,6 +24,7 @@ function Drawing() {
     this._parallels = [];
     this._elements = new CanvasElements();
     this._buttonState = null;
+    this._mouseIsDown = false;
 }
 
 Drawing.prototype = {
@@ -38,25 +39,40 @@ Drawing.prototype = {
             let y = event.pageY - self._canvas.getTop();
             self._elements.currentDot.update(x, y);
             self.updateHovered();
+            if (self._mouseIsDown) {
+                self.updateSelected();
+            }
             self._buttonState.mouseMoveEvent(x, y);
             self._canvas.update();
         });
+
         canvas.addEventListener('mousedown', function (event) {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
+            self._mouseIsDown = true;
+
             self._elements.currentDot.update(x, y);
+            self.updateHovered();
+            self.deselectAll();
+            self.updateSelected(true);
             self._buttonState.mouseDownEvent(x, y);
             self._canvas.update();
         });
+
         canvas.addEventListener('mouseup', function (event) {
             let x = event.pageX - self._canvas.getLeft();
             let y = event.pageY - self._canvas.getTop();
+            self._mouseIsDown = false;
+
             self._elements.currentDot.update(x, y);
-            self.updateSelected();
             self.updateHovered();
+            self.updateSelected();
             self._buttonState.mouseUpEvent(x, y);
             self._canvas.update();
             self.updateQuestionText();
+            if (self._elements.selected.length === 0) {
+                self.deactivateInput();
+            }
         });
         return this;
     },
@@ -74,6 +90,7 @@ Drawing.prototype = {
     },
 
     createNewLine(dot1, dot2) {
+        console.log("create")
         let line = new Line(dot1, dot2);
         this.saveTempParallels(line);
         this._elements.addLine(line);
@@ -348,24 +365,46 @@ Drawing.prototype = {
         this._elements.hovered = hovered;
     },
 
-    updateSelected() {
-        this.deselectAll();
-        if (!this._elements.hovered) {
-            this._elements.selected = [];
+    updateSelected(newClick) {
+        if (newClick) {
+            this.deselectAll();
+        }
+
+        if (!this._elements.hovered ||
+            this._elements.dragDot ||
+            this._elements.dragStartPoint) {
             return;
         }
+        console.log(this._elements.dragDot)
         let hovered = this._elements.hovered.obj;
+        if (this._mouseIsDown && hovered.getType() !== "Angle") {
+            this._elements.selected = [];
+        }
         if (this._elements.selected.length > 0 &&
             this._elements.selected[0].getType() !== hovered.getType()) {
             this._elements.selected = [];
         }
-        this._elements.selected.push(hovered);
+
+        if (this._mouseIsDown && hovered.getType() === "Angle" &&
+            this._elements.dragDot == null &&
+            this._elements.selected.indexOf(hovered) === -1) {
+            this._elements.selected.push(hovered);
+            return;
+        } else if (!this._mouseIsDown &&
+            this._elements.selected.indexOf(hovered) === -1) {
+            this._elements.selected.push(hovered);
+        }
         for (let el of this._elements.selected) {
             el.setSelected(true);
+        }
+
+        if (!this._mouseIsDown) {
+            this.prepareInput();
         }
     },
 
     deselectAll() {
+        this._elements.selected = [];
         for (let dot of this._elements.dots) {
             dot.setSelected(false);
         }
@@ -386,8 +425,12 @@ Drawing.prototype = {
         this._canvas.update();
     },
 
-    getValueObject() {
-        return this._buttonState.getValueObject();
+    getSelected() {
+        if (this._elements.selected.length === 1) {
+            return this._elements.selected[0];
+        } else {
+            throw 'Multiple elements' + this._elements.selected.map((x) => x.toString()).join(", ");
+        }
     },
 
     getParallels() {
@@ -450,13 +493,35 @@ Drawing.prototype = {
         this.updateQuestionText();
     },
 
+    prepareInput() {
+        if (['angle', 'line'].indexOf(this._elements.hovered.type) === -1) {
+            return;
+        }
+
+        let x = this._elements.currentDot.getX();
+        let y = this._elements.currentDot.getY();
+
+        this.activateInput(x, y, this._elements.hovered.obj.getValue());
+        this._valueObject = {
+            'type': this._elements.hovered.type,
+            'obj': this._elements.dragDot
+        };
+    },
+
     activateInput(x, y, value) {
         let input = document.getElementById('valueInput');
         input.style.display = 'block';
         input.style.position = 'absolute';
-        input.style.left = `${this._canvas.getLeft() + x}px`;
-        input.style.top = `${this._canvas.getTop() + y}px`;
+        input.style.left = `${this._canvas.getLeft() + x - 50}px`;
+        input.style.top = `${this._canvas.getTop() + y - 50}px`;
         input.value = value || '';
+    },
+
+    deactivateInput() {
+        let input = document.getElementById('valueInput');
+        input.style.display = 'none';
+        input.style.position = 'absolute';
+        input.value = '';
     },
 
     updateQuestionText() {

@@ -23,20 +23,23 @@ App.prototype = {
         let canvas = document.getElementById(this._canvas);
         self._drawing = new Drawing().bind(canvas);
 
-        document.getElementById(this._inputElement).addEventListener('keydown', function (event) {
-            if (event.keyCode === 13) {
-                let hovered = self._drawing.getValueObject();
-                if (hovered !== null) {
-                    hovered.obj.setValue(this.value);
+        document.getElementById(this._inputElement)
+            .addEventListener('keydown', function (event) {
+                if (event.keyCode === 13) {
+                    let selected = self._drawing.getSelected();
+
+                    selected.setValue(this.value);
                     self._drawing.updateDrawing();
+
+                    if (this.value === '?') {
+                        self._drawing.setQuestion(selected);
+                    }
+                    self._drawing.updateQuestionText();
+                    self._drawing.deselectAll();
+                    self._drawing.deactivateInput();
+                    this.style.display = 'none';
                 }
-                if (this.value === '?') {
-                    self._drawing.setQuestion(hovered.obj);
-                }
-                self._drawing.updateQuestionText();
-                this.style.display = 'none';
-            }
-        });
+            });
 
         document.getElementById(this._solveButton).addEventListener('click', function () {
             document.getElementById('showAll').checked = false;
