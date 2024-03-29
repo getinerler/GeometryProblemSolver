@@ -426,11 +426,71 @@ Drawing.prototype = {
     },
 
     getSelected() {
-        if (this._elements.selected.length === 1) {
-            return this._elements.selected[0];
-        } else {
-            throw 'Multiple elements' + this._elements.selected.map((x) => x.toString()).join(", ");
+        let selected = this._elements.selected;
+        if (selected.length === 1) {
+            return selected[0];
         }
+
+        if (!(selected.length > 1 && selected[0].getType() === "Angle")) {
+            throw 'Wrong selection: ' + selected.map((x) => x.toString()).join(", ") + ".";
+        }
+
+        let dots = selected
+            .reduce(function (acc, x) {
+                if (acc.indexOf(x.getDot()) === -1) {
+                    acc.push(x.getDot());
+                }
+                return acc;
+            }, []);
+        if (dots.length > 1) {
+            throw 'Angles belong to different dots.';
+        }
+
+        let orderedSelected = selected
+            .sort(function (ang1, ang2) {
+                let line1 = ang1.getLine1();
+                let line2 = ang2.getLine1();
+
+                let deg1 = getLineAngle(line1, ang1.getDot());
+                let deg2 = getLineAngle(line2, ang1.getDot());
+
+                if (deg1 < deg2) {
+                    return 1;
+                } else if (deg2 < deg1) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+
+
+        let ang = this.findAngleWithArms(orderedSelected[orderedSelected.length - 1].getLine1(),
+            orderedSelected[0].getLine2()
+        );
+        if (ang) {
+            return ang;
+        }
+
+        for (let i = 0; i < orderedSelected.length; i++) {
+            if (i === orderedSelected.length - 1) {
+                continue;
+            }
+            if (
+                orderedSelected[i].getLine1().getBaseOrSelf() !==
+                orderedSelected[i + 1].getLine2().getBaseOrSelf()) {
+                throw 'Angles not ordered';
+            }
+        }
+
+        let angNew = new Angle(
+            orderedSelected[0].getDot(),
+            orderedSelected[orderedSelected.length - 1].getLine1(),
+            orderedSelected[0].getLine2());
+        for (let sel of orderedSelected) {
+            angNew.addChild(sel);
+        }
+        this._elements.angles.push(angNew);
+        return angNew;
     },
 
     getParallels() {
@@ -501,9 +561,20 @@ Drawing.prototype = {
         let x = this._elements.currentDot.getX();
         let y = this._elements.currentDot.getY();
 
-        this.activateInput(x, y, this._elements.hovered.obj.getValue());
+        let obj;
+        let selected = this._elements.selected;
+        if (selected.length > 1 && selected[0].getType() === "Angle") {
+            let ang = this.findAngleWithArms(selected[selected.length - 1].getLine1(),
+                selected[0].getLine2()
+            );
+            obj = ang;
+        } else {
+            obj = selected[0];
+        }
+
+        this.activateInput(x, y, obj ? obj.getValue() : null);
         this._valueObject = {
-            'type': this._elements.hovered.type,
+            'type': selected[0].getType(),
             'obj': this._elements.dragDot
         };
     },
@@ -534,6 +605,19 @@ Drawing.prototype = {
         let header = document.getElementById('questionHeader');
         header.style.display = text ? 'block' : 'none';
         document.getElementById('questionText').innerHTML = text;
+    },
+
+    findAngleWithArms(line1, line2) {
+        for (let ang of this._elements.angles) {
+            if (line1.getBaseOrSelf() !== ang.getLine1().getBaseOrSelf()) {
+                continue;
+            }
+            if (line2.getBaseOrSelf() !== ang.getLine2().getBaseOrSelf()) {
+                continue;
+            }
+            return ang;
+        }
+        return null;
     },
 
     setButtonState(state) {

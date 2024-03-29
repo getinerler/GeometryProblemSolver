@@ -4,6 +4,7 @@ function Angle(dot, line1, line2) {
     this._dot = null;
     this._line1 = null;
     this._line2 = null;
+    this._children = [];
 
     if (dot) {
         this._dot = dot;
@@ -115,6 +116,20 @@ Angle.prototype = {
 
     isLine(line) {
         return this._line1 === line || this._line2 === line;
+    },
+
+    addChild(child) {
+        this._children.push(child);
+        return this;
+    },
+
+    removeChild(child) {
+        this._children = this._children.filter((x) => x !== child);
+        return this;
+    },
+
+    getChildren() {
+        return this._children;
     },
 
     getValue() {
