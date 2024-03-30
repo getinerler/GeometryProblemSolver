@@ -90,7 +90,6 @@ Drawing.prototype = {
     },
 
     createNewLine(dot1, dot2) {
-        console.log("create")
         let line = new Line(dot1, dot2);
         this.saveTempParallels(line);
         this._elements.addLine(line);

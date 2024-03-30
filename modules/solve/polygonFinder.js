@@ -113,7 +113,6 @@ PolygonFinder.prototype = {
             return true;
         })
         if (!old) {
-            console.log(tri)
             this.triangles.push(tri);
         }
     },

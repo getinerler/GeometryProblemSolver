@@ -18,7 +18,7 @@ function Canvas(canvas, canvasObjects) {
     this._top = this._canvas.getBoundingClientRect().top;
     this._ctx = this._canvas.getContext('2d');
 
-    this._hoveredColor = '#FFC0CB';
+    this._hoveredColor = 'lightgrey';
     this._selectedColor = "red";
     this._blackColor = '#000000';
     this._dotColor = "grey";
@@ -66,6 +66,7 @@ Canvas.prototype = {
     },
 
     drawDot(dot, color, diameter) {
+        this._ctx.lineWidth = 1;
         if (color) {
             this._ctx.strokeStyle = color;
             this._ctx.fillStyle = color;
@@ -120,7 +121,11 @@ Canvas.prototype = {
         this._ctx.fillStyle = this._blackColor;
 
         this._ctx.strokeStyle = color || this.getColor(line);
-
+        if (line.isHovered()) {
+            this._ctx.lineWidth = 3;
+        } else {
+            this._ctx.lineWidth = 1;
+        }
         if (line.getValue()) {
             if (line.getValue() === '?') {
                 this._ctx.fillStyle = this._questionColor;
@@ -172,6 +177,11 @@ Canvas.prototype = {
         this._ctx.fillStyle = this._blackColor;
 
         for (let seg of line.getSegments()) {
+            if (seg.isHovered()) {
+                this._ctx.lineWidth = 3;
+            } else {
+                this._ctx.lineWidth = 1;
+            }
             if (seg.getValue()) {
                 this._ctx.font = this._valueFont;
                 let point = getLineTextPoint(seg);
