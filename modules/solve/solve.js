@@ -37,16 +37,16 @@ function Solve(question) {
 Solve.prototype = {
 
     solve() {
-        //     try {
-        window.equationCounter = 1;
-        return this.solveProblem();
-        // } catch (e) {
-        //     return {
-        //         'solved': false,
-        //         'equations': this.equations,
-        //         'message': e
-        //     };
-        // }
+        try {
+            window.equationCounter = 1;
+            return this.solveProblem();
+        } catch (e) {
+            return {
+                'solved': false,
+                'equations': this.equations,
+                'message': e
+            };
+        }
     },
 
     solveProblem() {
@@ -66,6 +66,11 @@ Solve.prototype = {
         this.triangles = polygons.triangles;
         this.rectangles = polygons.rectangles;
 
+        // for (let tri of this.triangles) {
+        //     console.log(tri.toString() + 
+        //     ", lines " + tri.getLines().map((x) => x.toString()) + 
+        //     ", angles " + tri.getAngles().map((x) => x.toString()));
+        // }
         this.checkLinesSegmentLengths();
         this.checkDots360();
         this.checkReverseAngles();

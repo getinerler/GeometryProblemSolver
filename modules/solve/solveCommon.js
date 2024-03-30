@@ -202,6 +202,23 @@ export function getLinesCommonDot(line1, line2) {
 export function getOrderedAngleSum(angs, line1, line2) {
     let commonDot = getLinesCommonDot(line1, line2);
 
+    for (let ang of angs) {
+        if (ang.getCanvasAngle() >= 180) {
+            continue;
+        }
+        if (ang.getDot() !== commonDot) {
+            continue;
+        }
+        if (new LineSum(ang.getLine1()).equals(line1) &&
+            new LineSum(ang.getLine2()).equals(line2)) {
+            return [ang];
+        }
+        if (new LineSum(ang.getLine1()).equals(line2) &&
+            new LineSum(ang.getLine2()).equals(line1)) {
+            return [ang];
+        }
+    }
+
     let angles = angs.filter((x) => x.getDot() === commonDot);
     let anglesList = [];
     let tempAng = null;

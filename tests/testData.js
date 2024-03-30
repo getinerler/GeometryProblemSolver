@@ -797,11 +797,12 @@ const TestData = {
                 new Angle(dots[2], lines[1], seg1),
                 new Angle(dots[2], seg1, lines[1]),
                 new Angle(dots[0], lines[0], lines[1]),
-                new Angle(dots[0], lines[1], lines[3]).setValue(40),
-                new Angle(dots[0], lines[3], lines[0]).setValue(50),
+                new Angle(dots[0], lines[1], lines[3]),
+                new Angle(dots[0], lines[3], lines[0]),
                 new Angle(dots[3], seg1, seg2).setValue(180),
                 new Angle(dots[3], seg2, lines[3]),
                 new Angle(dots[3], lines[3], seg1).setValue(90),
+                new Angle(dots[0], lines[1], lines[0]).setValue(90)
             ];
 
             return {
