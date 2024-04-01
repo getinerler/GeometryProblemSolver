@@ -111,27 +111,17 @@ function valuesAreEquivalent(equivalents, val1, val2) {
 }
 
 export function getNarrowAngle(angles, line1, line2) {
-    let ang1 = getNarrowAngleWithLines(angles, line1, line2);
-    if (ang1) {
-        return ang1;
-    }
-    let base1 = line1.getBase();
-    let base2 = line2.getBase();
-    if (base1 && base2) {
-        return getNarrowAngleWithLines(angles, base1, base2);
-    }
-}
-
-export function getNarrowAngleWithLines(angles, line1, line2) {
+    let commonDot = getLinesCommonDot(line1, line2);
     for (let ang of angles) {
-        if (new LineSum(ang.getLine1()).equals(line1) &&
-            new LineSum(ang.getLine2()).equals(line2)) {
+        if (ang.getDot() !== commonDot) {
+            continue;
+        }
+        if (line1.contains(ang.getLine1()) && line2.contains(ang.getLine2())) {
             if (ang.getCanvasAngle() < 180) {
                 return ang;
             }
         }
-        if (new LineSum(ang.getLine1()).equals(line2) &&
-            new LineSum(ang.getLine2()).equals(line1)) {
+        if (line2.contains(ang.getLine1()) && line1.contains(ang.getLine2())) {
             if (ang.getCanvasAngle() < 180) {
                 return ang;
             }
