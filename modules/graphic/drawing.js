@@ -11,11 +11,11 @@ import EquivalenceState from './buttonStates/equivalenceState.js';
 import { resetNames } from './names.js';
 import Dot from '../../models/graphic/dot.js';
 import Line from '../../models/graphic/line.js';
-import Parallel from '../../models/graphic/parallel.js';
 import Angle from '../../models/graphic/angle.js';
 import TriangleState from './buttonStates/triangleState.js';
 import RectangleState from './buttonStates/rectangleState.js';
 import SquareState from './buttonStates/squareState.js';
+import ParallelMediator from './parallelMediator.js';
 
 function Drawing() {
     this._canvas = null;
@@ -23,7 +23,9 @@ function Drawing() {
     this._question = null;
     this._parallels = [];
     this._elements = new CanvasElements();
+    this._parallelMediator = new ParallelMediator(this, this._elements);
     this._buttonState = null;
+    this._newLine = null;
     this._mouseIsDown = false;
 }
 
@@ -39,10 +41,11 @@ Drawing.prototype = {
             let y = event.pageY - self._canvas.getTop();
             self._elements.currentDot.update(x, y);
             self.updateHovered();
+            self._buttonState.mouseMoveEvent(x, y);
+            self._parallelMediator.mouseMoveEvent();
             if (self._mouseIsDown) {
                 self.updateSelected();
             }
-            self._buttonState.mouseMoveEvent(x, y);
             self._canvas.update();
         });
 
@@ -56,6 +59,7 @@ Drawing.prototype = {
             self.deselectAll();
             self.updateSelected(true);
             self._buttonState.mouseDownEvent(x, y);
+            self._parallelMediator.mouseDownEvent();
             self._canvas.update();
         });
 
@@ -68,6 +72,7 @@ Drawing.prototype = {
             self.updateHovered();
             self.updateSelected();
             self._buttonState.mouseUpEvent(x, y);
+            self._parallelMediator.mouseUpEvent(self._newLine);
             self._canvas.update();
             self.updateQuestionText();
             if (self._elements.selected.length === 0) {
@@ -91,7 +96,7 @@ Drawing.prototype = {
 
     createNewLine(dot1, dot2) {
         let line = new Line(dot1, dot2);
-        this.saveTempParallels(line);
+        this._newLine = line;
         this._elements.addLine(line);
 
         if (this._elements.hovered) {
@@ -237,30 +242,7 @@ Drawing.prototype = {
         }
     },
 
-    saveTempParallels(newLine) {
-        if (newLine) {
-            if (this._elements.parallelsTemp.length !== 0) {
-                this._elements.parallelsTemp[0].push(newLine);
-            }
-        }
-        for (let parallelTemp of this._elements.parallelsTemp) {
-            let found = false;
-            for (let parallel of this.getParallels()) {
-                if (parallel.containsList(parallelTemp)) {
-                    found = true;
-                    for (let line of parallelTemp) {
-                        if (!parallel.contains(line)) {
-                            parallel.add(line);
-                        }
-                    }
-                }
-            }
-            if (!found) {
-                this.addParallel(new Parallel(parallelTemp));
-            }
-        }
-        this._elements.parallelsTemp = [];
-    },
+
 
     handleIntersectionDots(movingLine) {
         for (let intDot of this._elements.intersectionDots) {
@@ -316,6 +298,7 @@ Drawing.prototype = {
     updateHovered() {
         let hovered;
         let found = false;
+
         for (let dot of this._elements.dots) {
             dot.setHovered(false);
             if (!found && dotsCloser(dot, this._elements.currentDot) &&
@@ -325,6 +308,7 @@ Drawing.prototype = {
                 found = true;
             }
         }
+
         for (let angle of this._elements.angles) {
             angle.setHovered(false);
             if (anglesCloser(this._elements.currentDot, angle.getDot())) {
@@ -335,6 +319,7 @@ Drawing.prototype = {
                 }
             }
         }
+
         for (let line of this._elements.lines) {
             for (let seg of line.getSegments()) {
                 seg.setHovered(false);
@@ -349,6 +334,7 @@ Drawing.prototype = {
                 }
             }
         }
+
         for (let line of this._elements.lines) {
             line.setHovered(false);
             if (line.getDot1() === this._elements.getDragDotObject() ||
@@ -361,6 +347,7 @@ Drawing.prototype = {
                 found = true;
             }
         }
+        
         this._elements.hovered = hovered;
     },
 
@@ -374,7 +361,7 @@ Drawing.prototype = {
             this._elements.dragStartPoint) {
             return;
         }
-        console.log(this._elements.dragDot)
+
         let hovered = this._elements.hovered.obj;
         if (this._mouseIsDown && hovered.getType() !== "Angle") {
             this._elements.selected = [];
@@ -490,18 +477,6 @@ Drawing.prototype = {
         }
         this._elements.angles.push(angNew);
         return angNew;
-    },
-
-    getParallels() {
-        return this._parallels;
-    },
-
-    addParallel(parallel) {
-        this._parallels.push(parallel);
-    },
-
-    setParallels(parallels) {
-        this._parallels = parallels;
     },
 
     getAll() {

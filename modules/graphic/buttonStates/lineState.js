@@ -3,7 +3,7 @@
 import Point from '../../../models/graphic/point.js';
 import Line from '../../../models/graphic/line.js';
 import Angle from '../../../models/graphic/angle.js';
-import { lineIntersect, dotsCloser, linesParallel, getLineAngle } from './../geoHelper.js';
+import { lineIntersect, dotsCloser, getLineAngle } from './../geoHelper.js';
 import { getDotOnLineWithRatio, getDistance } from './../geoHelper.js';
 
 function LineState(drawing, canvasElements, canvas) {
@@ -25,7 +25,6 @@ LineState.prototype = {
         }
         if (this._elements.dragDot) {
             this.removeIntersectionDots();
-            this.removeDotParallels();
         }
     },
 
@@ -36,7 +35,6 @@ LineState.prototype = {
         }
         if (this._elements.dragStartPoint) {
             this.updateIntersectionDots();
-            this.updateParallelsTemp();
         }
     },
 
@@ -47,11 +45,8 @@ LineState.prototype = {
             this._elements.dragDot &&
             this._elements.hovered.obj !== this._elements.dragDot) {
             this.handleDraggedDot();
-
         }
         this._drawing.handleIntersectionDots();
-        this._drawing.saveTempParallels();
-        this.removeUnnecessaryParallels();
         this._elements.dragDot = null;
         this._elements.dragStartPoint = null;
         this._drawing.updateCanvasAngles();
@@ -182,66 +177,6 @@ LineState.prototype = {
                         intrDot.addIntersectionLine(line1);
                         intrDot.addIntersectionLine(line2);
                         this._elements.intersectionDots.push(intrDot);
-                    }
-                }
-            }
-        }
-    },
-
-    removeUnnecessaryParallels() {
-        this._drawing.setParallels(
-            this._drawing.getParallels().filter((x) => x.getLines().length >= 2));
-    },
-
-    removeDotParallels() {
-        let self = this;
-        let dotLines = this._elements.lines.filter(function (line) {
-            return line.getDot1() === self._elements.dragDot ||
-                line.getDot2() === self._elements.dragDot;
-        });
-        this._drawing.setParallels(
-            this._drawing.getParallels().filter((x) => !x.containsList(dotLines)));
-    },
-
-    updateParallelsTemp() {
-        this._elements.parallelsTemp = [];
-
-        //New line is being created
-        if (!this._elements.dragDot) {
-            let dot1 = this._elements.dragStartPoint.copy();
-            let dot2 = this._elements.currentDot.copy();
-            let imaginaryLine = new Line(dot1, dot2);
-            for (let line of this._elements.lines) {
-                if (linesParallel(line, imaginaryLine)) {
-                    if (!this._elements.parallelsTemp.some((x) => x.indexOf(line) > -1)) {
-                        this._elements.parallelsTemp.push([line]);
-                    }
-                }
-            }
-            return;
-        }
-
-        for (let i = 0; i < this._elements.lines.length; i++) {
-            for (let j = i + 1; j < this._elements.lines.length; j++) {
-                let line1 = this._elements.lines[i];
-                let line2 = this._elements.lines[j];
-                if (linesParallel(line1, line2)) {
-                    let found;
-                    for (let parallel of this._elements.parallelsTemp) {
-                        found = parallel.find(function (line) {
-                            return line === line1 || line === line2;
-                        });
-                        if (found) {
-                            if (parallel.indexOf(line1) === -1) {
-                                parallel.push(line1);
-                            }
-                            if (parallel.indexOf(line2) === -1) {
-                                parallel.push(line2);
-                            }
-                        }
-                    }
-                    if (!found) {
-                        this._elements.parallelsTemp.push([line1, line2]);
                     }
                 }
             }
