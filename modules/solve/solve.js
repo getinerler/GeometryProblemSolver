@@ -426,11 +426,10 @@ Solve.prototype = {
             }
         }
 
-        let len2 = tri.getLines().length;
-        for (let i = 0; i < len2; i++) {
-            for (let j = i + 1; j < len2 + i; j++) {
+        for (let i = 0; i < len; i++) {
+            for (let j = i + 1; j < len + i; j++) {
                 let line1 = tri.getLines()[i];
-                let line2 = tri.getLines()[j % len2];
+                let line2 = tri.getLines()[j % len];
 
                 if (!this.areEquivalent(line1, line2)) {
                     continue;

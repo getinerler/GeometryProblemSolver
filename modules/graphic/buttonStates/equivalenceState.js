@@ -2,6 +2,7 @@
 
 import Equivalence from '../../../models/graphic/equivalence.js';
 import AngleSum from '../../../models/solve/angleSum.js';
+import LineSum from '../../../models/solve/lineSum.js';
 
 function EquivalenceState(elements) {
     this._elements = elements;
@@ -27,9 +28,7 @@ EquivalenceState.prototype = {
         if (!this._currentEquivalent) {
             this._currentEquivalent = this.findEquivalentFromObject(fixedObj);
             if (!this._currentEquivalent) {
-                let newEq = new Equivalence()
-                    .add(fixedObj)
-                    .setType(fixedObj.getType());
+                let newEq = new Equivalence().add(fixedObj).setType(fixedObj.getType());
                 this._elements.equivalents.push(newEq);
                 this._currentEquivalent = newEq;
             } else {

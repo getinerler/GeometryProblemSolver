@@ -88,6 +88,15 @@ function valuesAreEquivalent(equivalents, val1, val2) {
                 return true;
             }
         }
+        if (equi.getType() === "LineSum" && val1.getType() === "Line") {
+            let elements = equi.getElements();
+            let el1 = elements.find((x) => x.isEquivalent(new LineSum([val1])));
+            let el2 = elements.find((x) => x.isEquivalent(new LineSum([val2])));
+
+            if (el1 && el2) {
+                return true;
+            }
+        }
         if (equi.getType() === "Line" && val1.getType() === "Line") {
             let elements = equi.getElements();
             let el1 = elements.find((x) => x === val1);

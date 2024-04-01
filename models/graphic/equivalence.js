@@ -54,6 +54,15 @@ Equivalence.prototype = {
                     this._elements = this._elements.filter((x) => x !== el);
                 }
             }
+        } else if (element.getType() === 'LineSum') {
+            for (let el of this._elements) {
+                if (el.getType() !== 'LineSum') {
+                    continue;
+                }
+                if (element.equals(el)) {
+                    this._elements = this._elements.filter((x) => x !== el);
+                }
+            }
         } else {
             this._elements = this._elements.filter((x) => x !== element);
         }
@@ -63,6 +72,13 @@ Equivalence.prototype = {
         for (let el of this._elements) {
             if (element.getType() === 'AngleSum') {
                 if (el.getType() !== 'AngleSum') {
+                    continue;
+                }
+                if (element.isEquivalent(el)) {
+                    return true;
+                }
+            } else if (element.getType() === 'LineSum') {
+                if (el.getType() !== 'LineSum') {
                     continue;
                 }
                 if (element.isEquivalent(el)) {
