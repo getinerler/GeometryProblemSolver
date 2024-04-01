@@ -218,7 +218,7 @@ export function get90DegreeSymbolPoints(ang) {
     let dot1 = new Point(ang.getDot().getX(), ang.getDot().getY() + line90);
     let dot2 = new Point(ang.getDot().getX() + line90, ang.getDot().getY() + line90);
     let dot3 = new Point(ang.getDot().getX() + line90, ang.getDot().getY());
-    let rotationAngle = getAngle(ang.getLine1().getDot1(), ang.getLine1().getDot2()) + 180;
+    let rotationAngle = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
     dot1 = rotate(ang.getDot(), dot1, rotationAngle);
     dot2 = rotate(ang.getDot(), dot2, rotationAngle);
     dot3 = rotate(ang.getDot(), dot3, rotationAngle);
