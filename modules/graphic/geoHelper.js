@@ -78,9 +78,9 @@ export function dotBetweenAngle(ang, point) {
 }
 
 export function linesParallel(line1, line2) {
-    let m1 = getSlopeRatio(line1.getDot1(), line1.getDot2());
-    let m2 = getSlopeRatio(line2.getDot1(), line2.getDot2());
-    return Math.abs(m1 - m2) < 0.03;
+    let m1 = getSlopeAngle(line1.getDot1(), line1.getDot2());
+    let m2 = getSlopeAngle(line2.getDot1(), line2.getDot2());
+    return Math.abs(m1 - m2) < 2;
 }
 
 export function lineIntersect(line1, line2) {
