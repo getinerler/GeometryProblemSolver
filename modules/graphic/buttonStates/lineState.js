@@ -32,6 +32,7 @@ LineState.prototype = {
         if (this._elements.dragDot !== null) {
             this._elements.dragDot.update(x, y);
             this.updateDotsOnLine();
+            this.updateIntersectionDots();
         }
         if (this._elements.dragStartPoint) {
             this.updateIntersectionDots();
