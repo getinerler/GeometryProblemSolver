@@ -219,14 +219,14 @@ const TestData = {
         'result': [new Value(130)],
         getQuestion() {
             let dots = [
-                new Dot(476, 219, 'A'),
-                new Dot(56, 221, 'B'),
-                new Dot(483, 437, 'C'),
-                new Dot(51, 437, 'D'),
-                new Dot(392, 87, 'E'),
-                new Dot(182, 567, 'F'),
-                new Dot(333.95407098121086, 219.67640918580378, 'G'),
-                new Dot(238.875, 437, 'H')
+                new Dot(384, 127, 'A'),
+                new Dot(48, 126, 'B'),
+                new Dot(384, 287, 'C'),
+                new Dot(41, 284, 'D'),
+                new Dot(298, 44, 'E'),
+                new Dot(136, 388, 'F'),
+                new Dot(259.0878648074231, 126.62823769287924, 'G'),
+                new Dot(184.3861476392242, 285.2541062475734, 'H')
             ];
 
             let seg1 = new Line(dots[0], dots[6]);
@@ -357,11 +357,11 @@ const TestData = {
         'result': [new Value(60)],
         getQuestion() {
             let dots = [
-                new Dot(296, 92, 'A'),
-                new Dot(96, 233, 'B'),
-                new Dot(457, 349, 'C'),
-                new Dot(238, 496, 'D'),
-                new Dot(267.97245966414226, 288.25984853473824, 'E')
+                new Dot(213, 48, 'A'),
+                new Dot(45, 178, 'B'),
+                new Dot(396, 184, 'C'),
+                new Dot(280, 371, 'D'),
+                new Dot(240.93243653914914, 182.65935824097255, 'E')
             ];
 
             let seg1 = new Line(dots[2], dots[4]);
@@ -585,15 +585,14 @@ const TestData = {
         'result': [new Value(70)],
         getQuestion() {
             let dots = [
-                new Dot(268, 103, 'A'),
-                new Dot(57, 371, 'B'),
-                new Dot(450, 389, 'C'),
-                new Dot(396.9253023615606, 305.5969037110238, 'E'),
-                new Dot(135.01866927895344, 271.9051973139359, 'F'),
-                new Dot(326.0348575222761, 194.19763324929102, 'G'),
-                new Dot(193.1930957661409, 198.01540442973567, 'H')
+                new Dot(240, 79, 'A'),
+                new Dot(47, 293, 'B'),
+                new Dot(369, 328, 'C'),
+                new Dot(320.833293799811, 235.02705547405378, 'E'),
+                new Dot(106.99130615735476, 226.48114239547192, 'F'),
+                new Dot(286.45517021556344, 168.6692820439946, 'G'),
+                new Dot(156.96142689087776, 171.07385826607333, 'H')
             ];
-
             let seg1 = new Line(dots[1], dots[4]);
             let seg2 = new Line(dots[0], dots[6]);
             let seg3 = new Line(dots[4], dots[6]);
@@ -770,10 +769,10 @@ const TestData = {
         'result': [new Value(4)],
         getQuestion() {
             let dots = [
-                new Dot(389, 134, 'A'),
-                new Dot(59, 373, 'B'),
-                new Dot(536, 377, 'C'),
-                new Dot(390.9499380005037, 375.78364727883024, 'E')
+                new Dot(314, 102, 'A'),
+                new Dot(65, 246, 'B'),
+                new Dot(409, 251, 'C'),
+                new Dot(305.00617685415034, 249.4884618728801, 'E')
             ];
 
             let seg1 = new Line(dots[2], dots[3]).setValue(8); // CE
@@ -822,10 +821,10 @@ const TestData = {
         'result': [new Value(5)],
         getQuestion() {
             let dots = [
-                new Dot(346, 151, 'A'),
-                new Dot(72, 474, 'B'),
-                new Dot(568, 472, 'C'),
-                new Dot(319.9939517849948, 473.0000243879637, 'F'),
+                new Dot(268, 79, 'A'),
+                new Dot(73, 283, 'B'),
+                new Dot(390, 302, 'C'),
+                new Dot(232.2546124037758, 292.5452291346112, 'F')
             ];
 
             let seg1 = new Line(dots[2], dots[3]); // CF
@@ -927,7 +926,7 @@ const TestData = {
                 new Dot(410, 277, 'I'), //8
                 new Dot(44, 279, 'J'), //9
                 new Dot(103.58855700462769, 278.67437946992004, 'K'),
-                new Dot(347.17611191387334, 277.343299934897, 'L'),
+                new Dot(347.17611191387334, 277.343299934897, 'L')
             ];
 
             let seg1 = new Line(dots[0], dots[6]);

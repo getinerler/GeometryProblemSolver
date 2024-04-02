@@ -99,8 +99,9 @@ p {
     height: 100%;
 }
 
-.rightMenuDiv table {
-    text-align: left;
+#testsTable  {
+    width: 80%;
+    text-align: center;
 }
 
 #questionHeader {
@@ -114,6 +115,10 @@ p {
     color: green;
     display: none;
     text-decoration: underline;
+}
+
+#answerText {
+    margin-bottom: 20px;
 }
 
 #showAllDiv {
@@ -133,11 +138,12 @@ p {
 }
 
 #rightDivHeader {
+    height: 25px;
     position: relative;
     margin-bottom: 20px;
     background-color: rgb(239, 238, 238);
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 #githubLink {
@@ -191,7 +197,7 @@ thead {
 }
 
 .testDataButton {
-    width: 110px;
+    width: 90px;
     margin-top: 0px;
     background-color: transparent;
     background-repeat: no-repeat;
