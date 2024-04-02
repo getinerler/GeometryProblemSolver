@@ -21,7 +21,7 @@ App.prototype = {
     run() {
         let self = this;
         let canvas = document.getElementById(this._canvas);
-        self._drawing = new Drawing().bind(canvas);
+        self._drawing = new Drawing(this).bind(canvas);
 
         document.getElementById(this._inputElement)
             .addEventListener('keydown', function (event) {
@@ -79,6 +79,11 @@ App.prototype = {
             document.getElementById('answerHeader').style.display = 'none';
             question = self._drawing.reset();
         });
+    },
+
+    selectButton(buttonName) {
+        this.unselectCanvasButtons();
+        document.getElementById(buttonName + "Button").classList.add('selected');
     },
 
     showAnswer(solve) {

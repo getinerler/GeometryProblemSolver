@@ -45,6 +45,9 @@ Canvas.prototype = {
                 new Line(this._elements.dragStartPoint, this._elements.currentDot),
                 this._imaginaryColor);
         }
+        for (let line of this._elements.imaginaryLines) {
+            this.drawLine(line, this._imaginaryColor);
+        }
         for (let ang of this._elements.angles) {
             this.drawAngle(ang);
         }

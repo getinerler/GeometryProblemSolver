@@ -15,6 +15,7 @@ function CanvasElements() {
     this.currentDot = new Point(0, 0);
     this.hovered = null
     this.selected = [];
+    this.imaginaryLines = [];
 }
 
 CanvasElements.prototype = {

@@ -17,7 +17,8 @@ import RectangleState from './buttonStates/rectangleState.js';
 import SquareState from './buttonStates/squareState.js';
 import ParallelMediator from './parallelMediator.js';
 
-function Drawing() {
+function Drawing(app) {
+    this._app = app;
     this._canvas = null;
     this._valueObject = null;
     this._question = null;
@@ -347,7 +348,7 @@ Drawing.prototype = {
                 found = true;
             }
         }
-        
+
         this._elements.hovered = hovered;
     },
 
@@ -595,21 +596,27 @@ Drawing.prototype = {
     },
 
     setButtonState(state) {
+        this._elements.imaginaryLines = [];
         switch (state) {
             case 'line':
                 this._buttonState = new LineState(this, this._elements, this._canvas);
+                this._app.selectButton(state);
                 break;
             case 'triangle':
-                this._buttonState = new TriangleState(this);
+                this._buttonState = new TriangleState(this, this._elements);
+                this._app.selectButton(state);
                 break;
             case 'rectangle':
-                this._buttonState = new RectangleState(this);
+                this._buttonState = new RectangleState(this, this._elements);
+                this._app.selectButton(state);
                 break;
             case 'square':
-                this._buttonState = new SquareState(this);
+                this._buttonState = new SquareState(this, this._elements);
+                this._app.selectButton(state);
                 break;
             case 'equal':
                 this._buttonState = new EquivalenceState(this._elements);
+                this._app.selectButton(state);
                 break;
             default:
                 this._buttonState = new LineState(this, this._elements, this._canvas);
