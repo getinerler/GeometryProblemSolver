@@ -243,8 +243,6 @@ Drawing.prototype = {
         }
     },
 
-
-
     handleIntersectionDots(movingLine) {
         for (let intDot of this._elements.intersectionDots) {
             this.handleLineIntersection(movingLine, intDot)

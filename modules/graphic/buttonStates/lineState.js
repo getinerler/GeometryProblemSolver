@@ -3,8 +3,7 @@
 import Point from '../../../models/graphic/point.js';
 import Line from '../../../models/graphic/line.js';
 import Angle from '../../../models/graphic/angle.js';
-import { lineIntersect, dotsCloser, getLineAngle } from './../geoHelper.js';
-import { getDotOnLineWithRatio, getDistance } from './../geoHelper.js';
+import { lineIntersect, dotsCloser, getLineAngle, getDistance } from './../geoHelper.js';
 
 function LineState(drawing, canvasElements, canvas) {
     this._drawing = drawing;
@@ -31,8 +30,8 @@ LineState.prototype = {
     mouseMoveEvent(x, y) {
         if (this._elements.dragDot !== null) {
             this._elements.dragDot.update(x, y);
-            this.updateDotsOnLine();
             this.updateIntersectionDots();
+            this.removeDotsOnLine();
         }
         if (this._elements.dragStartPoint) {
             this.updateIntersectionDots();
@@ -106,16 +105,16 @@ LineState.prototype = {
             .filter((x) => dotsToDelete.indexOf(x) === -1);
     },
 
-    updateDotsOnLine() {
+    removeDotsOnLine() {
         let dot = this._elements.dragDot;
-        let lines = this._elements.lines.filter((x) => x.isLineEnd(dot));
-        let lineDots = this._elements.dots.filter(function (x) {
-            return x.isOnLine() && lines.indexOf(x.getBaseLine()) > -1;
-        })
-        for (let dot of lineDots) {
-            let newDot = getDotOnLineWithRatio(dot);
-            dot.setX(newDot.getX());
-            dot.setY(newDot.getY());
+        dot.setBaseLine(null);
+        this._elements.angles = this._elements.angles.filter((x) => x.getDot() !== dot);
+        for (let line of this._elements.lines) {
+            for (let seg of line.getSegments()) {
+                if (seg.isLineEnd(dot)) {
+                    line.removeSegment(seg);
+                }
+            }
         }
     },
 
@@ -185,7 +184,6 @@ LineState.prototype = {
     },
 
     makeTwoDotsSame(dot1, dot2) {
-        console.log("make same")
         for (let line of this._elements.lines) {
             if (line.getDot1() === dot2) {
                 line.setDot1(dot1);

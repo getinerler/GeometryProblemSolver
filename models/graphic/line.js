@@ -64,6 +64,11 @@ Line.prototype = {
     },
 
     isSegment() {
+        if (this._baseLine) {
+            return true;
+        } else {
+            return false;
+        }
         if (this._dot1.isOnLine()) {
             return true;
         }
