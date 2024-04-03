@@ -41,6 +41,8 @@ TriangleState.prototype = {
         this._drawing.arrangeAngles(dot2);
         this._drawing.arrangeAngles(dot3);
 
+        this._drawing.updateCanvasAngles();
+        
         this._drawing.setButtonState('line');
     }
 }
