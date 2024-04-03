@@ -1,7 +1,7 @@
 'use strict';
 
-import Line from '../../../models/graphic/line.js';
-import Parallel from '../../../models/graphic/parallel.js';
+import Line from '../../models/graphic/line.js';
+import Parallel from '../../models/graphic/parallel.js';
 import { linesParallel } from './geoHelper.js';
 
 function ParallelMediator(drawing, elements) {
