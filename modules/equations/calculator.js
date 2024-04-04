@@ -308,9 +308,9 @@ Calculator.prototype = {
         let unknownVariable = unknown.getVariables()[0];
         if (unknownVariable.getExponent() < 1) {
             let newEq = new Equation()
-            .setCreation(Creations.VariableMovedToTop)
-            .setAncestors([eq])
-            .setAncestorIds([parsed.count]);
+                .setCreation(Creations.VariableMovedToTop)
+                .setAncestors([eq])
+                .setAncestorIds([parsed.count]);
             for (let el of eq.getLeft()) {
                 newEq.addLeftTerm(el.reverse());
             }
@@ -328,7 +328,7 @@ Calculator.prototype = {
                 .setAncestors([eq])
                 .setAncestorIds([parsed.count])
                 .addLeftTerm(new Term(null, unknownVariable.getVariable()))
-                .addRightTerm(new Term(newRightValue));
+                .addRightTerm(newRightValue);
             this.addEquation(newEq);
             this.changed = true;
         } else {

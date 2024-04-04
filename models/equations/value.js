@@ -125,18 +125,19 @@ Value.prototype = {
             return newValue;
         }
         if (newValue.getRoot() === 1) {
-            let newNum = this.copy();
             let rawNumber = Math.pow(
                 newValue.getNumber(),
                 Math.abs(newValue.getExponent()));
 
             let rootTemp = Math.pow(rawNumber, 1 / pow);
             if (Math.pow(rootTemp, pow) === rawNumber) {
-                newNum.setExponent(1);
-                newNum.setRoot(1);
-                newNum.setNumber(rootTemp);
+                newValue.setExponent(1);
+                newValue.setRoot(1);
+                newValue.setNumber(rootTemp);
+            } else {
+                newValue.setRoot(pow);
             }
-            return newNum;
+            return newValue;
         } else {
             throw 'Value.root: Root of the rooted value.';
         }
@@ -189,9 +190,12 @@ Value.prototype = {
     toString() {
         let str = '';
         if (this._root > 1) {
-            str += `√<span style="text-decoration:overline">${this._root}</span>`;
+            str += `<sup>${this._root}</sup>√<span style="text-decoration:overline">`;
         }
         str += this._number;
+        if (this._root > 1) {
+            str += `</span>`;
+        }
         if (Math.abs(this._exponent) !== 1) {
             str += `<sup style="font-size:9px">${Math.abs(this._exponent)}</sup>`;
         }
