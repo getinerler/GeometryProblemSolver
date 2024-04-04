@@ -127,7 +127,8 @@ Value.prototype = {
         if (newValue.getRoot() === 1) {
             let rawNumber = Math.pow(newValue.getNumber(), Math.abs(newValue.getExponent()));
             let rootTemp = Math.pow(rawNumber, 1 / pow);
-            if (Math.pow(rootTemp, pow) === rawNumber) {
+            //TODO check it again
+            if (Math.floor(rootTemp) === rootTemp && Math.pow(rootTemp, pow) === rawNumber) {
                 newValue.setExponent(1);
                 newValue.setRoot(1);
                 newValue.setNumber(rootTemp);

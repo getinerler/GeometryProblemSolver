@@ -225,7 +225,7 @@ Term.prototype = {
         for (let variable of this.getVariables()) {
             newTerm.addVariable(variable.root(num));
         }
-        return newTerm;
+        return newTerm.simplify();
     },
 
     reverse() {
