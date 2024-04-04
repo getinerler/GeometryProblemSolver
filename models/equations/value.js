@@ -215,7 +215,7 @@ Value.prototype = {
         let str = '';
         if (this._root > 1) {
             str +=
-                `<sup style="font-size:7px">${this._root}</sup>√` +
+                `<sup style="font-size:7px">${this._root > 2 ? this._root : ''}</sup>√` +
                 `<span style="text-decoration:overline">`;
         }
         str += this._number;
