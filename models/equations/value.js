@@ -214,7 +214,9 @@ Value.prototype = {
     toString() {
         let str = '';
         if (this._root > 1) {
-            str += `<sup>${this._root}</sup>√<span style="text-decoration:overline">`;
+            str +=
+                `<sup style="font-size:7px">${this._root}</sup>√` +
+                `<span style="text-decoration:overline">`;
         }
         str += this._number;
         if (this._root > 1) {
