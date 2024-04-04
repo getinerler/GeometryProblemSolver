@@ -361,4 +361,20 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(solve.value[0].equals(new Value(25)));
     });
 
+    it('Equation: a² = 125. Find a.', function () {
+        let a = new Variable('a');
+
+        let eq = new Equation();
+        eq.addLeftTerm(new Term(null, new VariableValue(a, 2, 1)));
+        eq.addRightTerm(new Term(125));
+        let eqs = [eq];
+        let unknown = 'a';
+
+        let solve = new Calculator(eqs, unknown, [], [a]).solve();
+        assert(solve.solved === true);
+        assert(solve.name === unknown);
+        //console.log(solve.value)
+        assert(solve.value[0].equals(new Value(5)));
+        assert(solve.value[1].equals(new Value(5, 1, 2)));
+    });
 });
