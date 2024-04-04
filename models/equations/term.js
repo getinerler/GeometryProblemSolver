@@ -218,7 +218,9 @@ Term.prototype = {
         }
         let newTerm = new Term();
         for (let val of this.getValues()) {
-            newTerm.addValue(val.root(num));
+            for (let val2 of val.root(num)) {
+                newTerm.addValue(val2);
+            }
         }
         for (let variable of this.getVariables()) {
             newTerm.addVariable(variable.root(num));

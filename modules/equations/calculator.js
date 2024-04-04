@@ -438,7 +438,7 @@ Calculator.prototype = {
             if (val.getRoot() === 1 && val.getExponent() > 1) {
                 newTerm.addValue(new Value(Math.pow(val.getNumber(), val.getExponent())));
             } else {
-                newTerm.AddValue(val.copy());
+                newTerm.addValue(val.copy());
             }
         }
         return newTerm;

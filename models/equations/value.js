@@ -1,6 +1,6 @@
 'use strict';
 
-import { getGcd } from '../../modules/equations/gcd.js';
+import { getGcd, getPrimeFactors } from '../../modules/equations/gcd.js';
 import Term from '../../models/equations/term.js';
 import TermSum from '../../models/equations/termSum.js';
 
@@ -122,22 +122,46 @@ Value.prototype = {
     root(pow) {
         let newValue = this.copy();
         if (pow === 1) {
-            return newValue;
+            return [newValue];
         }
         if (newValue.getRoot() === 1) {
-            let rawNumber = Math.pow(
-                newValue.getNumber(),
-                Math.abs(newValue.getExponent()));
-
+            let rawNumber = Math.pow(newValue.getNumber(), Math.abs(newValue.getExponent()));
             let rootTemp = Math.pow(rawNumber, 1 / pow);
             if (Math.pow(rootTemp, pow) === rawNumber) {
                 newValue.setExponent(1);
                 newValue.setRoot(1);
                 newValue.setNumber(rootTemp);
+                return [newValue];
             } else {
-                newValue.setRoot(pow);
+                let factors = getPrimeFactors(rawNumber);
+                if (factors.length === 1) {
+                    newValue.setRoot(pow);
+                    return [newValue];
+                } else {
+                    let countedList = [];
+                    for (let factor of factors) {
+                        let found = countedList.find((x) => x.number === factor);
+                        if (found) {
+                            found.count++;
+                        } else {
+                            countedList.push({ "number": factor, "count": 1 });
+                        }
+                    }
+                    let newList = [];
+                    for (let counted of countedList) {
+                        let remainder = counted.count % pow;
+                        let outOfRoot = Math.floor(counted.count / pow);
+                        if (outOfRoot > 0) {
+                            newList.push(new Value(counted.number, outOfRoot, 1));
+                        }
+                        if (remainder > 0) {
+                            newList.push(
+                                new Value(Math.pow(counted.number, remainder), 1, pow));
+                        }
+                    }
+                    return newList;
+                }
             }
-            return newValue;
         } else {
             throw 'Value.root: Root of the rooted value.';
         }

@@ -20,6 +20,21 @@ export function getGcd(num1, num2) {
         big = small;
         small = temp;
     }
-    
+
     return Math.abs(big);
+}
+
+//TODO performance check
+export function getPrimeFactors(n) {
+    let factors = [];
+    let divisor = 2;
+    while (n >= 2) {
+        if (n % divisor == 0) {
+            factors.push(divisor);
+            n = n / divisor;
+        } else {
+            divisor++;
+        }
+    }
+    return factors;
 }
