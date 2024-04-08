@@ -1102,6 +1102,60 @@ const TestData = {
                 question: seg3
             };
         }
+    },
+
+    getSimmilarityQuestion3: {
+        'name': 'SAS similarity 2',
+        'explanation': 'Question: Similar Triangle. Find line segment\'s length.',
+        'result': [new Value(10)],
+        getQuestion() {
+            let dots = [
+                new Dot(35, 117, 'A'),
+                new Dot(36, 284, 'B'),
+                new Dot(384, 284, 'C'),
+                new Dot(384, 114, 'D'),
+                new Dot(206, 284, 'E')
+            ];
+
+            let seg1 = new Line(dots[2], dots[4]).setValue(4); // CE
+            let seg2 = new Line(dots[4], dots[1]).setValue(5); // EB
+
+            let lines = [
+                new Line(dots[0], dots[1]).setValue(2), // AB
+                new Line(dots[2], dots[1]).addSegment(seg1).addSegment(seg2), // CB
+                new Line(dots[3], dots[2]).setValue('?'), // DC
+                new Line(dots[4], dots[0]), // EA
+                new Line(dots[3], dots[4]) // DE
+            ];
+
+            seg1.setBase(lines[1]);
+            seg2.setBase(lines[1]);
+
+            dots[4].setBaseLine(lines[2]).setLineRatio(null);
+            let angles = [
+                new Angle(dots[1], lines[0], seg2).setValue(90),
+                new Angle(dots[1], seg2, lines[0]),
+                new Angle(dots[2], seg1, lines[2]).setValue(90),
+                new Angle(dots[2], lines[2], seg1),
+                new Angle(dots[0], lines[3], lines[0]),
+                new Angle(dots[0], lines[0], lines[3]),
+                new Angle(dots[4], seg1, seg2).setValue(180),
+                new Angle(dots[4], seg2, lines[3]),
+                new Angle(dots[4], lines[3], lines[4]).setValue(90),
+                new Angle(dots[4], lines[4], seg1),
+                new Angle(dots[3], lines[2], lines[4]),
+                new Angle(dots[3], lines[4], lines[2]),
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [],
+                question: lines[2]
+            };
+        }
     }
 }
 
