@@ -19,81 +19,24 @@ function Equation() {
 Equation.prototype = {
 
     subtract(eq) {
-        let newEq = new Equation();
-        newEq.setCreation(Creations.Subtraction);
-        newEq.setAncestors(this, eq);
-        newEq.setAncestorIds([this.getCount(), eq.getCount()]);
-
-        for (let term1 of this._left) {
-            let term2;
-            if (term1.isVariable()) {
-                term2 = eq.getLeft().find((x) => x.isVariable() && x.variablesEqual(term1));
-            } else if (term1.isValue()) {
-                term2 = eq.getLeft().find((x) => x.isValue() && x.sameDegrees(term1));
-            }
-            if (term2) {
-                let newTerm = term1.subtract(term2);
-                if (!newTerm.is0()) {
-                    newEq.addLeftTerm(newTerm);
-                }
-            } else {
-                newEq.addLeftTerm(term1.copy());
-            }
+        let newEq = new Equation()
+            .setCreation(Creations.Subtraction)
+            .setAncestors(this, eq)
+            .setAncestorIds([this.getCount(), eq.getCount()]);
+        for (let term of this.subtractSide(this._left, eq.getLeft())) {
+            newEq.addLeftTerm(term);
         }
-
-        for (let term1 of eq.getLeft()) {
-            if (term1.isVariable()) {
-                let term2 = this._left.find((x) => x.isVariable() && x.variablesEqual(term1));
-                if (!term2) {
-                    newEq.addLeftTerm(term1.multiply(new Term(-1)));
-                }
-            } else if (term1.isValue()) {
-                let term2 = this._left.find((x) => x.isValue() && x.sameDegrees(term1));
-                if (!term2) {
-                    newEq.addLeftTerm(term1.multiply(new Term(-1)));
-                }
-            }
+        for (let term of this.subtractSide(this._right, eq.getRight())) {
+            newEq.addRightTerm(term);
         }
-
-        for (let term1 of this._right) {
-            let term2;
-            if (term1.isVariable()) {
-                term2 = eq.getRight().find((x) => x.isVariable() && x.variablesEqual(term1));
-            } else if (term1.isValue()) {
-                term2 = eq.getRight().find((x) => x.isValue() && x.sameDegrees(term1));
-            }
-            if (term2) {
-                let newTerm = term1.subtract(term2);
-                if (!newTerm.is0()) {
-                    newEq.addRightTerm(newTerm);
-                }
-            } else {
-                newEq.addRightTerm(term1.copy());
-            }
-        }
-
-        for (let term1 of eq.getRight()) {
-            if (term1.isVariable()) {
-                let term2 = this._right.find((x) => x.isVariable() && x.variablesEqual(term1));
-                if (!term2) {
-                    newEq.addRightTerm(term1.multiply(new Term(-1)));
-                }
-            } else if (term1.isValue()) {
-                let term2 = this._right.find((x) => x.isValue() && x.sameDegrees(term1));
-                if (!term2) {
-                    newEq.addRightTerm(term1.multiply(new Term(-1)));
-                }
-            }
-        }
-
         return newEq;
     },
 
     multiplyTerm(term) {
-        let newEquation = new Equation();
-        newEquation.setCreation(Creations.TermMultiplied);
-        newEquation.setAncestors(this);
-        newEquation.setAncestorIds([this.getCount()]);
+        let newEquation = new Equation()
+            .setCreation(Creations.TermMultiplied)
+            .setAncestors(this)
+            .setAncestorIds([this.getCount()]);
         for (let el of this._right.map((x) => x.multiply(term))) {
             newEquation.addRightTerm(el);
         }
@@ -264,6 +207,38 @@ Equation.prototype = {
             return t1.getMaxValueRoot() >= t2.getMaxValueRoot() &&
                 t1.getMaxValueExp() >= t2.getMaxValueExp();
         }
+    },
+
+    subtractSide(side1, side2) {
+        let eqLeft = [];
+        for (let term of side2) {
+            eqLeft.push(term);
+        }
+
+        let newTerms = [];
+        for (let term1 of side1) {
+            let term2;
+            if (term1.isVariable()) {
+                term2 = eqLeft.find((x) => x.isVariable() && x.variablesEqual(term1));
+            } else if (term1.isValue()) {
+                term2 = eqLeft.find((x) => x.isValue() && x.sameDegrees(term1));
+            }
+            if (term2) {
+                eqLeft = eqLeft.filter((x) => x !== term2);
+                let newTerm = term1.subtract(term2);
+                if (!newTerm.is0()) {
+                    newTerms.push(newTerm);
+                }
+            } else {
+                newTerms.push(term1.copy());
+            }
+        }
+
+        for (let term1 of eqLeft) {
+            newTerms.push(term1.multiply(new Term(-1)));
+        }
+
+        return newTerms;
     },
 
     getCount() {
