@@ -79,6 +79,16 @@ App.prototype = {
             document.getElementById('answerHeader').style.display = 'none';
             question = self._drawing.reset();
         });
+
+        document.getElementById("undoButton")
+            .addEventListener('click', function () {
+                self._drawing.restoreOlder();
+            });
+
+        document.getElementById("redoButton")
+            .addEventListener('click', function () {
+                self._drawing.restoreNewer();
+            });
     },
 
     selectButton(buttonName) {

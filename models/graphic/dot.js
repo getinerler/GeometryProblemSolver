@@ -134,16 +134,11 @@ Dot.prototype = {
     },
 
     copy(name) {
-        let newDot = new Dot(this._x, this._y);
-        if (name) {
-            newDot.setName(name);
-        } else {
-            newDot.setName(Names.getDotName());
-        }
-        newDot.setHovered(this._hovered);
-        newDot.setSelected(this._selected);
-        newDot.setIntersectionLines(this._intersectionLines);
-        newDot.setBaseLine(this._baseLine);
+        let newDot = new Dot(this._x, this._y, name ? name : getDotName())
+            .setHovered(this._hovered)
+            .setSelected(this._selected)
+            .setIntersectionLines(this._intersectionLines)
+            .setBaseLine(this._baseLine);
         return newDot;
     },
 

@@ -22,12 +22,15 @@ function Drawing(app) {
     this._canvas = null;
     this._valueObject = null;
     this._question = null;
-    this._parallels = [];
     this._elements = new CanvasElements();
     this._parallelMediator = new ParallelMediator(this, this._elements);
     this._buttonState = null;
     this._newLine = null;
     this._mouseIsDown = false;
+    this._history = [];
+    this._historyCounter = 0;
+    this._history.push(this._elements);
+    this._changed = false;
 }
 
 Drawing.prototype = {
@@ -76,8 +79,14 @@ Drawing.prototype = {
             self._parallelMediator.mouseUpEvent(self._newLine);
             self._canvas.update();
             self.updateQuestionText();
+
             if (self._elements.selected.length === 0) {
                 self.deactivateInput();
+            }
+
+            if (self._changed) {
+                self.saveElements();
+                self._changed = false;
             }
         });
         return this;
@@ -483,7 +492,7 @@ Drawing.prototype = {
             dots: this._elements.dots,
             lines: this._elements.lines,
             angles: this._elements.angles,
-            parallels: this._parallels,
+            parallels: this._elements._parallels,
             equivalents: this._elements.equivalents,
             question: this._question
         };
@@ -493,7 +502,6 @@ Drawing.prototype = {
         resetNames();
         this._valueObject = null;
         this._question = null;
-        this._parallels = [];
         this._elements.equivalents = [];
         this.setButtonState('line');
         this._elements.reset();
@@ -519,7 +527,7 @@ Drawing.prototype = {
         this._elements.lines = info.lines;
         this._elements.dots = info.dots;
         this._elements.angles = info.angles;
-        this._parallels = info.parallels;
+        this._elements._parallels = info.parallels;
         this._question = info.question;
         this._elements.equivalents = info.equivalents;
         this._canvas.update();
@@ -569,12 +577,7 @@ Drawing.prototype = {
     },
 
     updateQuestionText() {
-        let text = getQuestionText(
-            this._elements,
-            this._parallels,
-            this._elements.equivalents,
-            this._question);
-
+        let text = getQuestionText(this._elements, this._question);
         let header = document.getElementById('questionHeader');
         header.style.display = text ? 'block' : 'none';
         document.getElementById('questionText').innerHTML = text;
@@ -619,6 +622,35 @@ Drawing.prototype = {
             default:
                 this._buttonState = new LineState(this, this._elements, this._canvas);
         }
+    },
+
+    saveElements() {
+        this._history.push(this._elements);
+        this.changeElements(this._elements.copy());
+        this._elements = this._elements.copy();
+        this._canvas._elements = this._elements;
+        this._parallelMediator._elements = this._elements;
+        this._buttonState._elements = this._elements;
+        this._historyCounter = this._history.length - 1;
+    },
+
+    changeElements(newElements) {
+        this._elements = newElements;
+        this._canvas._elements = newElements;
+        this._parallelMediator._elements = newElements;
+        this._buttonState._elements = newElements;
+    },
+
+    restoreOlder() {
+        this.changeElements(this._history[--this._historyCounter]);
+        this._canvas.update();
+        this.updateQuestionText();
+    },
+
+    restoreNewer() {
+        this.changeElements(this._history[++this._historyCounter]);
+        this._canvas.update();
+        this.updateQuestionText();
     }
 }
 

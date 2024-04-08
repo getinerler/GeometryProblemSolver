@@ -37,7 +37,7 @@ ParallelMediator.prototype = {
         }
         for (let parallelTemp of this._elements.parallelsTemp) {
             let found = false;
-            for (let parallel of this._drawing._parallels) {
+            for (let parallel of this._elements._parallels) {
                 if (parallel.containsList(parallelTemp)) {
                     found = true;
                     for (let line of parallelTemp) {
@@ -48,7 +48,7 @@ ParallelMediator.prototype = {
                 }
             }
             if (!found) {
-                this._drawing._parallels.push(new Parallel(parallelTemp));
+                this._elements._parallels.push(new Parallel(parallelTemp));
             }
         }
         this._elements.parallelsTemp = [];
@@ -105,13 +105,13 @@ ParallelMediator.prototype = {
             return line.getDot1() === self._elements.dragDot ||
                 line.getDot2() === self._elements.dragDot;
         });
-        this._drawing._parallels =
-            this._drawing._parallels.filter((x) => !x.containsList(dotLines));
+        this._elements._parallels =
+            this._elements._parallels.filter((x) => !x.containsList(dotLines));
     },
 
     removeUnnecessaryParallels() {
-        this._drawing._parallels =
-            this._drawing._parallels.filter((x) => x.getLines().length >= 2);
+        this._elements._parallels =
+            this._elements._parallels.filter((x) => x.getLines().length >= 2);
     }
 }
 

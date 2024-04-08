@@ -41,10 +41,12 @@ LineState.prototype = {
     mouseUpEvent(x, y) {
         if (!this._elements.dragDot && this._elements.dragStartPoint) {
             this.createNewLine(x, y);
+            this._drawing._changed = true;
         } else if (this._elements.hovered &&
             this._elements.dragDot &&
             this._elements.hovered.obj !== this._elements.dragDot) {
             this.handleDraggedDot();
+            this._drawing._changed = true;
         }
         this._drawing.handleIntersectionDots();
         this._elements.dragDot = null;

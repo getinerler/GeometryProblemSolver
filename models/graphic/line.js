@@ -64,24 +64,7 @@ Line.prototype = {
     },
 
     isSegment() {
-        if (this._baseLine) {
-            return true;
-        } else {
-            return false;
-        }
-        if (this._dot1.isOnLine()) {
-            return true;
-        }
-        if (this._dot2.isOnLine()) {
-            return true;
-        }
-        if (this._dot1.isIntersectionDot()) {
-            return true;
-        }
-        if (this._dot2.isIntersectionDot()) {
-            return true;
-        }
-        return false;
+        return !!this._baseLine;
     },
 
     setValue(value) {
@@ -188,6 +171,10 @@ Line.prototype = {
             return this._dot2;
         }
         return null;
+    },
+
+    copy() {
+
     },
 
     equals(line) {

@@ -49,6 +49,8 @@ SquareState.prototype = {
         this._drawing.updateCanvasAngles();
         
         this._drawing.setButtonState('line');
+
+        this._drawing._changed = true;
     }
 }
 

@@ -2,10 +2,10 @@
 
 let showCode = false;
 
-export function getQuestionText(elements, equivalents, parallels, question) {
+export function getQuestionText(elements, question) {
     let text = '';
     if (showCode) {
-        text += codeText(elements, parallels, question);
+        text += codeText(elements);
     }
     if (elements.lines.length > 0) {
         for (let line of elements.lines) {
@@ -37,11 +37,11 @@ export function getQuestionText(elements, equivalents, parallels, question) {
             text += anglesText;
         }
     }
-    if (equivalents.length > 0) {
-        text += `${equivalents.join(' </br> ')}</br>`;
+    if (elements.equivalents.length > 0) {
+        text += `${elements.equivalents.join(' </br> ')}</br>`;
     }
-    if (parallels.length > 0) {
-        text += `${parallels.join(', ')}</br>`;
+    if (elements._parallels.length > 0) {
+        text += `${elements._parallels.join(', ')}</br>`;
     }
     if (question) {
         text += `<b> ${question.getValueName()} = ?</b>`;
@@ -49,7 +49,7 @@ export function getQuestionText(elements, equivalents, parallels, question) {
     return text;
 }
 
-function codeText(elements, parallels, question) {
+function codeText(elements) {
     let text = '';
     let dotMap = [];
     let dotCounter = 1;
