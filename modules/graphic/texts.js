@@ -162,18 +162,18 @@ export function getEquationsText(solve, showAll) {
     let res = '';
 
     if (!solve.solved) {
-        if (solve.triangles.length > 0) {
+        if (solve.triangles && solve.triangles.length > 0) {
             res += '<b>Triangles</b> </br>';
             res += solve.triangles
                 .map((x) => x.toString() + ' (' + x.getLines().join(', ') + ')')
                 .join('</br>');
         }
-        if (solve.rectangles.length > 0) {
+        if (solve.rectangles && solve.rectangles.length > 0) {
             res += '</br></br>';
             res += '<b>Rectangles</b> </br>';
             res += solve.rectangles.map((x) => x.toString()).join('</br>');
         }
-        if (solve.similars.length > 0) {
+        if (solve.similars && solve.similars.length > 0) {
             res += '</br></br>';
             res += '<b>Similars</b> </br>';
 
