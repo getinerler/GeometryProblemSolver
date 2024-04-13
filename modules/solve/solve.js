@@ -32,6 +32,7 @@ function Solve(question) {
     this.variables = [];
     this.equations = [];
     this.similarTriangles = [];
+    this.generation = 1;
 }
 
 Solve.prototype = {
@@ -78,8 +79,8 @@ Solve.prototype = {
         this.checkCorrespondingAngles();
         this.checkTriangles180();
         this.checkTrianglesEquivalents();
-        this.checkIsoscelesTriangles();
         this.checkPythagoreanTheorems();
+        this.checkIsoscelesTriangles();
         this.checkGeometricMeanTheorems();
         this.checkAngleBisectorTheorems();
         this.checkRectangles360();
@@ -92,9 +93,60 @@ Solve.prototype = {
             this.equations,
             this.unknown,
             this.angleNames,
-            this.variables);
+            this.variables,
+            this.generation++);
 
-        let solved = calc.solve();
+        let whileCounter = 0;
+        let solved;
+        while (whileCounter++ < 10) {
+            solved = calc.solve();
+            if (solved.solved) {
+                break;
+            }
+            if (solved.founds.length === 0 && solved.equivalents.length === 0) {
+                break;
+            }
+
+            for (let found of solved.founds) {
+                for (let line of this.lines) {
+                    if (line.getValueName() === found.name) {
+                        if (line.getLines().length === 1) {
+                            line.getLines()[0].setValue(found.value);
+                            line.getLines()[0].setValueGeneration(this.generation);
+                        }
+                    }
+                }
+                for (let angle of this.angles) {
+                    if (angle.getValueName() === found.name) {
+                        angle.setValue(found.value);
+                        angle.setValueGeneration(this.generation);
+                    }
+                }
+            }
+
+            let equivalents = this.getEquivalentList(solved.equivalents);
+            for (let eq of equivalents) {
+                let found = false;
+                for (let eq2 of this.equivalents) {
+                    if (eq.some((x) => eq2.getElements().indexOf(x) > -1)) {
+                        found = true;
+                        for (let el of eq) {
+                            if (!eq2.contains(el)) {
+                                eq2.add(el);
+                            }
+                        }
+                    }
+                }
+                if (!found) {
+                    this.equivalents.push(new Equivalence(eq));
+                }
+            }
+
+            let similarityFinder = new SimilarityFinder(this.triangles, this.equivalents);
+            this.similarTriangles = similarityFinder.find();
+            this.checkTriangleSimilarities();
+        }
+
         if (solved.solved) {
             let treeCreator = new EquationTreeCreator(this.equations);
             let tree = treeCreator.createTree();
@@ -747,6 +799,33 @@ Solve.prototype = {
 
     areEquivalent(val1, val2) {
         return areEquivalent(this.equivalents, val1, val2);
+    },
+
+    getEquivalentList(eqs) {
+
+        let newList = [];
+        for (let eq of eqs) {
+            let list = [];
+            for (let el of eq) {
+                for (let line of this.lines) {
+                    if (el.getName() === line.getValueName()) {
+                        el = line;
+                    }
+                }
+                for (let ang of this.angles) {
+                    if (el.getName() === ang.getValueName()) {
+                        el = ang;
+                    }
+                }
+                if (!el) {
+                    throw 'Solve.solveProblem: Equivalent cannot be found.';
+                }
+                list.push(el);
+            }
+            newList.push(list);
+        }
+
+        return newList;
     }
 }
 

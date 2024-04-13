@@ -7,13 +7,15 @@ import Value from '../../models/equations/value.js';
 import Equation from '../../models/equations/equation.js';
 import Creations from '../../modules/equations/creations.js'
 
-function Calculator(equations, searched, angleNames, variables) {
+function Calculator(equations, searched, angleNames, variables, generation) {
     this.equations = equations;
     this.variables = variables;
     this.searched = searched;
     this.angleNames = angleNames;
+    this.generation = generation;
     this.founds = [];
     this.changed = true;
+    this.equvalents = [];
 }
 
 Calculator.prototype = {
@@ -25,10 +27,13 @@ Calculator.prototype = {
             return {
                 'solved': false,
                 'equations': [],
+                'equivalents': this.equvalents,
+                'founds': this.founds,
                 'message': 'No equation.'
             };
         }
 
+        this.equvalents = [];
         let val = null;
         while (this.changed &&
             this.equations.length < trialLimit &&
@@ -59,7 +64,9 @@ Calculator.prototype = {
             if (counter > trialLimit) {
                 return {
                     'solved': false,
+                    'founds': this.founds,
                     'equations': this.equations,
+                    'equivalents': this.equvalents,
                     'message': `Problem solve more than ${trialLimit} trials.`
                 }
             }
@@ -67,16 +74,20 @@ Calculator.prototype = {
         if (val) {
             let response = {
                 'solved': true,
+                'founds': this.founds,
                 'name': searched,
                 'value': val.value,
                 'equations': this.equations,
+                'equivalents': this.equvalents,
                 'message': null
             }
             return response;
         }
         return {
             'solved': false,
+            'founds': this.founds,
             'equations': this.equations,
+            'equivalents': this.equvalents,
             'message': `Failed to solve after ${trialLimit} attempt.`
         };
     },
@@ -103,6 +114,8 @@ Calculator.prototype = {
             this.simplifyLeft(eq, parsed);
         } else if (parsed.someKnownLeftVarsCount > 0) {
             this.simplifyKnownValues(eq, parsed);
+        } else if (parsed.valueCount === 0 && parsed.variableCount === 2) {
+            this.findEquality(eq, parsed);
         } else if (parsed.unknownVariableCount === 1) {
             let unknown = parsed.unknownLeftVariables[0];
             if (unknown.getVariables().length > 1) {
@@ -142,29 +155,22 @@ Calculator.prototype = {
             eq2RightVars.length <= 2) {
             return;
         }
-        if (eq1LeftVars.length !== eq2LeftVars.length) {
-            return;
-        }
-        if (eq1RightVars.length !== eq2RightVars.length) {
-            return;
-        }
-        for (let i = 0; i < eq1LeftVars.length; i++) {
-            let e1 = eq1LeftVars[i];
-            let e2 = eq2LeftVars[i];
-            if (!e1.variablesEqual(e2)) {
-                return;
-            }
-        }
-        for (let i = 0; i < eq1RightVars.length; i++) {
-            let e1 = eq1RightVars[i];
-            let e2 = eq2RightVars[i];
-            if (!e1.variablesEqual(e2)) {
-                return;
+
+        let vars = [];
+        for (let term of eq1LeftVars) {
+            let term2 = eq2LeftVars.find((x) => x.variablesEqual(term));
+            if (term2) {
+                vars.push(term);
+                vars.push(term2);
             }
         }
 
-        let var1 = eq1LeftVars[0];
-        let var2 = eq2LeftVars[0];
+        if (vars.length === 0) {
+            return;
+        }
+
+        let var1 = vars[0];
+        let var2 = vars[1];
         let gcd = var1.getGcd(var2);
         let remainder1 = var1.divide(gcd);
         let remainder2 = var2.divide(gcd);
@@ -384,6 +390,36 @@ Calculator.prototype = {
         this.addEquation(newEq);
     },
 
+    findEquality(eq, parsed) {
+        let variables = parsed.leftVariables
+            .concat(parsed.rightVariables.map((x) => x.multiply(new Term(-1))));
+
+        let var1 = variables[0];
+        let var2 = variables[1];
+
+        if (var1.getVariables().length > 1 || var2.getVariables().length > 1) {
+            return;
+        }
+        if (var1.getVariables()[0].getName() === var2.getVariables()[0].getName()) {
+            return;
+        }
+        //New equation
+        let newEq = new Equation()
+            .setCreation(Creations.FindEquality)
+            .setAncestors([eq])
+            .setAncestorIds([eq.getCount()])
+            .addRightTerm(variables[0])
+            .addLeftTerm(variables[1].multiply(new Term(-1)));
+
+        this.addEquation(newEq);
+
+        //Save equivalents
+        let var1Variable = var1.getVariables()[0];
+        let var2Variable = var2.getVariables()[0];
+
+        this.equvalents.push([var1Variable, var2Variable]);
+    },
+
     findVariable(eq, parsed, unknownEl) {
         let unknown = unknownEl.getVariables()[0];
         let newValue = parsed.rightValues[0]
@@ -462,6 +498,8 @@ Calculator.prototype = {
     },
 
     parseEquation(eq) {
+        let leftVars = eq.getLeft().filter((x) => x.isVariable());
+        let rightVars = eq.getRight().filter((x) => x.isVariable());
         let knownLeftVars = eq.getLeft().filter((x) => x.isVariable() && x.isKnown());
         let someKnownLeftVars = eq.getLeft().filter((x) => x.isVariable() && x.isSomeKnown());
         let knownRightVars = eq.getRight().filter((x) => x.isVariable() && x.isKnown());
@@ -488,6 +526,7 @@ Calculator.prototype = {
             return false;
         });
 
+        let valueCount = leftValues.length + rightValues.length;
         let variableCount = knownLeftVars.length + unknownLeftVars.length;
         let unknownVariableCount = unknownLeftVars.length + unknownRightVars.length;
         let knownVariableCount = knownLeftVars.length;
@@ -504,12 +543,15 @@ Calculator.prototype = {
             knownRightVariables: knownRightVars,
             knownVariableCount,
             someKnownLeftVarsCount,
+            leftVariables: leftVars,
+            rightVariables: rightVars,
             leftValues,
             leftValueCount,
             leftValuesWithExpCount,
             rightValues,
             rightVariablesCount,
             rightValuesWithExpCount,
+            valueCount,
             variableCount,
             unknownLeftVariables: unknownLeftVars,
             unknownRightVariables: unknownRightVars,

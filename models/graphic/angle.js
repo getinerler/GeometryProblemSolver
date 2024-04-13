@@ -17,6 +17,7 @@ function Angle(dot, line1, line2) {
     }
 
     this._value = null;
+    this._valueGeneration = 0;
     this._hovered = false;
     this._selected = false;
     this._canvasAngle = 0;
@@ -67,6 +68,14 @@ Angle.prototype = {
     setSelected(selected) {
         this._selected = selected;
         return this;
+    },
+
+    getValueGeneration() {
+        return this._valueGeneration;
+    },
+
+    setValueGeneration(num) {
+        this._valueGeneration = num;
     },
 
     getLine1() {

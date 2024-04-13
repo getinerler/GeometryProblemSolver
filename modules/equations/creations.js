@@ -79,6 +79,13 @@ const Creations = {
         }
     },
 
+    FindEquality: {
+        'show': true,
+        getExplanation() {
+            return 'Find equality.'
+        }
+    },
+
     SegmentSum: {
         'show': true,
         getExplanation() {

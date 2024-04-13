@@ -4,6 +4,7 @@ function Line(dot1, dot2, value) {
     this._dot1 = dot1 || null;
     this._dot2 = dot2 || null;
     this._value = value || null;
+    this._valueGeneration = 0;
     this._hovered = false;
     this._selected = false;
     this._angle = 0;
@@ -74,6 +75,14 @@ Line.prototype = {
             this._value = Number(value);
         }
         return this;
+    },
+
+    getValueGeneration() {
+        return this._valueGeneration;
+    },
+
+    setValueGeneration(num) {
+        this._valueGeneration = num;
     },
 
     getAngle() {
