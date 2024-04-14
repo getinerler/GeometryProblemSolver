@@ -3,7 +3,7 @@
 import Canvas from '../graphic/canvas.js';
 import CanvasElements from '../../models/graphic/canvasElements.js';
 import { dotOnLine, dotsCloser, anglesCloser, dotBetweenAngle } from './geoHelper.js';
-import { dotOnLineSegment, getLineAngle, lineIntersect } from './geoHelper.js';
+import { dotOnLineSegment, getLineAngle, lineIntersect, dotOnCircle } from './geoHelper.js';
 import { getDotsLineRatio, getDotOnLineWithRatio, getAngleDegree } from './geoHelper.js';
 import { getQuestionText } from './texts.js';
 import LineState from './buttonStates/lineState.js';
@@ -340,6 +340,14 @@ Drawing.prototype = {
                     hovered = { 'type': 'line', 'obj': seg };
                     found = true;
                 }
+            }
+        }
+
+        for (let circ of this._elements.circles) {
+            circ.setHovered(false);
+            if (dotOnCircle(circ, this._elements.currentDot)) {
+                circ.setHovered(true);
+                found = true;
             }
         }
 

@@ -153,6 +153,10 @@ export function dotOnLine(line, dot) {
     return Math.floor(lineDotDistance(line, dot)) < distance;
 }
 
+export function dotOnCircle(circ, dot) {
+    return Math.abs(getDistance(circ.getDot(), dot) - circ.getRadius()) < 5;
+}
+
 export function dotOnLineSegment(line, dot) {
     if (!(line && dot)) {
         return false;
