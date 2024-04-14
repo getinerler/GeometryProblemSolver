@@ -315,6 +315,25 @@ document.addEventListener('DOMContentLoaded', function () {
         assert(solve.value[0].equals(new Value(30)));
     });
 
+    it('Equations: 2/4 = 5/a. Find a.', function () {
+        let a = new Variable('a');
+
+        let eq1 = new Equation();
+        let term1 = new Term([2, new Value(4, -1)]);
+        let term2 = new Term(5, new VariableValue(a, -1));
+        eq1.addLeftTerm(term1);
+        eq1.addRightTerm(term2);
+
+        let eqs = [eq1];
+        let unknown = 'a';
+
+        let solve = new Calculator(eqs, unknown, [], [a]).solve();
+
+        assert(solve.solved === true);
+        assert(solve.name === unknown);
+        assert(solve.value[0].equals(new Value(10)));
+    });
+
     it('Equation: √a = 5. Find a.', function () {
         let a = new Variable('a');
 
@@ -405,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function () {
         let solve = new Calculator(eqs, unknown, [], [a]).solve();
         assert(solve.solved === true);
         assert(solve.name === unknown);
-        console.log(solve.value)
+
         assert(solve.value[0].equals(new Value(5)));
         assert(solve.value[1].equals(new Value(10, 1, 2)));
     });
