@@ -12,6 +12,7 @@ import LineSum from '../solve/lineSum.js';
 function CanvasElements() {
     this.dots = [];
     this.lines = [];
+    this.circles = [];
     this.angles = [];
     this.intersectionDots = [];
     this._parallels = [];

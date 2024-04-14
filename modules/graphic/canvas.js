@@ -57,6 +57,9 @@ Canvas.prototype = {
         for (let line of this._elements.lines) {
             this.drawLineSegments(line);
         }
+        for (let circ of this._elements.circles) {
+            this.drawCircle(circ);
+        }
         for (let dot of this._elements.dots) {
             this.drawDot(dot);
         }
@@ -173,6 +176,25 @@ Canvas.prototype = {
             this._ctx.closePath();
             this._ctx.stroke();
         }
+    },
+
+    drawCircle(circ) {
+        this._ctx.font = this._ordinaryFont;
+        this._ctx.fillStyle = this._blackColor;
+        this._ctx.strokeStyle = this._blackColor;
+
+        if (circ.isHovered()) {
+            this._ctx.strokeStyle = this._hoveredColor;
+            this._ctx.lineWidth = 3;
+        } else {
+            this._ctx.strokeStyle = this._blackColor;
+            this._ctx.lineWidth = 1;
+        }
+
+        this._ctx.beginPath();
+        let dot = circ.getDot();
+        this._ctx.arc(dot.getX(), dot.getY(), circ.getRadius(), 0, 2 * Math.PI);
+        this._ctx.stroke();
     },
 
     drawLineSegments(line) {
