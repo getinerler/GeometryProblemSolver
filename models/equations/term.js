@@ -432,15 +432,17 @@ Term.prototype = {
         return this;
     },
 
-    addValue(value) {
+    addValue(value, dontSort) {
         if (value instanceof Value) {
             this._values.push(value);
         } else if (!isNaN(value)) {
-            this._values = [new Value(value)];
+            this._values.push(new Value(value));
         } else {
             throw 'Term.addValue: Wrong value type.';
         }
-        this._values = this._values.sort(this.orderTermElements);
+        if (!dontSort) {
+            this._values = this._values.sort(this.orderTermElements);
+        }
         return this;
     },
 
@@ -449,11 +451,8 @@ Term.prototype = {
             throw `Term.addValues: ${JSON.stringify(values)} is not an array.`;
         }
         for (let value of values) {
-            if (!value instanceof Value) {
-                throw 'Term.addValues: Wrong value type.';
-            }
+            this.addValue(value, true);
         }
-        this._values.push(...values);
         this._values = this._values.sort(this.orderTermElements);
         return this;
     },
