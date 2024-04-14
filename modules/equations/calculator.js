@@ -22,6 +22,7 @@ Calculator.prototype = {
 
     solve() {
         let counter = 0;
+        this.changed = true;
         let searched = this.searched;
         if (this.equations.length === 0) {
             return {
