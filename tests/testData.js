@@ -1045,7 +1045,7 @@ const TestData = {
 
     getSimmilarityQuestion2: {
         'name': 'SAS similarity 2',
-        'explanation': 'Question: Similar Triangle. Find line segment\'s length.',
+        'explanation': 'Question: Similar Triangle (2). Find line segment\'s length.',
         'result': [new Value(1)],
         getQuestion() {
             let dots = [
@@ -1105,8 +1105,8 @@ const TestData = {
     },
 
     getSimmilarityQuestion3: {
-        'name': 'SAS similarity 2',
-        'explanation': 'Question: Similar Triangle. Find line segment\'s length.',
+        'name': 'SAS similarity 3',
+        'explanation': 'Question: Similar Triangle (3). Find line segment\'s length.',
         'result': [new Value(10)],
         getQuestion() {
             let dots = [
