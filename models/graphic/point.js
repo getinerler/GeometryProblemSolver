@@ -7,6 +7,7 @@ function Point(x, y) {
     this._y = y || 0;
     this._name = null;
     this._intersectLines = [];
+    this._intersectionCircle = null;
 }
 
 Point.prototype = {
@@ -53,6 +54,11 @@ Point.prototype = {
 
     addIntersectionLine(line) {
         this._intersectLines.push(line);
+        return this;
+    },
+
+    addIntersectionCircle(circ) {
+        this._intersectionCircle = circ;
         return this;
     },
 

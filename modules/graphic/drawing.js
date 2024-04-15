@@ -260,15 +260,21 @@ Drawing.prototype = {
     },
 
     handleLineIntersection(movingLine, intDot) {
-        if (movingLine) {
-            intDot.addIntersectionLine(movingLine);
+        //Line intersection
+        if (intDot.getIntersectionLines().length > 0) {
+            if (movingLine) {
+                intDot.addIntersectionLine(movingLine);
+            }
+            let newDot = intDot.getType() === 'Point' ? intDot.createDot() : intDot;
+            this._elements.addDot(newDot);
+            for (let line of newDot.getIntersectionLines()) {
+                this.createSegmentLines(line, newDot);
+            }
+            this.arrangeAngles(newDot);
+        } else { //Circle intersection
+            let newDot = intDot.getType() === 'Point' ? intDot.createDot() : intDot;
+            this._elements.addDot(newDot);
         }
-        let newDot = intDot.getType() === 'Point' ? intDot.createDot() : intDot;
-        this._elements.addDot(newDot);
-        for (let line of newDot.getIntersectionLines()) {
-            this.createSegmentLines(line, newDot);
-        }
-        this.arrangeAngles(newDot);
     },
 
     updateAnglesAfterSegmentation(deleted, new1, new2) {

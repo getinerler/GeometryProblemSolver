@@ -3,7 +3,7 @@
 import Point from '../../../models/graphic/point.js';
 import Line from '../../../models/graphic/line.js';
 import Angle from '../../../models/graphic/angle.js';
-import { lineIntersect, dotsCloser, getLineAngle, getDistance } from './../geoHelper.js';
+import { lineIntersect, dotsCloser, getLineAngle, getDistance, getLineCircleIntersection } from './../geoHelper.js';
 
 function LineState(drawing, canvasElements, canvas) {
     this._drawing = drawing;
@@ -94,6 +94,21 @@ LineState.prototype = {
             return false;
         });
 
+        //TODO
+        // let dotsToDelete = this._elements.dots.filter(function (x) {
+        //     if (!x.isIntersectionDot()) {
+        //         return false;
+        //     }
+        //     for (let line of lines) {
+        //         for (let line2 of x.getIntersectionLines()) {
+        //             if (line === line2) {
+        //                 return true;
+        //             }
+        //         }
+        //     }
+        //     return false;
+        // });
+
         for (let line of this._elements.lines) {
             for (let seg of line.getSegments()) {
                 if (dotsToDelete.indexOf(seg.getDot1()) > -1 ||
@@ -140,6 +155,13 @@ LineState.prototype = {
                 intrDot.addIntersectionLine(line);
                 this._elements.intersectionDots.push(intrDot);
             }
+
+            for (let circ of this._elements.circles) {
+                let intDots = getLineCircleIntersection(circ, imaginaryLine);
+                for (let d of intDots) {
+                    this._elements.intersectionDots.push(d);
+                }
+            }
         }
         if (this._elements.dragDot) {
             let dragDot = this._elements.dragDot;
@@ -179,6 +201,15 @@ LineState.prototype = {
                         intrDot.addIntersectionLine(line1);
                         intrDot.addIntersectionLine(line2);
                         this._elements.intersectionDots.push(intrDot);
+                    }
+                }
+            }
+
+            for (let circ of this._elements.circles) {
+                for (let line of dragLines) {
+                    let intDots = getLineCircleIntersection(circ, line);
+                    for (let d of intDots) {
+                        this._elements.intersectionDots.push(d);
                     }
                 }
             }

@@ -18,6 +18,14 @@ Circle.prototype = {
         return this._dot;
     },
 
+    getX() {
+        return this._dot.getX();
+    },
+
+    getY() {
+        return this._dot.getY();
+    },
+
     getRadius() {
         return this._radius;
     },

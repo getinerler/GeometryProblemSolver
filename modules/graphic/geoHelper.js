@@ -157,6 +157,39 @@ export function dotOnCircle(circ, dot) {
     return Math.abs(getDistance(circ.getDot(), dot) - circ.getRadius()) < 5;
 }
 
+//http://ambrnet.com/TrigoCalc/Circles2/circlrLine_.htm
+export function getLineCircleIntersection(circ, line) {
+    // y = m.x + a;
+    let m = getSlopeRatio(line.getDot1(), line.getDot2());
+    let a = line.getY2() - m * line.getX2();
+    let d = (Math.pow(circ.getRadius(), 2) * (1 + Math.pow(m, 2))) -
+        Math.pow((circ.getY() - m * circ.getX() - a), 2);
+
+    if (d < 0) {
+        return [];
+    }
+
+    let points = [];
+
+    let x1 = (circ.getX() + circ.getY() * m - a * m + Math.sqrt(d)) / (1 + Math.pow(m, 2));
+    let y1 = m * x1 + a;
+    let dot1 = new Point(x1, y1);
+    if (d == 0 && dotOnLineSegment(line, dot1)) {
+        points.push(dot1);
+    } else {
+        let x2 = (circ.getX() + circ.getY() * m - a * m - Math.sqrt(d)) / (1 + Math.pow(m, 2));
+        let y2 = m * x2 + a;
+        let dot2 = new Point(x2, y2);
+        if (dotOnLineSegment(line, dot1)) {
+            points.push(dot1);
+        }
+        if (dotOnLineSegment(line, dot2)) {
+            points.push(dot2);
+        }
+    }
+    return points;
+}
+
 export function dotOnLineSegment(line, dot) {
     if (!(line && dot)) {
         return false;
@@ -268,7 +301,11 @@ export function getDotNamePoint(dot, ang, line) {
     if (!ang) {
         let p1 = new Point(dot.getX() + 20, dot.getY());
         let p2 = new Point(dot.getX() - 20, dot.getY());
-        return dotBetweenLineSegment(p1, line) ? p2 : p1;
+        if (line) {
+            return dotBetweenLineSegment(p1, line) ? p2 : p1;
+        } else {
+            return p1;
+        }
     }
     let smaller = getAngle(ang.getDot(), ang.getLine1().getOtherDot(ang.getDot()));
     let greater = getAngle(ang.getDot(), ang.getLine2().getOtherDot(ang.getDot()));

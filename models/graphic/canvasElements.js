@@ -194,6 +194,7 @@ CanvasElements.prototype = {
     reset() {
         this.dots = [];
         this.lines = [];
+        this.circles = [];
         this.angles = [];
         this.intersectionDots = [];
         this.parallelsTemp = [];
