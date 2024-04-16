@@ -31,6 +31,7 @@ function Solve(question) {
     this.rectangles = [];
     this.variables = [];
     this.equations = [];
+    this.rightTriangles = [];
     this.similarTriangles = [];
     this.generation = 1;
 }
@@ -72,6 +73,9 @@ Solve.prototype = {
         //     ", lines " + tri.getLines().map((x) => x.toString()) + 
         //     ", angles " + tri.getAngles().map((x) => x.toString()));
         // }
+
+        this.findRightTriangles();
+
         this.checkLinesSegmentLengths();
         this.checkDots360();
         this.checkReverseAngles();
@@ -172,6 +176,12 @@ Solve.prototype = {
             'rectangles': this.rectangles,
             'similars': this.similarTriangles,
             'message': solved.message
+        }
+    },
+
+    findRightTriangles() {
+        for (let tri of this.triangles) {
+            this.findRightTriangle(tri);
         }
     },
 
@@ -325,14 +335,14 @@ Solve.prototype = {
     },
 
     checkPythagoreanTheorems() {
-        for (let triangle of this.triangles) {
-            this.checkPythagoreanTheorem(triangle);
+        for (let rightTri of this.rightTriangles) {
+            this.checkPythagoreanTheorem(rightTri);
         }
     },
 
     checkGeometricMeanTheorems() {
-        for (let triangle of this.triangles) {
-            this.checkGeometricMeanTheorem(triangle);
+        for (let rightTri of this.rightTriangles) {
+            this.checkGeometricMeanTheorem(rightTri);
         }
     },
 
@@ -514,51 +524,25 @@ Solve.prototype = {
         }
     },
 
-    checkPythagoreanTheorem(tri) {
-        let index90 = -1;
-        for (let i = 0; i < 3; i++) {
-            let ang = tri.getAngles()[i];
-            if (ang.valueEqual(90)) {
-                index90 = i;
-            }
-        }
-        if (index90 === -1) {
-            return;
-        }
-        let sideLines = [tri.getLines()[index90], tri.getLines()[(index90 + 1) % 3]];
-        let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
-        if (!hypothenus) {
-            return;
-        }
+    checkPythagoreanTheorem(rightTri) {
         let eq = new Equation();
         eq.setCreation(Creations.PythagorianTheorem);
         for (let i = 0; i < 2; i++) {
-            eq.addLeftTerm(this.getTermFromValue(sideLines[i], 2));
+            eq.addLeftTerm(this.getTermFromValue(rightTri.sideLines[i], 2));
         }
-        eq.addRightTerm(this.getTermFromValue(hypothenus, 2));
+        eq.addRightTerm(this.getTermFromValue(rightTri.hypothenus, 2));
         this.equations.push(eq);
     },
 
-    checkGeometricMeanTheorem(tri) {
-        let angle90 = tri.getAngles().find((x) => x.valueEqual(90));
-        if (!angle90) {
-            return;
-        }
-
-        let index = tri.getAngles().indexOf(angle90);
-
-        let sideLines = [tri.getLine(index % 3), tri.getLine((index + 1) % 3)];
-        let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
-        if (!hypothenus) {
-            return;
-        }
+    checkGeometricMeanTheorem(rightTri) {
+        let hypothenus = rightTri.hypothenus;
 
         for (let line of this.lines) {
             if (
-                (line.getDot1() === angle90.getDot() &&
+                (line.getDot1() === rightTri.ang90.getDot() &&
                     line.getDot2().getBaseLine() &&
                     new LineSum(line.getDot2().getBaseLine()).equals(hypothenus)) ||
-                (line.getDot2() === angle90.getDot() &&
+                (line.getDot2() === rightTri.ang90.getDot() &&
                     line.getDot1().getBaseLine() &&
                     new LineSum(line.getDot1().getBaseLine()).equals(hypothenus))) {
 
@@ -566,7 +550,7 @@ Solve.prototype = {
                 eq.setCreation(Creations.GeometricMeanTheorem);
                 eq.addLeftTerm(this.getTermFromValue(line, 2));
 
-                let otherDot = line.getOtherDot(angle90.getDot());
+                let otherDot = line.getOtherDot(rightTri.ang90.getDot());
                 let l1 = this.lines
                     .find((x) => x.isLineEnd(otherDot) && x.isLineEnd(hypothenus.getDot1()));
                 let l2 = this.lines
@@ -685,6 +669,33 @@ Solve.prototype = {
             }
         }
         this.equations.push(eq);
+    },
+
+    findRightTriangle(tri) {
+        let index90 = -1;
+        for (let i = 0; i < 3; i++) {
+            let ang = tri.getAngles()[i];
+            if (ang.valueEqual(90)) {
+                index90 = i;
+            }
+        }
+        if (index90 === -1) {
+            return;
+        }
+        let sideLines = [tri.getLines()[index90], tri.getLines()[(index90 + 1) % 3]];
+        let hypothenus = tri.getLines().find((x) => sideLines.indexOf(x) === -1);
+
+        let ang90 = tri.getAngle(index90);
+        let sideAngles = tri.getAngles().filter((x) => x !== ang90);
+
+        let rightTri = {
+            triangle: tri,
+            hypothenus,
+            sideLines,
+            ang90,
+            sideAngles
+        };
+        this.rightTriangles.push(rightTri);
     },
 
     getNarrowAngle(line1, line2) {
