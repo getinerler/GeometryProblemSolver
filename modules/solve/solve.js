@@ -39,16 +39,16 @@ function Solve(question) {
 Solve.prototype = {
 
     solve() {
-        try {
-            window.equationCounter = 1;
-            return this.solveProblem();
-        } catch (e) {
-            return {
-                'solved': false,
-                'equations': this.equations,
-                'message': e
-            };
-        }
+        //   try {
+        window.equationCounter = 1;
+        return this.solveProblem();
+        // } catch (e) {
+        //     return {
+        //         'solved': false,
+        //         'equations': this.equations,
+        //         'message': e
+        //     };
+        // }
     },
 
     solveProblem() {
@@ -74,6 +74,8 @@ Solve.prototype = {
         //     ", angles " + tri.getAngles().map((x) => x.toString()));
         // }
 
+        this.findTriangleCevians();
+
         this.findRightTriangles();
 
         this.checkLinesSegmentLengths();
@@ -87,6 +89,7 @@ Solve.prototype = {
         this.checkIsoscelesTriangles();
         this.checkGeometricMeanTheorems();
         this.checkAngleBisectorTheorems();
+        this.checkAppolloniusTheorems();
         this.checkRectangles360();
 
         let similarityFinder = new SimilarityFinder(this.triangles, this.equivalents);
@@ -176,6 +179,12 @@ Solve.prototype = {
             'rectangles': this.rectangles,
             'similars': this.similarTriangles,
             'message': solved.message
+        }
+    },
+
+    findTriangleCevians() {
+        for (let tri of this.triangles) {
+            this.findTriangleCevian(tri);
         }
     },
 
@@ -312,8 +321,8 @@ Solve.prototype = {
     },
 
     checkTriangles180() {
-        for (let triangle of this.triangles) {
-            this.checkTriangle180(triangle);
+        for (let tri of this.triangles) {
+            this.checkTriangle180(tri);
         }
     },
 
@@ -329,8 +338,8 @@ Solve.prototype = {
     },
 
     checkIsoscelesTriangles() {
-        for (let triangle of this.triangles) {
-            this.checkIsoscelesTriangle(triangle);
+        for (let tri of this.triangles) {
+            this.checkIsoscelesTriangle(tri);
         }
     },
 
@@ -347,8 +356,14 @@ Solve.prototype = {
     },
 
     checkAngleBisectorTheorems() {
-        for (let triangle of this.triangles) {
-            this.checkAngleBisectorTheorem(triangle);
+        for (let tri of this.triangles) {
+            this.checkAngleBisectorTheorem(tri);
+        }
+    },
+
+    checkAppolloniusTheorems() {
+        for (let tri of this.triangles) {
+            this.checkAppolloniusTheorem(tri);
         }
     },
 
@@ -594,7 +609,7 @@ Solve.prototype = {
 
                 let otherDot = otherLine.getOtherDot(ang.getDot());
                 let seg1 = this.getSegmentChains(otherDot, otherTriangleLine.getDot1());
-                let seg2 = this.getSegmentChains(otherDot, otherTriangleLine.getDot2())
+                let seg2 = this.getSegmentChains(otherDot, otherTriangleLine.getDot2());
 
                 let triangleLine2 = tri.getLine(i % 3);
                 let triangleLine1 = tri.getLine((i + 1) % 3);
@@ -612,6 +627,12 @@ Solve.prototype = {
                 eq.addRightTerm(termLine1b.multiply(termLine2b));
                 this.equations.push(eq);
             }
+        }
+    },
+
+    checkAppolloniusTheorem(tri) {
+        for (let cev of tri.getCevians()) {
+
         }
     },
 
@@ -669,6 +690,54 @@ Solve.prototype = {
             }
         }
         this.equations.push(eq);
+    },
+
+    findTriangleCevian(tri) {
+        for (let i = 0; i < tri.getAngles().length; i++) {
+            let ang = tri.getAngle(i);
+            let triLine = tri.getLine((i + 2) % 3);
+            let cevians = this.lines.filter(function (x) {
+                if (tri.getLines().some((y) => y.getBaseOrSelf() === x.getBaseOrSelf())) {
+                    return false;
+                }
+                if (!x.isLineEnd(ang.getDot())) {
+                    return false;
+                }
+                let otherDot = x.getOtherDot(ang.getDot());
+                if (!otherDot) {
+                    return false;
+                }
+                let baseLine = otherDot.getBaseLine();
+                if (!baseLine) {
+                    return false;
+                }
+                if (otherDot.getBaseLine().getBaseOrSelf() !== triLine.getBaseOrSelf()) {
+                    return false;
+                }
+                return true;
+            });
+            if (cevians.length === 0) {
+                continue;
+            }
+
+            for (let cev of cevians) {
+                let dot1 = ang.getDot();
+                let dot2 = cev.getOtherDot(dot1);
+                let triCev = {
+                    dot1,
+                    dot2,
+                    ang,
+                    line: triLine,
+                    cevian: cev
+                };
+
+                let seg1 = this.getSegmentChains(dot2, triLine.getDot1());
+                let seg2 = this.getSegmentChains(dot2, triLine.getDot2());
+
+                triCev.isMean = this.areEquivalent(new LineSum(seg1), new LineSum(seg2));
+                tri.addCevian(triCev);
+            }
+        }
     },
 
     findRightTriangle(tri) {

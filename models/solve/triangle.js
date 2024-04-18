@@ -4,6 +4,7 @@ function Triangle(dots, lines, angles) {
     this._dots = dots;
     this._lines = lines;
     this._angles = angles;
+    this._cevians = [];
 }
 
 Triangle.prototype = {
@@ -26,6 +27,15 @@ Triangle.prototype = {
 
     getAngle(i) {
         return this._angles[i];
+    },
+
+    addCevian(cevians) {
+        this._cevians.push(cevians);
+        return this;
+    },
+
+    getCevians() {
+        return this._cevians;
     },
 
     getOtherLine(line1, line2) {
