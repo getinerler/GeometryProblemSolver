@@ -259,7 +259,7 @@ const TestData = {
                 new Angle(dots[6], seg2, seg5),
                 new Angle(dots[6], seg5, seg1).setValue(50),
                 new Angle(dots[6], seg1, seg6),
-                new Angle(dots[7], seg3, seg7).setValue("?"),
+                new Angle(dots[7], seg3, seg7).setValue('?'),
                 new Angle(dots[7], seg7, seg4),
                 new Angle(dots[7], seg4, seg6),
                 new Angle(dots[7], seg6, seg3)
@@ -388,7 +388,7 @@ const TestData = {
                 new Angle(dots[1], seg2, lines[0]),
                 new Angle(dots[0], lines[0], seg4),
                 new Angle(dots[0], seg4, lines[0]).setValue(95),
-                new Angle(dots[3], seg3, lines[3]).setValue("?"),
+                new Angle(dots[3], seg3, lines[3]).setValue('?'),
                 new Angle(dots[3], lines[3], seg3),
                 new Angle(dots[2], seg1, lines[3]),
                 new Angle(dots[2], lines[3], seg1).setValue(75),
@@ -564,7 +564,7 @@ const TestData = {
                 new Angle(dots[3], seg2, seg1).setValue(180),
                 new Angle(dots[3], seg1, lines[3]),
                 new Angle(dots[2], lines[1], lines[2]),
-                new Angle(dots[2], lines[2], lines[3]).setValue("?"),
+                new Angle(dots[2], lines[2], lines[3]).setValue('?'),
                 new Angle(dots[2], lines[3], lines[1]).setValue(20)
             ];
 
@@ -622,7 +622,7 @@ const TestData = {
 
             let angles = [
                 new Angle(dots[0], seg2, seg6),
-                new Angle(dots[0], seg6, seg2).setValue("?"),
+                new Angle(dots[0], seg6, seg2).setValue('?'),
                 new Angle(dots[1], seg1, lines[2]),
                 new Angle(dots[1], lines[2], seg1),
                 new Angle(dots[2], seg4, lines[2]),
@@ -1058,7 +1058,7 @@ const TestData = {
 
             let seg1 = new Line(dots[0], dots[4]).setValue(6);
             let seg2 = new Line(dots[4], dots[1]).setValue(6);
-            let seg3 = new Line(dots[2], dots[3]).setValue("?");
+            let seg3 = new Line(dots[2], dots[3]).setValue('?');
             let seg4 = new Line(dots[3], dots[0]).setValue(8);
 
             let lines = [
@@ -1132,6 +1132,7 @@ const TestData = {
             seg2.setBase(lines[1]);
 
             dots[4].setBaseLine(lines[2]).setLineRatio(null);
+
             let angles = [
                 new Angle(dots[1], lines[0], seg2).setValue(90),
                 new Angle(dots[1], seg2, lines[0]),
@@ -1154,6 +1155,57 @@ const TestData = {
                 parallels: [],
                 equivalents: [],
                 question: lines[2]
+            };
+        }
+    },
+
+    getMedianTheoremQuestion: {
+        'name': 'Apollonius\' Theorem',
+        'explanation': 'Question: Apollonius\' Theorem. Find median length.',
+        'result': [new Value(14, 1, 2)],
+        getQuestion() {
+            let dots = [
+                new Dot(252, 101, 'A'),
+                new Dot(83, 259, 'B'),
+                new Dot(383, 291, 'C'),
+                new Dot(238.04848338462182, 275.5385048943597, 'E')
+            ];
+
+            let seg1 = new Line(dots[2], dots[3]); // CE
+            let seg2 = new Line(dots[3], dots[1]); // EB
+
+            let lines = [
+                new Line(dots[0], dots[1]).setValue(6), // AB
+                new Line(dots[2], dots[0]).setValue(8), // CA
+                new Line(dots[2], dots[1]).setValue(12).addSegment(seg1).addSegment(seg2),// CB
+                new Line(dots[3], dots[0]).setValue('?') // EA
+            ];
+
+            seg1.setBase(lines[2]);
+            seg2.setBase(lines[2]);
+
+            dots[3].setBaseLine(lines[2]).setLineRatio(0.6);
+
+            let angles = [
+                new Angle(dots[1], seg2, lines[0]),
+                new Angle(dots[1], lines[0], seg2),
+                new Angle(dots[2], lines[1], seg1),
+                new Angle(dots[2], seg1, lines[1]),
+                new Angle(dots[0], lines[1], lines[3]),
+                new Angle(dots[0], lines[3], lines[0]),
+                new Angle(dots[0], lines[0], lines[1]),
+                new Angle(dots[3], seg1, seg2).setValue(180),
+                new Angle(dots[3], seg2, lines[3]),
+                new Angle(dots[3], lines[3], seg1),
+            ];
+
+            return {
+                dots,
+                lines,
+                angles,
+                parallels: [],
+                equivalents: [new Equivalence([seg1, seg2])],
+                question: lines[3]
             };
         }
     }
