@@ -171,6 +171,13 @@ const Creations = {
         }
     },
 
+    ApolloniusTheorem: {
+        'show': true,
+        getExplanation() {
+            return 'Apollonius\' Theorem.'
+        }
+    },
+
     SimilarAngles: {
         'show': true,
         getExplanation(sim) {

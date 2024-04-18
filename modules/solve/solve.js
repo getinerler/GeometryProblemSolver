@@ -75,7 +75,6 @@ Solve.prototype = {
         // }
 
         this.findTriangleCevians();
-
         this.findRightTriangles();
 
         this.checkLinesSegmentLengths();
@@ -615,8 +614,7 @@ Solve.prototype = {
                 let triangleLine1 = tri.getLine((i + 1) % 3);
 
                 let eq = new Equation();
-                eq.setCreation(Creations.AngleBisector, true);
-                eq.setCreationText(Creations.AngleBisector.getExplanation());
+                eq.setCreation(Creations.AngleBisector);
 
                 let termLine1a = this.getTermFromValue(triangleLine1);
                 //TODO several segmented scenarios
@@ -632,7 +630,20 @@ Solve.prototype = {
 
     checkAppolloniusTheorem(tri) {
         for (let cev of tri.getCevians()) {
+            if (!cev.isMean) {
+                continue;
+            }
 
+            let eq = new Equation();
+            eq.setCreation(Creations.ApolloniusTheorem);
+            eq.addLeftTerm(this.getTermFromValue(cev.angle.getLine1(), 2));
+            eq.addLeftTerm(this.getTermFromValue(cev.angle.getLine2(), 2));
+
+            let term1 = this.getTermFromValue(cev.line, 2).multiply(new Term(new Value(2, -1)));
+            let term2 = this.getTermFromValue(cev.cevian, 2).multiply(new Term(new Value(2)));
+            eq.addRightTerm(term1);
+            eq.addRightTerm(term2);
+            this.equations.push(eq);
         }
     },
 
@@ -726,7 +737,7 @@ Solve.prototype = {
                 let triCev = {
                     dot1,
                     dot2,
-                    ang,
+                    angle: ang,
                     line: triLine,
                     cevian: cev
                 };
