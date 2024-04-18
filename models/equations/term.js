@@ -273,9 +273,10 @@ Term.prototype = {
             let calculated = Math.pow(val.getNumber(), Math.abs(val.getExponent()));
             let root = val.getRoot();
             if (root > 1) {
-                let temp = Math.pow(calculated, 1 / root);
-                if (Math.pow(temp, root) === calculated) {
-                    calculated = temp;
+                let rootTemp = Math.pow(calculated, 1 / root);
+                if (Math.floor(rootTemp) === rootTemp &&
+                    Math.pow(rootTemp, root) === calculated) {
+                    calculated = rootTemp;
                     root = 1;
                 }
             }
